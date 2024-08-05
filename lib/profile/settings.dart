@@ -99,7 +99,7 @@ class SettingsScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ArtisanDashboard(),
+                  builder: (context) => const SettingsScreen(),
                 ),
               );
               break;

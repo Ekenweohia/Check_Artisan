@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:loggy/loggy.dart';
 import 'package:check_artisan/loginsignupclient/splash_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  Loggy.initLoggy(
+    logPrinter: const PrettyPrinter(),
+  );
+
+  await initializeApp();
+
   runApp(const MyApp());
+}
+
+Future<void> initializeApp() async {
+  await Future.delayed(const Duration(seconds: 2));
 }
 
 class MyApp extends StatelessWidget {
@@ -11,7 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Custom Fonts',
+      title: 'Check Artisan',
       theme: ThemeData(
         fontFamily: 'Montserrat',
       ),

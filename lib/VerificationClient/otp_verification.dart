@@ -176,7 +176,7 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
       backgroundColor: Colors.white,
       body: BlocProvider(
         create: (context) => OTPVerificationBloc(
-            useApi: false), // Change to true when API is ready
+            useApi: true), // Change to true when API is ready
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
