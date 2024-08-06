@@ -1,4 +1,5 @@
 import 'package:check_artisan/loginsignupclient/home_screen.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 
 class Splash4 extends StatelessWidget {
@@ -69,10 +70,7 @@ class Splash4 extends StatelessWidget {
             top: MediaQuery.of(context).size.height / 2 + 200,
             child: GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
-                );
+                CheckartisanNavigator.push(context, const HomeScreen());
               },
               child: Image.asset(
                 'assets/Buttons/Group 1.png',

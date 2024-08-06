@@ -1,5 +1,6 @@
 import 'package:check_artisan/RegistrationClient/email_client.dart';
 import 'package:check_artisan/RegistrationClient/phone_client.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 
 class RegisterClient extends StatelessWidget {
@@ -83,11 +84,8 @@ class RegisterClient extends StatelessWidget {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const EmailClient()),
-                            );
+                            CheckartisanNavigator.push(
+                                context, const EmailClient());
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF004D40),
@@ -112,11 +110,8 @@ class RegisterClient extends StatelessWidget {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const PhoneClient()),
-                            );
+                            CheckartisanNavigator.push(
+                                context, const PhoneClient());
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF004D40),

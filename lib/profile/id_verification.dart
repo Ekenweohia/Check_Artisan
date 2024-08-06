@@ -1,3 +1,4 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:check_artisan/Artisan_DetailsScreens/artisan_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -23,29 +24,15 @@ class IDVerificationState extends State<IDVerification> {
     }
   }
 
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Error'),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
+  void _showErrorSnackbar(String message) {
+    AnimatedSnackBar.rectangle('Error', message,
+            type: AnimatedSnackBarType.error)
+        .show(context);
   }
 
   void _continue() {
     if (_selectedFile == null) {
-      _showErrorDialog('Please upload a document to continue.');
+      _showErrorSnackbar('Please upload a document to continue.');
     } else {
       Navigator.push(
         context,

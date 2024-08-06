@@ -1,5 +1,7 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:check_artisan/RegistrationArtisan/login_artisan.dart';
 import 'package:check_artisan/VerificationArtisan/email_confirmationartisan.dart';
+import 'package:check_artisan/page_navigation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -197,18 +199,15 @@ class EmailArtisanState extends State<EmailArtisan> {
                       child: BlocConsumer<AuthBloc, AuthState>(
                         listener: (context, state) {
                           if (state is AuthSuccess) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => EmailConfirmationArtisan(
-                                  email: _emailController.text,
-                                ),
-                              ),
-                            );
+                            CheckartisanNavigator.push(
+                                context,
+                                EmailConfirmationArtisan(
+                                    email: _emailController.text));
                           } else if (state is AuthFailure) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Error: ${state.error}')),
-                            );
+                            AnimatedSnackBar.rectangle(
+                                    'Error', 'Check Your Internet Connection',
+                                    type: AnimatedSnackBarType.error)
+                                .show(context);
                           }
                         },
                         builder: (context, state) {
@@ -373,13 +372,8 @@ class EmailArtisanState extends State<EmailArtisan> {
                               const SizedBox(height: 15),
                               TextButton(
                                 onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const LoginArtisan(),
-                                    ),
-                                  );
+                                  CheckartisanNavigator.push(
+                                      context, const LoginArtisan());
                                 },
                                 child: RichText(
                                   text: const TextSpan(

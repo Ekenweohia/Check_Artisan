@@ -1,7 +1,8 @@
 import 'package:check_artisan/Artisan_DetailsScreens/artisan_dashboard.dart';
 import 'package:check_artisan/Home_Client/homeclient.dart';
+import 'package:check_artisan/page_navigation.dart'; // Ensure this is the correct path to your navigator class
 import 'package:check_artisan/profile/notification.dart';
-import 'package:check_artisan/profile/profile.dart';
+import 'package:check_artisan/profile/profile.dart' as profile;
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -13,19 +14,19 @@ class SettingsScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text('MY Jobs',
-            style: TextStyle(
-              color: Colors.black,
-            )),
+        title: const Text(
+          'MY Jobs',
+          style: TextStyle(
+            color: Colors.black,
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications, color: Color(0xFF004D40)),
             onPressed: () {
-              Navigator.push(
+              CheckartisanNavigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const ArtisanScreen(),
-                ),
+                const ArtisanScreen(),
               );
             },
           ),
@@ -33,7 +34,7 @@ class SettingsScreen extends StatelessWidget {
       ),
       body: ListView(
         padding: const EdgeInsets.all(8.0),
-        children: [
+        children: const [
           JobCard(
             title: 'Food',
             jobRef: 'SRIZXOMvao',
@@ -47,7 +48,7 @@ class SettingsScreen extends StatelessWidget {
             jobRef: 'SRIZXOMvao',
             postedDate: '2024-04-29 14:04:59',
             status: 'Job Completed',
-            statusColor: const Color(0xFF004D40),
+            statusColor: Color(0xFF004D40),
             icon: Icons.list,
           ),
           JobCard(
@@ -80,35 +81,27 @@ class SettingsScreen extends StatelessWidget {
         onTap: (index) {
           switch (index) {
             case 0:
-              Navigator.push(
+              CheckartisanNavigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const HomeClient(),
-                ),
+                const HomeClient(),
               );
               break;
             case 1:
-              Navigator.push(
+              CheckartisanNavigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const ArtisanDashboard(),
-                ),
+                const ArtisanDashboard(),
               );
               break;
             case 2:
-              Navigator.push(
+              CheckartisanNavigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const SettingsScreen(),
-                ),
+                const SettingsScreen(),
               );
               break;
             case 3:
-              Navigator.push(
+              CheckartisanNavigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const ProfileScreen(),
-                ),
+                const profile.ProfileScreen(),
               );
               break;
           }
@@ -146,14 +139,15 @@ class JobCard extends StatelessWidget {
   final Color statusColor;
   final IconData icon;
 
-  JobCard({
+  const JobCard({
+    Key? key,
     required this.title,
     required this.jobRef,
     required this.postedDate,
     required this.status,
     required this.statusColor,
     required this.icon,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

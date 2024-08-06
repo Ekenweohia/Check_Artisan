@@ -1,5 +1,6 @@
-import 'package:check_artisan/loginsignupclient/splash_2.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
+import 'package:check_artisan/loginsignupclient/splash_2.dart';
 
 class Splash1 extends StatelessWidget {
   const Splash1({Key? key}) : super(key: key);
@@ -57,7 +58,7 @@ class Splash1 extends StatelessWidget {
                       CircleAvatar(
                         radius: 5,
                         backgroundColor: Color(0xFFD8D8D8),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -69,9 +70,9 @@ class Splash1 extends StatelessWidget {
             top: MediaQuery.of(context).size.height / 2 + 200,
             child: GestureDetector(
               onTap: () {
-                Navigator.push(
+                CheckartisanNavigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Splash2()),
+                  const Splash2(),
                 );
               },
               child: Image.asset(

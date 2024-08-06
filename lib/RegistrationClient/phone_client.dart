@@ -1,4 +1,5 @@
 import 'package:check_artisan/VerificationClient/otp_verification.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -267,19 +268,15 @@ class PhoneClientState extends State<PhoneClient> {
                           BlocConsumer<RegistrationBloc, RegistrationState>(
                             listener: (context, state) {
                               if (state is RegistrationSuccess) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => OTPVerificationScreen(
-                                      phoneNumber: _phoneController.text,
-                                    ),
-                                  ),
-                                );
+                                CheckartisanNavigator.push(
+                                    context,
+                                    OTPVerificationScreen(
+                                        phoneNumber: _phoneController.text));
                               } else if (state is RegistrationFailure) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text('Error: ${state.error}')),
-                                );
+                                AnimatedSnackBar.rectangle('Error',
+                                        'Please Check Internet Connection',
+                                        type: AnimatedSnackBarType.error)
+                                    .show(context);
                               }
                             },
                             builder: (context, state) {
@@ -359,12 +356,8 @@ class PhoneClientState extends State<PhoneClient> {
                           const SizedBox(height: 15),
                           TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const LoginClient(),
-                                ),
-                              );
+                              CheckartisanNavigator.push(
+                                  context, const LoginClient());
                             },
                             child: RichText(
                               text: const TextSpan(

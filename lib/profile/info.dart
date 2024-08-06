@@ -1,4 +1,5 @@
 import 'package:check_artisan/jobs/create_job.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:check_artisan/profile/notification.dart';
 import 'package:flutter/material.dart';
 
@@ -23,10 +24,7 @@ class InformationScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.notifications, color: Color(0xFF004D40)),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ArtisanScreen()),
-              );
+              CheckartisanNavigator.push(context, const ArtisanScreen());
             },
           ),
         ],
@@ -90,11 +88,8 @@ class InformationScreen extends StatelessWidget {
                 width: isSmallScreen ? double.infinity : 300,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const CreateJobScreen()),
-                    );
+                    CheckartisanNavigator.push(
+                        context, const CreateJobScreen());
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF004D40),

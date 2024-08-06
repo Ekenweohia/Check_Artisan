@@ -1,4 +1,5 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:check_artisan/profile/complete_profile_artisan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -228,12 +229,8 @@ class OTPVerificationArtisanScreenState
                               OTPVerificationArtisanState>(
                             listener: (context, state) {
                               if (state is OTPVerificationSuccess) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const CompleteProfile()),
-                                );
+                                CheckartisanNavigator.push(
+                                    context, const CompleteProfile());
                               } else if (state is OTPVerificationFailure) {
                                 AnimatedSnackBar.rectangle('Error',
                                         'Sorry An error Has Occured Please Check Your Internet Connection',

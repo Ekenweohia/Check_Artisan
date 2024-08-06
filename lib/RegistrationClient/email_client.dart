@@ -1,6 +1,7 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:check_artisan/RegistrationClient/login_client.dart';
 import 'package:check_artisan/VerificationClient/email_confirmation.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -356,12 +357,12 @@ class EmailClientState extends State<EmailClient> {
                                           _phoneNumberController.text;
 
                                       if (password != confirmPassword) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                              content: Text(
-                                                  'Passwords do not match')),
-                                        );
+                                        AnimatedSnackBar.rectangle('Warning',
+                                                'Passwords Do Not Match',
+                                                type: AnimatedSnackBarType
+                                                    .warning)
+                                            .show(context);
+
                                         return;
                                       }
 
@@ -421,27 +422,21 @@ class EmailClientState extends State<EmailClient> {
                               const SizedBox(height: 15),
                               TextButton(
                                 onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const LoginClient(),
-                                    ),
-                                  );
+                                  CheckartisanNavigator.push(
+                                      context, const LoginClient());
                                 },
                                 child: RichText(
                                   text: const TextSpan(
                                     text: 'Already Have an account? ',
                                     style: TextStyle(
-                                      color: Colors
-                                          .black, // Black color for this part
+                                      color: Colors.black,
                                       fontWeight: FontWeight.bold,
                                     ),
                                     children: [
                                       TextSpan(
                                         text: 'LOGIN',
                                         style: TextStyle(
-                                          color: Color(
-                                              0xFF004D40), // Green color for this part
+                                          color: Color(0xFF004D40),
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),

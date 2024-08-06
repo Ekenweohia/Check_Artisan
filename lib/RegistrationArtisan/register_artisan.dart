@@ -1,5 +1,6 @@
 import 'package:check_artisan/RegistrationArtisan/phone_artisan.dart';
 import 'package:check_artisan/RegistrationClient/email_client.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 
 class RegisterArtisan extends StatelessWidget {
@@ -78,11 +79,8 @@ class RegisterArtisan extends StatelessWidget {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const EmailClient()),
-                            );
+                            CheckartisanNavigator.push(
+                                context, const EmailClient());
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF004D40),
@@ -105,11 +103,8 @@ class RegisterArtisan extends StatelessWidget {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const PhoneArtisan()),
-                            );
+                            CheckartisanNavigator.push(
+                                context, const PhoneArtisan());
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF004D40),

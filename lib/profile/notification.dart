@@ -1,5 +1,6 @@
 import 'package:check_artisan/Artisan_DetailsScreens/artisan_profile.dart';
 import 'package:check_artisan/Home_Client/review_client.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -199,11 +200,8 @@ class ArtisanCard extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ArtisanProfileScreen()),
-                      );
+                      CheckartisanNavigator.push(
+                          context, const ArtisanProfileScreen());
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF004D40),
@@ -216,11 +214,8 @@ class ArtisanCard extends StatelessWidget {
                   const SizedBox(width: 8.0),
                   OutlinedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ReviewScreenClient()),
-                      );
+                      CheckartisanNavigator.push(
+                          context, const ReviewScreenClient());
                     },
                     child: const Text(
                       'ADD RATING',

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:check_artisan/loginsignupclient/splash_1.dart';
 
@@ -30,10 +31,7 @@ class _SplashScreenState extends State<SplashScreen>
     _animationController.repeat(reverse: true);
 
     Timer(const Duration(milliseconds: 10000), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const Splash1()),
-      );
+      CheckartisanNavigator.push(context, const Splash1());
     });
   }
 

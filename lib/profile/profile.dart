@@ -1,7 +1,8 @@
 import 'package:check_artisan/RegistrationClient/login_client.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:check_artisan/profile/change_password.dart';
 import 'package:check_artisan/profile/notification.dart';
-import 'package:check_artisan/profile/settings.dart';
+import 'package:check_artisan/profile/settings.dart' as profile;
 import 'package:flutter/material.dart';
 import 'package:check_artisan/Home_Client/homeclient.dart';
 import 'package:check_artisan/profile/edit_profile.dart';
@@ -33,11 +34,7 @@ class ProfileScreen extends StatelessWidget {
             child: IconButton(
               icon: const Icon(Icons.notifications, color: Color(0xFF004D40)),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ArtisanScreen()),
-                );
+                CheckartisanNavigator.push(context, const ArtisanScreen());
               },
             ),
           ),
@@ -77,11 +74,7 @@ class ProfileScreen extends StatelessWidget {
               text: 'Edit Profile',
               iconPath: 'assets/Buttons/edit.png',
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const EditProfileScreen()),
-                );
+                CheckartisanNavigator.push(context, const EditProfileScreen());
               },
             ),
             SizedBox(height: screenSize.height * 0.03),
@@ -89,11 +82,8 @@ class ProfileScreen extends StatelessWidget {
               text: 'Change Password',
               iconPath: 'assets/Buttons/password.png',
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ChangePasswordScreen()),
-                );
+                CheckartisanNavigator.push(
+                    context, const ChangePasswordScreen());
               },
             ),
             SizedBox(height: screenSize.height * 0.02),
@@ -101,11 +91,7 @@ class ProfileScreen extends StatelessWidget {
               text: 'Information',
               iconPath: 'assets/Buttons/info.png',
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const InformationScreen()),
-                );
+                CheckartisanNavigator.push(context, const InformationScreen());
               },
             ),
             SizedBox(height: screenSize.height * 0.03),
@@ -119,10 +105,7 @@ class ProfileScreen extends StatelessWidget {
               text: 'Log Out',
               iconPath: 'assets/Buttons/logout.png',
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginClient()),
-                );
+                CheckartisanNavigator.push(context, const LoginClient());
               },
             ),
           ],
@@ -132,19 +115,14 @@ class ProfileScreen extends StatelessWidget {
         onTap: (index) {
           switch (index) {
             case 0:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const HomeClient()),
-              );
+              CheckartisanNavigator.push(context, const HomeClient());
               break;
             case 1:
               // Navigate to Location screen
               break;
             case 2:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsScreen()),
-              );
+              CheckartisanNavigator.push(
+                  context, const profile.SettingsScreen());
               break;
             case 3:
               break;

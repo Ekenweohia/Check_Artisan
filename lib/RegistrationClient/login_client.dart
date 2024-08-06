@@ -1,6 +1,8 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:check_artisan/Home_Client/homeclient.dart';
 import 'package:check_artisan/RegistrationClient/register_client.dart';
 import 'package:check_artisan/VerificationClient/password_reset.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -185,17 +187,13 @@ class LoginClientState extends State<LoginClient> {
                           child: BlocConsumer<AuthBloc, AuthState>(
                             listener: (context, state) {
                               if (state is AuthSuccess) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const HomeClient(),
-                                  ),
-                                );
+                                CheckartisanNavigator.push(
+                                    context, const HomeClient());
                               } else if (state is AuthFailure) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text('Error: ${state.error}')),
-                                );
+                                AnimatedSnackBar.rectangle('Error',
+                                        'Check Your Internet Connection',
+                                        type: AnimatedSnackBarType.error)
+                                    .show(context);
                               }
                             },
                             builder: (context, state) {
@@ -279,13 +277,8 @@ class LoginClientState extends State<LoginClient> {
                                     alignment: Alignment.centerRight,
                                     child: TextButton(
                                       onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const PasswordResetScreen(),
-                                          ),
-                                        );
+                                        CheckartisanNavigator.push(
+                                            context, const PasswordResetApp());
                                       },
                                       child: const Text(
                                         'Forgot Password?',
@@ -410,13 +403,8 @@ class LoginClientState extends State<LoginClient> {
                                   const SizedBox(height: 20),
                                   GestureDetector(
                                     onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const RegisterClient(),
-                                        ),
-                                      );
+                                      CheckartisanNavigator.push(
+                                          context, const RegisterClient());
                                     },
                                     child: RichText(
                                       text: const TextSpan(
@@ -430,8 +418,7 @@ class LoginClientState extends State<LoginClient> {
                                           TextSpan(
                                             text: 'SIGN UP',
                                             style: TextStyle(
-                                              color: Color(
-                                                  0xFF004D40), // Green color for this part
+                                              color: Color(0xFF004D40),
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),

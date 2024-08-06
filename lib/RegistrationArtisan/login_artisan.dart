@@ -1,6 +1,8 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:check_artisan/Artisan_DetailsScreens/artisan_dashboard.dart';
 import 'package:check_artisan/RegistrationArtisan/register_artisan.dart';
 import 'package:check_artisan/VerificationArtisan/password_resetartisan.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -185,18 +187,13 @@ class LoginArtisanState extends State<LoginArtisan> {
                           child: BlocConsumer<AuthBloc, AuthState>(
                             listener: (context, state) {
                               if (state is AuthSuccess) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ArtisanDashboard(),
-                                  ),
-                                );
+                                CheckartisanNavigator.push(
+                                    context, const ArtisanDashboard());
                               } else if (state is AuthFailure) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text('Error: ${state.error}')),
-                                );
+                                AnimatedSnackBar.rectangle(
+                                        'Error', 'Check Internet Connection',
+                                        type: AnimatedSnackBarType.error)
+                                    .show(context);
                               }
                             },
                             builder: (context, state) {
@@ -232,13 +229,8 @@ class LoginArtisanState extends State<LoginArtisan> {
                                     alignment: Alignment.centerRight,
                                     child: TextButton(
                                       onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const PasswordResetScreen(),
-                                          ),
-                                        );
+                                        CheckartisanNavigator.push(
+                                            context, const PasswordResetApp());
                                       },
                                       child: const Text(
                                         'Forgot Password?',
@@ -325,13 +317,8 @@ class LoginArtisanState extends State<LoginArtisan> {
                                   const SizedBox(height: 20),
                                   GestureDetector(
                                     onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const RegisterArtisan(),
-                                        ),
-                                      );
+                                      CheckartisanNavigator.push(
+                                          context, const RegisterArtisan());
                                     },
                                     child: RichText(
                                       text: const TextSpan(

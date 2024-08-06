@@ -1,5 +1,7 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:check_artisan/RegistrationArtisan/login_artisan.dart';
 import 'package:check_artisan/VerificationArtisan/otp_verificationartisan.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -193,19 +195,14 @@ class PhoneArtisanState extends State<PhoneArtisan> {
                       child: BlocConsumer<AuthBloc, AuthState>(
                         listener: (context, state) {
                           if (state is AuthSuccess) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    OTPVerificationArtisanScreen(
-                                  phoneNumber: _phoneController.text,
-                                ),
-                              ),
-                            );
+                            CheckartisanNavigator.push(
+                                context,
+                                OTPVerificationArtisanScreen(
+                                    phoneNumber: _phoneController.text));
                           } else if (state is AuthFailure) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Error: ${state.error}')),
-                            );
+                            AnimatedSnackBar.rectangle(
+                                'Error', 'Check Internet Connect',
+                                type: AnimatedSnackBarType.error);
                           }
                         },
                         builder: (context, state) {
@@ -302,13 +299,11 @@ class PhoneArtisanState extends State<PhoneArtisan> {
                                           _confirmPasswordController.text;
 
                                       if (password != confirmPassword) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                              content: Text(
-                                                  'Passwords do not match')),
-                                        );
-                                        return;
+                                        AnimatedSnackBar.rectangle('Error',
+                                                'Password Does Not Match',
+                                                type:
+                                                    AnimatedSnackBarType.error)
+                                            .show(context);
                                       }
 
                                       context.read<AuthBloc>().add(
@@ -366,13 +361,8 @@ class PhoneArtisanState extends State<PhoneArtisan> {
                               const SizedBox(height: 15),
                               TextButton(
                                 onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const LoginArtisan(),
-                                    ),
-                                  );
+                                  CheckartisanNavigator.push(
+                                      context, LoginArtisan);
                                 },
                                 child: RichText(
                                   text: const TextSpan(
