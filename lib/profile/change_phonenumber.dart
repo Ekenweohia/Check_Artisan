@@ -1,4 +1,6 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:check_artisan/VerificationArtisan/otp_verificationartisan.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:check_artisan/profile/notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -132,10 +134,7 @@ class ChangePhoneNumberScreenState extends State<ChangePhoneNumberScreen> {
           IconButton(
             icon: const Icon(Icons.notifications, color: Color(0xFF004D40)),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ArtisanScreen()),
-              );
+              CheckartisanNavigator.push(context, const ArtisanScreen());
             },
           ),
         ],
@@ -171,17 +170,17 @@ class ChangePhoneNumberScreenState extends State<ChangePhoneNumberScreen> {
             BlocConsumer<PhoneNumberBloc, PhoneNumberState>(
               listener: (context, state) {
                 if (state is PhoneNumberChanged) {
-                  Navigator.push(
+                  CheckartisanNavigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => OTPVerificationArtisanScreen(
-                        phoneNumber: _newPhoneNumberController.text,
-                      ),
+                    OTPVerificationArtisanScreen(
+                      phoneNumber: _newPhoneNumberController.text,
                     ),
                   );
                 } else if (state is PhoneNumberError) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error: ${state.error}')),
+                  AnimatedSnackBar.rectangle(
+                    'Error',
+                    'Please Check Internet Connection',
+                    type: AnimatedSnackBarType.error,
                   );
                 }
               },

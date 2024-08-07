@@ -1,4 +1,5 @@
 import 'package:check_artisan/Home_Client/homeclient.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:check_artisan/profile/notification.dart';
 import 'package:flutter/material.dart';
 
@@ -19,10 +20,7 @@ class ArtisanProfileScreenState extends State<ArtisanProfileScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xFF004D40)),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ArtisanScreen()),
-            );
+            CheckartisanNavigator.push(context, const ArtisanScreen());
           },
         ),
         title: const Text(
@@ -129,10 +127,7 @@ class ArtisanProfileScreenState extends State<ArtisanProfileScreen> {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HomeClient()),
-                  );
+                  CheckartisanNavigator.push(context, const HomeClient());
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF004D40),

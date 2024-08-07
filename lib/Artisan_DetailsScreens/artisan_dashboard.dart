@@ -1,6 +1,7 @@
 import 'package:check_artisan/jobs/job_list_screen.dart';
 import 'package:check_artisan/jobs/quote_request_screen.dart';
 import 'package:check_artisan/jobs/reviews_screen.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:check_artisan/profile/notification.dart';
 import 'package:check_artisan/profile/profile.dart';
 import 'package:check_artisan/profile/settings.dart';
@@ -23,10 +24,7 @@ class ArtisanDashboard extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.notifications, color: Color(0xFF004D40)),
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ArtisanScreen()));
+              CheckartisanNavigator.push(context, const ArtisanScreen());
             },
           ),
         ],

@@ -1,3 +1,4 @@
+import 'package:check_artisan/page_navigation.dart';
 import 'package:check_artisan/profile/notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -132,10 +133,7 @@ class JobListScreen extends StatelessWidget {
                 color: Color(0xFF004D40),
               ),
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ArtisanScreen()));
+                CheckartisanNavigator.push(context, const ArtisanScreen());
               },
             ),
           ],

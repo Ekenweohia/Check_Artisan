@@ -1,3 +1,4 @@
+import 'package:check_artisan/page_navigation.dart';
 import 'package:check_artisan/profile/complete_profile_artisan2.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -253,11 +254,8 @@ class CompleteProfileState extends State<CompleteProfile> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const CompleteProfile2()),
-                    );
+                    CheckartisanNavigator.push(
+                        context, const CompleteProfile2());
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF004D40),

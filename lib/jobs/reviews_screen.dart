@@ -1,3 +1,5 @@
+import 'package:check_artisan/page_navigation.dart';
+import 'package:check_artisan/profile/notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -126,7 +128,9 @@ class ReviewsScreen extends StatelessWidget {
           actions: [
             IconButton(
               icon: const Icon(Icons.notifications, color: Color(0xFF004D40)),
-              onPressed: () {},
+              onPressed: () {
+                CheckartisanNavigator.push(context, const ArtisanScreen());
+              },
             ),
           ],
         ),

@@ -1,5 +1,6 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:check_artisan/Artisan_DetailsScreens/artisan_dashboard.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -34,12 +35,7 @@ class IDVerificationState extends State<IDVerification> {
     if (_selectedFile == null) {
       _showErrorSnackbar('Please upload a document to continue.');
     } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const ArtisanDashboard(),
-        ),
-      );
+      CheckartisanNavigator.push(context, const ArtisanDashboard());
     }
   }
 

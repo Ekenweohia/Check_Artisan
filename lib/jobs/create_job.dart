@@ -1,3 +1,4 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 
 class CreateJobScreen extends StatefulWidget {
@@ -26,9 +27,9 @@ class CreateJobScreenState extends State<CreateJobScreen> {
   }
 
   void _postJob() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Job posted successfully!')),
-    );
+    AnimatedSnackBar.rectangle('Success', 'Job Posted Successfully',
+            type: AnimatedSnackBarType.success)
+        .show(context);
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:check_artisan/Artisan_DetailsScreens/artisan_profile.dart';
 import 'package:check_artisan/jobs/quote_request_screen.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 
 class ArtisanListScreen extends StatelessWidget {
@@ -113,11 +114,8 @@ class ArtisanCard extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const QuoteRequestsScreen()),
-                    );
+                    CheckartisanNavigator.push(
+                        context, const QuoteRequestsScreen());
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
@@ -131,11 +129,8 @@ class ArtisanCard extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ArtisanProfileScreen()),
-                    );
+                    CheckartisanNavigator.push(
+                        context, const ArtisanProfileScreen());
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF004D40),

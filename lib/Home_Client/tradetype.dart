@@ -1,4 +1,5 @@
 import 'package:check_artisan/Artisan_DetailsScreens/artisanlistscreen.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 
 class TradeTypeScreen extends StatelessWidget {
@@ -67,13 +68,11 @@ class TradeTypeScreen extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.push(
+                      CheckartisanNavigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => ArtisanListScreen(
-                            title: trades[index],
-                            artisanType: trades[index],
-                          ),
+                        ArtisanListScreen(
+                          title: trades[index],
+                          artisanType: trades[index],
                         ),
                       );
                     },
