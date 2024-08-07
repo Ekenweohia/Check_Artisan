@@ -1,3 +1,4 @@
+import 'package:check_artisan/circular_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -171,7 +172,7 @@ class PasswordResetScreenState extends State<PasswordResetScreen> {
                 },
                 builder: (context, state) {
                   if (state is PasswordResetLoading) {
-                    return const CircularProgressIndicator();
+                    return const CircularLoadingWidget();
                   }
                   return SizedBox(
                     width: double.infinity,

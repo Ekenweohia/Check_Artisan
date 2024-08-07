@@ -1,6 +1,7 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:check_artisan/RegistrationClient/login_client.dart';
 import 'package:check_artisan/VerificationClient/email_confirmation.dart';
+import 'package:check_artisan/circular_loading.dart';
 import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -113,7 +114,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(AuthFailure(error));
         }
       } else {
-        await Future.delayed(const Duration(seconds: 1));
+        await Future.delayed(const Duration(seconds: 3));
         emit(AuthSuccess());
       }
     } catch (e) {
@@ -145,7 +146,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(AuthFailure(error));
         }
       } else {
-        await Future.delayed(const Duration(seconds: 1));
+        await Future.delayed(const Duration(seconds: 3));
         emit(AuthSuccess());
       }
     } catch (e) {
@@ -241,18 +242,14 @@ class EmailClientState extends State<EmailClient> {
                   child: SingleChildScrollView(
                     child: BlocProvider(
                       create: (context) => AuthBloc(
-                          useApi: false), // Set to true when API is ready
+                          useApi: true), // Set to true when API is ready
                       child: BlocConsumer<AuthBloc, AuthState>(
                         listener: (context, state) {
                           if (state is AuthSuccess) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => EmailConfirmation(
-                                  email: _emailController.text,
-                                ),
-                              ),
-                            );
+                            CheckartisanNavigator.push(
+                                context,
+                                EmailConfirmation(
+                                    email: _emailController.text));
                           } else if (state is AuthFailure) {
                             AnimatedSnackBar.rectangle(
                                     'Error', 'Authentication Error',
@@ -333,6 +330,7 @@ class EmailClientState extends State<EmailClient> {
                                         _isSwitched = value;
                                       });
                                     },
+                                    activeColor: const Color(0xFF004D40),
                                   ),
                                   const Text(
                                       'I agree to the terms and conditions'),
@@ -340,7 +338,7 @@ class EmailClientState extends State<EmailClient> {
                               ),
                               const SizedBox(height: 16),
                               if (state is AuthLoading)
-                                const CircularProgressIndicator()
+                                const CircularLoadingWidget()
                               else
                                 SizedBox(
                                   width: double.infinity,

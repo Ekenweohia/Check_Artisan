@@ -1,4 +1,5 @@
 import 'package:check_artisan/VerificationClient/otp_verification.dart';
+import 'package:check_artisan/circular_loading.dart';
 import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -281,7 +282,7 @@ class PhoneClientState extends State<PhoneClient> {
                             },
                             builder: (context, state) {
                               if (state is RegistrationLoading) {
-                                return const CircularProgressIndicator();
+                                return const CircularLoadingWidget();
                               }
                               return SizedBox(
                                 width: double.infinity,
@@ -296,9 +297,9 @@ class PhoneClientState extends State<PhoneClient> {
 
                                     if (password != confirmPassword) {
                                       AnimatedSnackBar.rectangle(
-                                        "Error",
+                                        "Warning",
                                         "Passwords do not match",
-                                        type: AnimatedSnackBarType.error,
+                                        type: AnimatedSnackBarType.warning,
                                         mobileSnackBarPosition:
                                             MobileSnackBarPosition.bottom,
                                       ).show(context);

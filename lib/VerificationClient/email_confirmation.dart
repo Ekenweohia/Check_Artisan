@@ -1,4 +1,5 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'package:check_artisan/circular_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -200,7 +201,7 @@ class EmailConfirmation extends StatelessWidget {
                   },
                   builder: (context, state) {
                     if (state is EmailConfirmationLoading) {
-                      return const CircularProgressIndicator();
+                      return const CircularLoadingWidget();
                     }
                     return TextButton(
                       onPressed: () {

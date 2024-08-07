@@ -1,4 +1,6 @@
 import 'package:check_artisan/Home_Client/homeclient.dart';
+import 'package:check_artisan/circular_loading.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -122,7 +124,7 @@ class OTPVerificationBloc
         }
       } else {
         // Placeholder response
-        await Future.delayed(const Duration(seconds: 1));
+        await Future.delayed(const Duration(seconds: 3));
         emit(OTPResent());
       }
     } catch (e) {
@@ -176,7 +178,7 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
       backgroundColor: Colors.white,
       body: BlocProvider(
         create: (context) => OTPVerificationBloc(
-            useApi: true), // Change to true when API is ready
+            useApi: false), // Change to true when API is ready
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -228,11 +230,8 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
                               OTPVerificationState>(
                             listener: (context, state) {
                               if (state is OTPVerificationSuccess) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const HomeClient()),
-                                );
+                                CheckartisanNavigator.push(
+                                    context, const HomeClient());
                               } else if (state is OTPVerificationFailure) {
                                 AnimatedSnackBar.rectangle(
                                         "Failed", "Something Went Wrong",
@@ -247,7 +246,7 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
                             },
                             builder: (context, state) {
                               if (state is OTPVerificationLoading) {
-                                return const CircularProgressIndicator();
+                                return const CircularLoadingWidget();
                               }
                               return Column(
                                 children: [

@@ -2,6 +2,7 @@ import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:check_artisan/Home_Client/homeclient.dart';
 import 'package:check_artisan/RegistrationClient/register_client.dart';
 import 'package:check_artisan/VerificationClient/password_reset.dart';
+import 'package:check_artisan/circular_loading.dart';
 import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -289,7 +290,7 @@ class LoginClientState extends State<LoginClient> {
                                   ),
                                   const SizedBox(height: 16),
                                   if (state is AuthLoading)
-                                    const CircularProgressIndicator()
+                                    const CircularLoadingWidget()
                                   else
                                     SizedBox(
                                       width: double.infinity,
