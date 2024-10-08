@@ -74,7 +74,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       if (useApi) {
         final response = await http.post(
-          Uri.parse(''), // API URL for login
+          Uri.parse(''),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -209,7 +209,7 @@ class LoginArtisanState extends State<LoginArtisan> {
                                     ),
                                   ),
                                   const SizedBox(height: 16),
-                                  _buildTextField(
+                                  _buildSmallTextField(
                                     controller: _emailOrPhoneController,
                                     labelText: 'Email/Phone Number',
                                   ),
@@ -229,8 +229,8 @@ class LoginArtisanState extends State<LoginArtisan> {
                                     alignment: Alignment.centerRight,
                                     child: TextButton(
                                       onPressed: () {
-                                        CheckartisanNavigator.push(
-                                            context, const PasswordResetApp());
+                                        CheckartisanNavigator.push(context,
+                                            const PasswordResetAppScreen());
                                       },
                                       child: const Text(
                                         'Forgot Password?',
@@ -358,25 +358,20 @@ class LoginArtisanState extends State<LoginArtisan> {
     );
   }
 
-  Widget _buildTextField({
+  Widget _buildSmallTextField({
     required TextEditingController controller,
     required String labelText,
   }) {
-    return Container(
-      decoration: const BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 8,
-            offset: Offset(0, 10),
-          ),
-        ],
-      ),
+    return SizedBox(
+      height: 45, // Small height for TextField
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
+          isDense: true, // Makes the TextField more compact
+          contentPadding: const EdgeInsets.symmetric(
+              vertical: 10, horizontal: 12), // Adjust padding
           border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(30.0)),
+            borderRadius: BorderRadius.all(Radius.circular(12.0)),
           ),
           labelText: labelText,
           filled: true,
@@ -392,22 +387,17 @@ class LoginArtisanState extends State<LoginArtisan> {
     required bool obscureText,
     required VoidCallback toggleObscureText,
   }) {
-    return Container(
-      decoration: const BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 8,
-            offset: Offset(0, 10),
-          ),
-        ],
-      ),
+    return SizedBox(
+      height: 45, // Small height for TextField
       child: TextField(
         controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(
+          isDense: true, // Makes the TextField more compact
+          contentPadding: const EdgeInsets.symmetric(
+              vertical: 10, horizontal: 12), // Adjust padding
           border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(30.0)),
+            borderRadius: BorderRadius.all(Radius.circular(12.0)),
           ),
           labelText: labelText,
           filled: true,
@@ -428,16 +418,8 @@ class LoginArtisanState extends State<LoginArtisan> {
     required String label,
     required String assetPath,
   }) {
-    return Container(
-      decoration: const BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 8,
-            offset: Offset(0, 10),
-          ),
-        ],
-      ),
+    return SizedBox(
+      height: 45, // Ensure consistent height for social login buttons
       child: ElevatedButton.icon(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
@@ -452,8 +434,6 @@ class LoginArtisanState extends State<LoginArtisan> {
             fontSize: 12,
             fontWeight: FontWeight.w600,
           ),
-          shadowColor: Colors.black26,
-          elevation: 8,
         ),
         icon: Image.asset(
           assetPath,

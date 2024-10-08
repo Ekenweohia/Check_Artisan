@@ -6,24 +6,21 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Quote {
-  final String title;
-  final String location;
+  final int id;
   final String budget;
-  final DateTime postedDate;
+  final String location;
 
   Quote({
-    required this.title,
-    required this.location,
+    required this.id,
     required this.budget,
-    required this.postedDate,
+    required this.location,
   });
 
   factory Quote.fromJson(Map<String, dynamic> json) {
     return Quote(
-      title: json['title'],
-      location: json['location'],
-      budget: json['budget'],
-      postedDate: DateTime.parse(json['postedDate']),
+      id: json['id'],
+      budget: json['budget_amount'],
+      location: json['location'] ?? 'Unknown location',
     );
   }
 }
@@ -79,24 +76,25 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
 
     try {
       if (useApi) {
-        final response = await http.get(Uri.parse(''));
+        final response = await http
+            .get(Uri.parse('https://checkartisan.com/api/get-budgets'));
 
         if (response.statusCode == 200) {
           final List<dynamic> quoteJson = jsonDecode(response.body);
+
           final quotes = quoteJson.map((json) => Quote.fromJson(json)).toList();
           emit(QuoteLoaded(quotes));
         } else {
-          emit(const QuoteError('Failed to fetch quotes from API'));
+          emit(const QuoteError('Failed to fetch budgets from API'));
         }
       } else {
         await Future.delayed(const Duration(seconds: 1));
         final quotes = List<Quote>.generate(
           6,
           (index) => Quote(
-            title: 'Small Chops',
-            location: 'Umuahia, Abia',
+            id: index,
             budget: 'Under NGN50,000',
-            postedDate: DateTime.now(),
+            location: 'Umuahia, Abia',
           ),
         );
         emit(QuoteLoaded(quotes));
@@ -113,11 +111,11 @@ class QuoteRequestsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => QuoteBloc(useApi: false)..add(FetchQuotes()),
+      create: (context) => QuoteBloc(useApi: true)..add(FetchQuotes()),
       child: Scaffold(
         appBar: AppBar(
           title: const Text(
-            'Quote Requests',
+            'Budget Requests',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
@@ -134,7 +132,8 @@ class QuoteRequestsScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const ArtisanScreen()),
+                    builder: (context) => const ArtisanScreen(),
+                  ),
                 );
               },
             ),
@@ -152,9 +151,7 @@ class QuoteRequestsScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30.0),
                   ),
                 ),
-                onChanged: (value) {
-                  // Handle search
-                },
+                onChanged: (value) {},
               ),
             ),
             Expanded(
@@ -170,19 +167,10 @@ class QuoteRequestsScreen extends StatelessWidget {
                         final quote = state.quotes[index];
                         return ListTile(
                           title: Text(
-                            quote.title,
+                            'Budget: ${quote.budget}',
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Location: ${quote.location}'),
-                              Text('Budget: ${quote.budget}'),
-                              Text(
-                                'Posted: ${quote.postedDate.toIso8601String()}',
-                              ),
-                            ],
-                          ),
+                          subtitle: Text('Location: ${quote.location}'),
                           trailing: const Icon(
                             Icons.info_outline,
                             color: Color(0xFF004D40),
@@ -191,7 +179,7 @@ class QuoteRequestsScreen extends StatelessWidget {
                       },
                     );
                   } else if (state is QuoteError) {
-                    return const Center(child: Text('Failed to fetch quotes'));
+                    return const Center(child: Text('Failed to fetch budgets'));
                   }
                   return Container();
                 },

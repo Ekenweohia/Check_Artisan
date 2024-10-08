@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:check_artisan/RegistrationClient/login_client.dart';
 
@@ -204,22 +205,22 @@ class PhoneClientState extends State<PhoneClient> {
                               color: Colors.black,
                             ),
                           ),
-                          const SizedBox(height: 16),
-                          _buildTextField(
+                          const SizedBox(height: 20),
+                          _buildSmallTextField(
                             controller: _firstNameController,
                             labelText: 'First Name',
                           ),
-                          const SizedBox(height: 16),
-                          _buildTextField(
+                          const SizedBox(height: 20),
+                          _buildSmallTextField(
                             controller: _lastNameController,
                             labelText: 'Last Name',
                           ),
-                          const SizedBox(height: 16),
-                          _buildTextField(
+                          const SizedBox(height: 20),
+                          _buildSmallTextField(
                             controller: _phoneController,
                             labelText: 'Phone Number',
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 20),
                           _buildPasswordTextField(
                             controller: _passwordController,
                             labelText: 'Password',
@@ -230,7 +231,7 @@ class PhoneClientState extends State<PhoneClient> {
                               });
                             },
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 20),
                           _buildPasswordTextField(
                             controller: _confirmPasswordController,
                             labelText: 'Confirm Password',
@@ -242,7 +243,7 @@ class PhoneClientState extends State<PhoneClient> {
                               });
                             },
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 20),
                           const Text(
                             'CLICK HERE TO READ TERMS AND CONDITIONS',
                             style: TextStyle(
@@ -265,7 +266,7 @@ class PhoneClientState extends State<PhoneClient> {
                               const Text('I agree to the terms and conditions'),
                             ],
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 20),
                           BlocConsumer<RegistrationBloc, RegistrationState>(
                             listener: (context, state) {
                               if (state is RegistrationSuccess) {
@@ -321,7 +322,7 @@ class PhoneClientState extends State<PhoneClient> {
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 16),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30),
+                                      borderRadius: BorderRadius.circular(0),
                                     ),
                                   ),
                                   child: const Text('SIGN UP'),
@@ -372,8 +373,7 @@ class PhoneClientState extends State<PhoneClient> {
                                   TextSpan(
                                     text: 'LOGIN',
                                     style: TextStyle(
-                                      color: Color(
-                                          0xFF004D40), // Green color for this part
+                                      color: Color(0xFF004D40),
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -394,31 +394,26 @@ class PhoneClientState extends State<PhoneClient> {
     );
   }
 
-  Widget _buildTextField({
+  Widget _buildSmallTextField({
     required TextEditingController controller,
     required String labelText,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 10,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
+    return SizedBox(
+      height: 45, // Uniform height for all TextFields
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
+          isDense: true, // Makes the TextField denser
+          contentPadding: const EdgeInsets.symmetric(
+              vertical: 10, horizontal: 12), // Adjust padding
           border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(25.0)),
+            borderRadius: BorderRadius.all(Radius.circular(12.0)),
           ),
           labelText: labelText,
           filled: true,
           fillColor: Colors.white,
         ),
+        style: GoogleFonts.montserrat(fontSize: 14), // Apply Montserrat font
       ),
     );
   }
@@ -429,23 +424,17 @@ class PhoneClientState extends State<PhoneClient> {
     required bool obscureText,
     required VoidCallback toggleObscureText,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+    return SizedBox(
+      height: 45, // Uniform height for all TextFields
       child: TextField(
         controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(
+          isDense: true, // Makes the TextField denser
+          contentPadding: const EdgeInsets.symmetric(
+              vertical: 10, horizontal: 12), // Adjust padding
           border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(25.0)),
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
           ),
           labelText: labelText,
           filled: true,
@@ -457,6 +446,7 @@ class PhoneClientState extends State<PhoneClient> {
             onPressed: toggleObscureText,
           ),
         ),
+        style: GoogleFonts.montserrat(fontSize: 14), // Apply Montserrat font
       ),
     );
   }
@@ -466,38 +456,29 @@ class PhoneClientState extends State<PhoneClient> {
     required String label,
     required String assetPath,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 10),
-          ),
-        ],
+    return ElevatedButton.icon(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(0)),
+          side: BorderSide(color: Colors.grey),
+        ),
+        textStyle: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
       ),
-      child: ElevatedButton.icon(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(0)),
-            side: BorderSide(color: Colors.grey),
-          ),
-          textStyle: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        icon: Image.asset(
-          assetPath,
-          height: 30,
-          width: 30,
-        ),
-        label: Text(label),
+      icon: Image.asset(
+        assetPath,
+        height: 30,
+        width: 30,
+      ),
+      label: Text(
+        label,
+        style: GoogleFonts.montserrat(fontSize: 12), // Apply Montserrat font
       ),
     );
   }

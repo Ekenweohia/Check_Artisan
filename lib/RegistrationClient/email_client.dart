@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 abstract class AuthEvent extends Equatable {
   const AuthEvent();
@@ -94,16 +95,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       if (useApi) {
         final response = await http.post(
-          Uri.parse(''), // API URL for registration
+          Uri.parse('https://checkartisan.com/api/appemailregistration'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
           body: jsonEncode(<String, String>{
-            'firstName': event.firstName,
-            'lastName': event.lastName,
             'email': event.email,
             'password': event.password,
-            'phoneNumber': event.phoneNumber,
+            'firstname': event.firstName,
+            'lastname': event.lastName,
+            'role_id': '2',
+            'phone': event.phoneNumber,
           }),
         );
 
@@ -241,8 +243,8 @@ class EmailClientState extends State<EmailClient> {
                   ),
                   child: SingleChildScrollView(
                     child: BlocProvider(
-                      create: (context) => AuthBloc(
-                          useApi: true), // Set to true when API is ready
+                      create: (context) =>
+                          AuthBloc(useApi: false), // Set to true to use API
                       child: BlocConsumer<AuthBloc, AuthState>(
                         listener: (context, state) {
                           if (state is AuthSuccess) {
@@ -251,8 +253,7 @@ class EmailClientState extends State<EmailClient> {
                                 EmailConfirmation(
                                     email: _emailController.text));
                           } else if (state is AuthFailure) {
-                            AnimatedSnackBar.rectangle(
-                                    'Error', 'Authentication Error',
+                            AnimatedSnackBar.rectangle('Error', state.error,
                                     type: AnimatedSnackBarType.error)
                                 .show(context);
                           }
@@ -261,63 +262,76 @@ class EmailClientState extends State<EmailClient> {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const Text(
+                              Text(
                                 'Got an Email? Let’s Get Started',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ),
-                              const SizedBox(height: 16),
-                              _buildTextField(
+                              const SizedBox(
+                                height: 30,
+                              ),
+                              const SizedBox(height: 20),
+                              _buildSmallTextField(
                                 controller: _firstNameController,
                                 labelText: 'First Name',
                               ),
-                              const SizedBox(height: 16),
-                              _buildTextField(
+                              const SizedBox(height: 20),
+                              _buildSmallTextField(
                                 controller: _lastNameController,
                                 labelText: 'Last Name',
                               ),
-                              const SizedBox(height: 16),
-                              _buildTextField(
+                              const SizedBox(height: 20),
+                              _buildSmallTextField(
                                 controller: _emailController,
                                 labelText: 'Email',
                               ),
-                              const SizedBox(height: 16),
-                              _buildPasswordTextField(
+                              const SizedBox(height: 20),
+                              _buildSmallTextField(
                                 controller: _passwordController,
                                 labelText: 'Password',
                                 obscureText: _obscurePassword,
-                                toggleObscureText: () {
+                                onIconPressed: () {
                                   setState(() {
                                     _obscurePassword = !_obscurePassword;
                                   });
                                 },
+                                icon: _obscurePassword
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
                               ),
-                              const SizedBox(height: 16),
-                              _buildPasswordTextField(
+                              const SizedBox(height: 20),
+                              _buildSmallTextField(
                                 controller: _confirmPasswordController,
                                 labelText: 'Confirm Password',
                                 obscureText: _obscureConfirmPassword,
-                                toggleObscureText: () {
+                                onIconPressed: () {
                                   setState(() {
                                     _obscureConfirmPassword =
                                         !_obscureConfirmPassword;
                                   });
                                 },
+                                icon: _obscureConfirmPassword
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
                               ),
-                              const SizedBox(height: 16),
-                              _buildTextField(
+                              const SizedBox(height: 20),
+                              _buildSmallTextField(
                                 controller: _phoneNumberController,
                                 labelText: 'Phone Number',
                               ),
-                              const SizedBox(height: 16),
-                              const Text(
+                              const SizedBox(height: 20),
+                              Text(
                                 'CLICK HERE TO READ TERMS AND CONDITIONS',
-                                style: TextStyle(
-                                  color: Color(0xFF004D40),
-                                  fontWeight: FontWeight.bold,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: const TextStyle(
+                                    color: Color(0xFF004D40),
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -344,35 +358,27 @@ class EmailClientState extends State<EmailClient> {
                                   width: double.infinity,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      final firstName =
-                                          _firstNameController.text;
-                                      final lastName = _lastNameController.text;
-                                      final email = _emailController.text;
-                                      final password = _passwordController.text;
-                                      final confirmPassword =
-                                          _confirmPasswordController.text;
-                                      final phoneNumber =
-                                          _phoneNumberController.text;
+                                      if (_validateInputs(context)) {
+                                        final firstName =
+                                            _firstNameController.text;
+                                        final lastName =
+                                            _lastNameController.text;
+                                        final email = _emailController.text;
+                                        final password =
+                                            _passwordController.text;
+                                        final phoneNumber =
+                                            _phoneNumberController.text;
 
-                                      if (password != confirmPassword) {
-                                        AnimatedSnackBar.rectangle('Warning',
-                                                'Passwords Do Not Match',
-                                                type: AnimatedSnackBarType
-                                                    .warning)
-                                            .show(context);
-
-                                        return;
+                                        context.read<AuthBloc>().add(
+                                              RegisterSubmitted(
+                                                firstName: firstName,
+                                                lastName: lastName,
+                                                email: email,
+                                                password: password,
+                                                phoneNumber: phoneNumber,
+                                              ),
+                                            );
                                       }
-
-                                      context.read<AuthBloc>().add(
-                                            RegisterSubmitted(
-                                              firstName: firstName,
-                                              lastName: lastName,
-                                              email: email,
-                                              password: password,
-                                              phoneNumber: phoneNumber,
-                                            ),
-                                          );
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFF004D40),
@@ -380,7 +386,7 @@ class EmailClientState extends State<EmailClient> {
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 16),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(0),
                                       ),
                                       textStyle: const TextStyle(
                                         fontSize: 16,
@@ -392,28 +398,66 @@ class EmailClientState extends State<EmailClient> {
                                     child: const Text('SIGN UP'),
                                   ),
                                 ),
-                              const SizedBox(height: 40),
+                              const SizedBox(height: 50),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  _buildSocialLoginButton(
+                                  ElevatedButton.icon(
                                     onPressed: () {
                                       context
                                           .read<AuthBloc>()
                                           .add(GoogleLogin());
                                     },
-                                    label: 'Google account',
-                                    assetPath: 'assets/icons/google.png',
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: Colors.black,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 12),
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(0)),
+                                        side: BorderSide(color: Colors.grey),
+                                      ),
+                                      textStyle: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    icon: Image.asset(
+                                      'assets/icons/google.png',
+                                      height: 30,
+                                      width: 30,
+                                    ),
+                                    label: const Text('Google account'),
                                   ),
                                   const SizedBox(width: 16),
-                                  _buildSocialLoginButton(
+                                  ElevatedButton.icon(
                                     onPressed: () {
                                       context
                                           .read<AuthBloc>()
                                           .add(FacebookLogin());
                                     },
-                                    label: 'Facebook account',
-                                    assetPath: 'assets/icons/facebook.png',
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: Colors.black,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 12),
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(0)),
+                                        side: BorderSide(color: Colors.grey),
+                                      ),
+                                      textStyle: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    icon: Image.asset(
+                                      'assets/icons/facebook.png',
+                                      height: 30,
+                                      width: 30,
+                                    ),
+                                    label: const Text('Facebook account'),
                                   ),
                                 ],
                               ),
@@ -457,111 +501,95 @@ class EmailClientState extends State<EmailClient> {
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String labelText,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            blurRadius: 10,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(25.0)),
-          ),
-          labelText: labelText,
-          filled: true,
-          fillColor: Colors.white,
-        ),
-      ),
-    );
+  bool _validateInputs(BuildContext context) {
+    final firstName = _firstNameController.text;
+    final lastName = _lastNameController.text;
+    final email = _emailController.text;
+    final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+    final phoneNumber = _phoneNumberController.text;
+
+    if (!RegExp(r'^[a-zA-Z]+$').hasMatch(firstName)) {
+      _showWarning(context, 'Please enter a valid first name');
+      return false;
+    }
+
+    if (!RegExp(r'^[a-zA-Z]+$').hasMatch(lastName)) {
+      _showWarning(context, 'Please enter a valid last name');
+      return false;
+    }
+
+    if (!RegExp(r'^[a-zA-Z0-9._%+-]+@gmail\.com$').hasMatch(email)) {
+      _showWarning(context, 'Please enter a valid @gmail.com email address');
+      return false;
+    }
+
+    if (password.length < 8 ||
+        !RegExp(r'[A-Z]').hasMatch(password) ||
+        !RegExp(r'[a-z]').hasMatch(password) ||
+        !RegExp(r'[0-9]').hasMatch(password) ||
+        !RegExp(r'[!@#\$&*~]').hasMatch(password)) {
+      _showWarning(
+          context,
+          'Password must be at least 8 characters long, '
+          'include an uppercase letter, a lowercase letter, a number, '
+          'and a special character');
+      return false;
+    }
+
+    if (password != confirmPassword) {
+      _showWarning(context, 'Passwords do not match');
+      return false;
+    }
+
+    if (!RegExp(r'^\+?1?\d{9,15}$').hasMatch(phoneNumber)) {
+      _showWarning(context, 'Please enter a valid phone number');
+      return false;
+    }
+
+    if (!_isSwitched) {
+      _showWarning(context, 'You must agree to the terms and conditions');
+      return false;
+    }
+
+    return true;
   }
 
-  Widget _buildPasswordTextField({
+  void _showWarning(BuildContext context, String message) {
+    AnimatedSnackBar.rectangle('Warning', message,
+            type: AnimatedSnackBarType.warning)
+        .show(context);
+  }
+
+  Widget _buildSmallTextField({
     required TextEditingController controller,
     required String labelText,
-    required bool obscureText,
-    required VoidCallback toggleObscureText,
+    bool obscureText = false,
+    VoidCallback? onIconPressed,
+    IconData? icon,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
+    return SizedBox(
+      height: 40, // Adjust the height of the TextField
       child: TextField(
         controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(
+          isDense: true, // Reduces the internal height
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(25.0)),
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
           ),
           labelText: labelText,
           filled: true,
           fillColor: Colors.white,
-          suffixIcon: IconButton(
-            icon: Icon(
-              obscureText ? Icons.visibility : Icons.visibility_off,
-            ),
-            onPressed: toggleObscureText,
-          ),
+          suffixIcon: icon != null
+              ? IconButton(
+                  icon: Icon(icon),
+                  onPressed: onIconPressed,
+                )
+              : null,
         ),
-      ),
-    );
-  }
-
-  Widget _buildSocialLoginButton({
-    required VoidCallback onPressed,
-    required String label,
-    required String assetPath,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: ElevatedButton.icon(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(0)),
-            side: BorderSide(color: Colors.grey),
-          ),
-          textStyle: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-          ),
-          shadowColor: Colors.grey.withOpacity(0.5),
-          elevation: 8,
-        ),
-        icon: Image.asset(
-          assetPath,
-          height: 30,
-          width: 30,
-        ),
-        label: Text(label),
       ),
     );
   }

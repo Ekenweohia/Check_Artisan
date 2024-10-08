@@ -1,23 +1,23 @@
-import 'package:check_artisan/RegistrationClient/register_client.dart';
+import 'package:check_artisan/RegistrationArtisan/register_artisan.dart';
+import 'package:check_artisan/loginsignupclient/splashartisan2.dart';
 import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
-import 'package:check_artisan/loginsignupclient/splash_2.dart';
 
-class Splash1 extends StatefulWidget {
-  const Splash1({Key? key}) : super(key: key);
+class SplashArtisan1 extends StatefulWidget {
+  const SplashArtisan1({Key? key}) : super(key: key);
 
   @override
-  Splash1State createState() => Splash1State();
+  SplashArtisan1State createState() => SplashArtisan1State();
 }
 
-class Splash1State extends State<Splash1> {
+class SplashArtisan1State extends State<SplashArtisan1> {
   @override
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 5), () {
       CheckartisanNavigator.pushReplacement(
         context,
-        const Splash2(),
+        const SplashArtisan2(),
       );
     });
   }
@@ -47,7 +47,7 @@ class Splash1State extends State<Splash1> {
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    'Quickly and effortlessly locate professionals to meet your domestic requirements.',
+                    'Do you possess a skill? Offer services and broaden your clientele.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: 'Montserrat-Light.ttf',
@@ -58,7 +58,6 @@ class Splash1State extends State<Splash1> {
                   ),
                 ),
                 const Spacer(),
-                // White indicators
                 const Padding(
                   padding: EdgeInsets.only(bottom: 32.0),
                   child: Row(
@@ -81,7 +80,6 @@ class Splash1State extends State<Splash1> {
                     ],
                   ),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.only(bottom: 32.0),
                   child: ElevatedButton(
@@ -98,7 +96,7 @@ class Splash1State extends State<Splash1> {
                     onPressed: () {
                       CheckartisanNavigator.pushReplacement(
                         context,
-                        const RegisterClient(),
+                        const RegisterArtisan(),
                       );
                     },
                     child: const Text(
@@ -106,7 +104,7 @@ class Splash1State extends State<Splash1> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF2C6B58), // Text color
+                        color: Color(0xFF2C6B58),
                       ),
                     ),
                   ),

@@ -1,8 +1,9 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'package:check_artisan/circular_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 abstract class EmailConfirmationArtisanEvent extends Equatable {
   const EmailConfirmationArtisanEvent();
@@ -67,28 +68,20 @@ class EmailConfirmationBloc
 
     try {
       if (useApi) {
-        final response = await http.post(
-          Uri.parse(''), // API URL for sending email confirmation
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(<String, String>{
-            'email': event.email,
-          }),
-        );
+        final response = await _sendRequest(event.email);
 
         if (response.statusCode == 200) {
           emit(EmailConfirmationSuccess());
         } else {
-          final error = jsonDecode(response.body)['error'];
-          emit(EmailConfirmationFailure(error));
+          emit(EmailConfirmationFailure(
+              _getErrorMessage(response.statusCode, response.reasonPhrase)));
         }
       } else {
-        await Future.delayed(const Duration(seconds: 1));
+        await Future.delayed(const Duration(seconds: 3));
         emit(EmailConfirmationSuccess());
       }
-    } catch (e) {
-      emit(EmailConfirmationFailure(e.toString()));
+    } catch (_) {
+      emit(const EmailConfirmationFailure('Check your internet connection'));
     }
   }
 
@@ -98,28 +91,37 @@ class EmailConfirmationBloc
 
     try {
       if (useApi) {
-        final response = await http.post(
-          Uri.parse(''), // API URL for resending email confirmation
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(<String, String>{
-            'email': event.email,
-          }),
-        );
+        final response = await _sendRequest(event.email);
 
         if (response.statusCode == 200) {
           emit(EmailConfirmationSuccess());
         } else {
-          final error = jsonDecode(response.body)['error'];
-          emit(EmailConfirmationFailure(error));
+          emit(EmailConfirmationFailure(
+              _getErrorMessage(response.statusCode, response.reasonPhrase)));
         }
       } else {
         await Future.delayed(const Duration(seconds: 1));
         emit(EmailConfirmationSuccess());
       }
-    } catch (e) {
-      emit(EmailConfirmationFailure(e.toString()));
+    } catch (_) {
+      emit(const EmailConfirmationFailure('Check your internet connection'));
+    }
+  }
+
+  Future<http.Response> _sendRequest(String email) {
+    return http.get(Uri.parse('https://checkartisan.com/api/startup/$email'));
+  }
+
+  String _getErrorMessage(int statusCode, String? reasonPhrase) {
+    switch (statusCode) {
+      case 500:
+        return reasonPhrase ?? 'Internal Server Error';
+      case 404:
+        return reasonPhrase ?? 'Not Found';
+      case 401:
+        return reasonPhrase ?? 'Unauthorized';
+      default:
+        return reasonPhrase ?? 'Unknown error';
     }
   }
 }
@@ -135,16 +137,16 @@ class EmailConfirmationArtisan extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: BlocProvider(
-        create: (context) => EmailConfirmationBloc(
-            useApi: false), // will Change to true when API is ready
+        create: (context) => EmailConfirmationBloc(useApi: true)
+          ..add(SendEmailConfirmation(email)),
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                  'assets/icons/confirmation.png',
+                const Image(
+                  image: AssetImage('assets/icons/confirmation.png'),
                   width: 300,
                   height: 300,
                 ),
@@ -190,20 +192,22 @@ class EmailConfirmationArtisan extends StatelessWidget {
                     EmailConfirmationArtisanState>(
                   listener: (context, state) {
                     if (state is EmailConfirmationSuccess) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Confirmation email sent!'),
-                        ),
-                      );
+                      AnimatedSnackBar.rectangle(
+                        'Success',
+                        'Confirmation Email Sent',
+                        type: AnimatedSnackBarType.success,
+                      ).show(context);
                     } else if (state is EmailConfirmationFailure) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error: ${state.error}')),
-                      );
+                      AnimatedSnackBar.rectangle(
+                        'Error',
+                        'An Error Occurred: ${state.error}',
+                        type: AnimatedSnackBarType.error,
+                      ).show(context);
                     }
                   },
                   builder: (context, state) {
                     if (state is EmailConfirmationLoading) {
-                      return const CircularProgressIndicator();
+                      return const CircularLoadingWidget();
                     }
                     return TextButton(
                       onPressed: () {

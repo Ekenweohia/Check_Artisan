@@ -1,4 +1,5 @@
 import 'package:check_artisan/Home_Client/homeclient.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:check_artisan/profile/notification.dart';
 import 'package:flutter/material.dart';
 
@@ -139,10 +140,8 @@ class ReviewScreenClientState extends State<ReviewScreenClient> {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HomeClient()),
-                  );
+                  CheckartisanNavigator.pushReplacement(
+                      context, const HomeClient());
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2C6B58),

@@ -1,23 +1,22 @@
-import 'package:check_artisan/RegistrationClient/register_client.dart';
+import 'package:check_artisan/RegistrationArtisan/register_artisan.dart';
 import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
-import 'package:check_artisan/loginsignupclient/splash_2.dart';
 
-class Splash1 extends StatefulWidget {
-  const Splash1({Key? key}) : super(key: key);
+class SplashArtisan3 extends StatefulWidget {
+  const SplashArtisan3({Key? key}) : super(key: key);
 
   @override
-  Splash1State createState() => Splash1State();
+  SplashArtisan3State createState() => SplashArtisan3State();
 }
 
-class Splash1State extends State<Splash1> {
+class SplashArtisan3State extends State<SplashArtisan3> {
   @override
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 5), () {
       CheckartisanNavigator.pushReplacement(
         context,
-        const Splash2(),
+        const RegisterArtisan(),
       );
     });
   }
@@ -30,7 +29,7 @@ class Splash1State extends State<Splash1> {
           // Background image
           Positioned.fill(
             child: Image.asset(
-              'assets/icons/Splash 11.png',
+              'assets/icons/Splash 11.png', // Change this to your actual background image path
               fit: BoxFit.cover,
             ),
           ),
@@ -47,7 +46,7 @@ class Splash1State extends State<Splash1> {
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    'Quickly and effortlessly locate professionals to meet your domestic requirements.',
+                    'Deliver your services promptly or by appointment',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: 'Montserrat-Light.ttf',
@@ -66,39 +65,41 @@ class Splash1State extends State<Splash1> {
                     children: [
                       CircleAvatar(
                         radius: 5,
-                        backgroundColor: Colors.white,
+                        backgroundColor: Colors.grey, // White indicator
                       ),
                       SizedBox(width: 8),
                       CircleAvatar(
                         radius: 5,
-                        backgroundColor: Colors.grey,
+                        backgroundColor: Colors.grey, // White indicator
                       ),
                       SizedBox(width: 8),
                       CircleAvatar(
                         radius: 5,
-                        backgroundColor: Colors.grey,
+                        backgroundColor: Colors.white, // White indicator
                       ),
                     ],
                   ),
                 ),
-
+                // Sign Up button
                 Padding(
                   padding: const EdgeInsets.only(bottom: 32.0),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
+                      backgroundColor: Colors.white, // Button background color
                       padding: const EdgeInsets.symmetric(
                           horizontal: 32, vertical: 12),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0),
+                        borderRadius:
+                            BorderRadius.circular(0), // Rounded corners
                       ),
-                      side:
-                          const BorderSide(color: Color(0xFF2C6B58), width: 1),
+                      side: const BorderSide(
+                          color: Color(0xFF2C6B58),
+                          width: 1), // Optional border
                     ),
                     onPressed: () {
                       CheckartisanNavigator.pushReplacement(
                         context,
-                        const RegisterClient(),
+                        const RegisterArtisan(),
                       );
                     },
                     child: const Text(

@@ -8,11 +8,21 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:sms_autofill/sms_autofill.dart';
 
+// Event Classes
 abstract class OTPVerificationArtisanEvent extends Equatable {
   const OTPVerificationArtisanEvent();
 
   @override
   List<Object> get props => [];
+}
+
+class RequestOTP extends OTPVerificationArtisanEvent {
+  final String phoneNumber;
+
+  const RequestOTP(this.phoneNumber);
+
+  @override
+  List<Object> get props => [phoneNumber];
 }
 
 class VerifyOTP extends OTPVerificationArtisanEvent {
@@ -34,6 +44,7 @@ class ResendOTP extends OTPVerificationArtisanEvent {
   List<Object> get props => [phoneNumber];
 }
 
+// State Classes
 abstract class OTPVerificationArtisanState extends Equatable {
   const OTPVerificationArtisanState();
 
@@ -58,13 +69,46 @@ class OTPVerificationFailure extends OTPVerificationArtisanState {
 
 class OTPResent extends OTPVerificationArtisanState {}
 
+// Bloc Class
 class OTPVerificationBloc
     extends Bloc<OTPVerificationArtisanEvent, OTPVerificationArtisanState> {
   final bool useApi;
 
   OTPVerificationBloc({this.useApi = false}) : super(OTPVerificationInitial()) {
+    on<RequestOTP>(_onRequestOTP);
     on<VerifyOTP>(_onVerifyOTP);
     on<ResendOTP>(_onResendOTP);
+  }
+
+  Future<void> _onRequestOTP(
+      RequestOTP event, Emitter<OTPVerificationArtisanState> emit) async {
+    emit(OTPVerificationLoading());
+
+    try {
+      if (useApi) {
+        final response = await http.post(
+          Uri.parse('https://your-api-url/request-otp'), // Your API endpoint
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(<String, String>{
+            'phoneNumber': event.phoneNumber,
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          emit(OTPVerificationSuccess());
+        } else {
+          final error = jsonDecode(response.body)['error'] ?? 'Unknown Error';
+          emit(OTPVerificationFailure(error));
+        }
+      } else {
+        await Future.delayed(const Duration(seconds: 1));
+        emit(OTPVerificationSuccess());
+      }
+    } catch (e) {
+      emit(OTPVerificationFailure(e.toString()));
+    }
   }
 
   Future<void> _onVerifyOTP(
@@ -74,7 +118,8 @@ class OTPVerificationBloc
     try {
       if (useApi) {
         final response = await http.post(
-          Uri.parse(''), // API TO SEND OTP
+          Uri.parse(
+              'https://your-api-url/verify-otp'), // Your OTP verification API
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -87,7 +132,7 @@ class OTPVerificationBloc
         if (response.statusCode == 200) {
           emit(OTPVerificationSuccess());
         } else {
-          final error = jsonDecode(response.body)['error'];
+          final error = jsonDecode(response.body)['error'] ?? 'Unknown Error';
           emit(OTPVerificationFailure(error));
         }
       } else {
@@ -106,7 +151,8 @@ class OTPVerificationBloc
     try {
       if (useApi) {
         final response = await http.post(
-          Uri.parse(''), // API TO RESEND OTP
+          Uri.parse(
+              'https://checkartisan.com/api/startup/phone/validate/${event.phoneNumber}'), // API TO RESEND OTP
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -118,7 +164,7 @@ class OTPVerificationBloc
         if (response.statusCode == 200) {
           emit(OTPResent());
         } else {
-          final error = jsonDecode(response.body)['error'];
+          final error = jsonDecode(response.body)['error'] ?? 'Unknown Error';
           emit(OTPVerificationFailure(error));
         }
       } else {
@@ -131,6 +177,7 @@ class OTPVerificationBloc
   }
 }
 
+// UI Screen Class
 class OTPVerificationArtisanScreen extends StatefulWidget {
   final String phoneNumber;
 
@@ -153,6 +200,9 @@ class OTPVerificationArtisanScreenState
   void initState() {
     super.initState();
     listenForCode();
+
+    // Dispatch the RequestOTP event when the screen is initialized
+    context.read<OTPVerificationBloc>().add(RequestOTP(widget.phoneNumber));
   }
 
   @override
@@ -233,7 +283,7 @@ class OTPVerificationArtisanScreenState
                                     context, const CompleteProfile());
                               } else if (state is OTPVerificationFailure) {
                                 AnimatedSnackBar.rectangle('Error',
-                                        'Sorry An error Has Occured Please Check Your Internet Connection',
+                                        'Sorry, an error occurred. Please check your internet connection.',
                                         type: AnimatedSnackBarType.error)
                                     .show(context);
                               } else if (state is OTPResent) {

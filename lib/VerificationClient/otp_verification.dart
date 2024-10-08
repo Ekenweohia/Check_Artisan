@@ -1,19 +1,27 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:check_artisan/Home_Client/homeclient.dart';
 import 'package:check_artisan/circular_loading.dart';
-import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:sms_autofill/sms_autofill.dart';
-import 'package:animated_snack_bar/animated_snack_bar.dart';
 
 abstract class OTPVerificationEvent extends Equatable {
   const OTPVerificationEvent();
 
   @override
   List<Object> get props => [];
+}
+
+class RequestOTP extends OTPVerificationEvent {
+  final String phoneNumber;
+
+  const RequestOTP(this.phoneNumber);
+
+  @override
+  List<Object> get props => [phoneNumber];
 }
 
 class VerifyOTP extends OTPVerificationEvent {
@@ -64,8 +72,38 @@ class OTPVerificationBloc
   final bool useApi;
 
   OTPVerificationBloc({this.useApi = false}) : super(OTPVerificationInitial()) {
+    on<RequestOTP>(_onRequestOTP);
     on<VerifyOTP>(_onVerifyOTP);
     on<ResendOTP>(_onResendOTP);
+  }
+
+  Future<void> _onRequestOTP(
+      RequestOTP event, Emitter<OTPVerificationState> emit) async {
+    emit(OTPVerificationLoading());
+
+    try {
+      if (useApi) {
+        final response = await http.post(
+          Uri.parse(
+              'https://checkartisan.com/api/startup/phone/validate/${event.phoneNumber}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          emit(OTPResent());
+        } else {
+          final error = jsonDecode(response.body)['error'] ?? 'Unknown error';
+          emit(OTPVerificationFailure(error));
+        }
+      } else {
+        await Future.delayed(const Duration(seconds: 1));
+        emit(OTPResent());
+      }
+    } catch (e) {
+      emit(OTPVerificationFailure(e.toString()));
+    }
   }
 
   Future<void> _onVerifyOTP(
@@ -75,12 +113,12 @@ class OTPVerificationBloc
     try {
       if (useApi) {
         final response = await http.post(
-          Uri.parse(''), // API TO SEND OTP
+          Uri.parse(
+              'https://checkartisan.com/api/startup/phone/validate/${event.phoneNumber}'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
           body: jsonEncode(<String, String>{
-            'phoneNumber': event.phoneNumber,
             'otp': event.otp,
           }),
         );
@@ -88,7 +126,7 @@ class OTPVerificationBloc
         if (response.statusCode == 200) {
           emit(OTPVerificationSuccess());
         } else {
-          final error = jsonDecode(response.body)['error'];
+          final error = jsonDecode(response.body)['error'] ?? 'Unknown error';
           emit(OTPVerificationFailure(error));
         }
       } else {
@@ -107,23 +145,20 @@ class OTPVerificationBloc
     try {
       if (useApi) {
         final response = await http.post(
-          Uri.parse(''), // API TO RESEND OTP
+          Uri.parse(
+              'https://checkartisan.com/api/startup/phone/validate/${event.phoneNumber}'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
-          body: jsonEncode(<String, String>{
-            'phoneNumber': event.phoneNumber,
-          }),
         );
 
         if (response.statusCode == 200) {
           emit(OTPResent());
         } else {
-          final error = jsonDecode(response.body)['error'];
+          final error = jsonDecode(response.body)['error'] ?? 'Unknown error';
           emit(OTPVerificationFailure(error));
         }
       } else {
-        // Placeholder response
         await Future.delayed(const Duration(seconds: 3));
         emit(OTPResent());
       }
@@ -153,12 +188,16 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
   @override
   void initState() {
     super.initState();
-    listenForCode();
+    listenForCode(); // Start listening for OTP automatically
   }
 
   @override
   void dispose() {
-    cancel();
+    cancel(); // Stop listening for OTP
+    _otpController1.dispose();
+    _otpController2.dispose();
+    _otpController3.dispose();
+    _otpController4.dispose();
     super.dispose();
   }
 
@@ -177,8 +216,7 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
     return Scaffold(
       backgroundColor: Colors.white,
       body: BlocProvider(
-        create: (context) => OTPVerificationBloc(
-            useApi: false), // Change to true when API is ready
+        create: (context) => OTPVerificationBloc(useApi: true),
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -230,18 +268,29 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
                               OTPVerificationState>(
                             listener: (context, state) {
                               if (state is OTPVerificationSuccess) {
-                                CheckartisanNavigator.push(
-                                    context, const HomeClient());
+                                AnimatedSnackBar.rectangle(
+                                  'Success',
+                                  'OTP Verified Successfully',
+                                  type: AnimatedSnackBarType.success,
+                                ).show(context);
+                                // Navigate to the HomeClient screen
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const HomeClient()));
                               } else if (state is OTPVerificationFailure) {
                                 AnimatedSnackBar.rectangle(
-                                        "Failed", "Something Went Wrong",
-                                        type: AnimatedSnackBarType.error)
-                                    .show(context);
+                                  'Error',
+                                  'Verification Failed: ${state.error}',
+                                  type: AnimatedSnackBarType.error,
+                                ).show(context);
                               } else if (state is OTPResent) {
                                 AnimatedSnackBar.rectangle(
-                                        "Success", "OTP Resent",
-                                        type: AnimatedSnackBarType.success)
-                                    .show(context);
+                                  'Success',
+                                  'OTP Resent Successfully',
+                                  type: AnimatedSnackBarType.success,
+                                ).show(context);
                               }
                             },
                             builder: (context, state) {
@@ -285,12 +334,11 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
                                             vertical: 20),
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(0),
+                                              BorderRadius.circular(30),
                                         ),
                                         textStyle: const TextStyle(
                                             fontSize: 15,
-                                            fontWeight: FontWeight.w600,
-                                            fontFamily: 'Montserrat-Light.ttf'),
+                                            fontWeight: FontWeight.w600),
                                       ),
                                       child: const Text('VERIFY'),
                                     ),

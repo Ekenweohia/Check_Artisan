@@ -2,7 +2,6 @@ import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:check_artisan/Home_Client/homeclient.dart';
 import 'package:check_artisan/RegistrationClient/register_client.dart';
 import 'package:check_artisan/VerificationClient/password_reset.dart';
-import 'package:check_artisan/circular_loading.dart';
 import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,7 +74,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       if (useApi) {
         final response = await http.post(
-          Uri.parse(''), // API URL for login
+          Uri.parse(''),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -108,10 +107,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (account != null) {
         emit(AuthSuccess());
       } else {
-        emit(const AuthFailure('Google sign-in failed'));
+        emit(const AuthFailure('Google sign-in was cancelled.'));
       }
     } catch (e) {
-      emit(AuthFailure(e.toString()));
+      emit(AuthFailure('Google sign-in failed: $e'));
     }
   }
 
@@ -123,10 +122,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (result.status == LoginStatus.success) {
         emit(AuthSuccess());
       } else {
-        emit(const AuthFailure('Facebook sign-in failed'));
+        emit(AuthFailure('Facebook sign-in failed: ${result.message}'));
       }
     } catch (e) {
-      emit(AuthFailure(e.toString()));
+      emit(AuthFailure('Facebook sign-in failed: $e'));
     }
   }
 }
@@ -165,11 +164,11 @@ class LoginClientState extends State<LoginClient> {
               ),
               Column(
                 children: [
-                  SizedBox(height: constraints.maxHeight * 0.15),
+                  SizedBox(height: constraints.maxHeight * 0.10),
                   Center(
                     child: Image.asset(
                       'assets/icons/logo checkartisan 1.png',
-                      width: constraints.maxWidth * 0.75,
+                      width: constraints.maxWidth * 0.5,
                     ),
                   ),
                   SizedBox(height: constraints.maxHeight * 0.10),
@@ -191,8 +190,8 @@ class LoginClientState extends State<LoginClient> {
                                 CheckartisanNavigator.push(
                                     context, const HomeClient());
                               } else if (state is AuthFailure) {
-                                AnimatedSnackBar.rectangle('Error',
-                                        'Check Your Internet Connection',
+                                AnimatedSnackBar.rectangle(
+                                        'Error', 'Check Internet Connection',
                                         type: AnimatedSnackBarType.error)
                                     .show(context);
                               }
@@ -210,76 +209,28 @@ class LoginClientState extends State<LoginClient> {
                                     ),
                                   ),
                                   const SizedBox(height: 16),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.5),
-                                          spreadRadius: 2,
-                                          blurRadius: 5,
-                                          offset: const Offset(0, 10),
-                                        ),
-                                      ],
-                                    ),
-                                    child: TextField(
-                                      controller: _emailOrPhoneController,
-                                      decoration: const InputDecoration(
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(25.0)),
-                                        ),
-                                        labelText: 'Email/Phone Number',
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                      ),
-                                    ),
+                                  _buildSmallTextField(
+                                    controller: _emailOrPhoneController,
+                                    labelText: 'Email/Phone Number',
                                   ),
                                   const SizedBox(height: 16),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.5),
-                                          spreadRadius: 2,
-                                          blurRadius: 5,
-                                          offset: const Offset(0, 10),
-                                        ),
-                                      ],
-                                    ),
-                                    child: TextField(
-                                      controller: _loginPasswordController,
-                                      obscureText: _obscurePassword,
-                                      decoration: InputDecoration(
-                                        border: const OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(25.0)),
-                                        ),
-                                        labelText: 'Password',
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        suffixIcon: IconButton(
-                                          icon: Icon(
-                                            _obscurePassword
-                                                ? Icons.visibility
-                                                : Icons.visibility_off,
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              _obscurePassword =
-                                                  !_obscurePassword;
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    ),
+                                  _buildPasswordTextField(
+                                    controller: _loginPasswordController,
+                                    labelText: 'Password',
+                                    obscureText: _obscurePassword,
+                                    toggleObscureText: () {
+                                      setState(() {
+                                        _obscurePassword = !_obscurePassword;
+                                      });
+                                    },
                                   ),
                                   const SizedBox(height: 16),
                                   Align(
                                     alignment: Alignment.centerRight,
                                     child: TextButton(
                                       onPressed: () {
-                                        CheckartisanNavigator.push(
-                                            context, const PasswordResetApp());
+                                        CheckartisanNavigator.push(context,
+                                            const PasswordResetScreen());
                                       },
                                       child: const Text(
                                         'Forgot Password?',
@@ -290,7 +241,7 @@ class LoginClientState extends State<LoginClient> {
                                   ),
                                   const SizedBox(height: 16),
                                   if (state is AuthLoading)
-                                    const CircularLoadingWidget()
+                                    const CircularProgressIndicator()
                                   else
                                     SizedBox(
                                       width: double.infinity,
@@ -328,76 +279,38 @@ class LoginClientState extends State<LoginClient> {
                                         child: const Text('LOGIN'),
                                       ),
                                     ),
-                                  const SizedBox(height: 50),
+                                  const SizedBox(height: 20),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      ElevatedButton.icon(
-                                        onPressed: () {
-                                          context
-                                              .read<AuthBloc>()
-                                              .add(GoogleLogin());
+                                      BlocBuilder<AuthBloc, AuthState>(
+                                        builder: (context, state) {
+                                          return _buildSocialLoginButton(
+                                            onPressed: () {
+                                              context
+                                                  .read<AuthBloc>()
+                                                  .add(GoogleLogin());
+                                            },
+                                            label: 'Google account',
+                                            assetPath:
+                                                'assets/icons/google.png',
+                                          );
                                         },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.white,
-                                          foregroundColor: Colors.black,
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 12),
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(0),
-                                            ),
-                                            side:
-                                                BorderSide(color: Colors.grey),
-                                          ),
-                                          textStyle: const TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                          shadowColor:
-                                              Colors.grey.withOpacity(0.5),
-                                          elevation: 5,
-                                        ),
-                                        icon: Image.asset(
-                                          'assets/icons/google.png',
-                                          height: 30,
-                                          width: 30,
-                                        ),
-                                        label: const Text('Google account'),
                                       ),
                                       const SizedBox(width: 16),
-                                      ElevatedButton.icon(
-                                        onPressed: () {
-                                          context
-                                              .read<AuthBloc>()
-                                              .add(FacebookLogin());
+                                      BlocBuilder<AuthBloc, AuthState>(
+                                        builder: (context, state) {
+                                          return _buildSocialLoginButton(
+                                            onPressed: () {
+                                              context
+                                                  .read<AuthBloc>()
+                                                  .add(FacebookLogin());
+                                            },
+                                            label: 'Facebook account',
+                                            assetPath:
+                                                'assets/icons/facebook.png',
+                                          );
                                         },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.white,
-                                          foregroundColor: Colors.black,
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 12),
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(0),
-                                            ),
-                                            side:
-                                                BorderSide(color: Colors.grey),
-                                          ),
-                                          textStyle: const TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                          shadowColor:
-                                              Colors.grey.withOpacity(0.5),
-                                          elevation: 5,
-                                        ),
-                                        icon: Image.asset(
-                                          'assets/icons/facebook.png',
-                                          height: 30,
-                                          width: 30,
-                                        ),
-                                        label: const Text('Facebook account'),
                                       ),
                                     ],
                                   ),
@@ -419,7 +332,8 @@ class LoginClientState extends State<LoginClient> {
                                           TextSpan(
                                             text: 'SIGN UP',
                                             style: TextStyle(
-                                              color: Color(0xFF004D40),
+                                              color: Color(
+                                                  0xFF004D40), // Green color for this part
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -440,6 +354,93 @@ class LoginClientState extends State<LoginClient> {
             ],
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildSmallTextField({
+    required TextEditingController controller,
+    required String labelText,
+  }) {
+    return SizedBox(
+      height: 45, // Small height for TextField
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          isDense: true, // Makes the TextField more compact
+          contentPadding: const EdgeInsets.symmetric(
+              vertical: 10, horizontal: 12), // Adjust padding
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12.0)),
+          ),
+          labelText: labelText,
+          filled: true,
+          fillColor: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPasswordTextField({
+    required TextEditingController controller,
+    required String labelText,
+    required bool obscureText,
+    required VoidCallback toggleObscureText,
+  }) {
+    return SizedBox(
+      height: 45, // Small height for TextField
+      child: TextField(
+        controller: controller,
+        obscureText: obscureText,
+        decoration: InputDecoration(
+          isDense: true, // Makes the TextField more compact
+          contentPadding: const EdgeInsets.symmetric(
+              vertical: 10, horizontal: 12), // Adjust padding
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12.0)),
+          ),
+          labelText: labelText,
+          filled: true,
+          fillColor: Colors.white,
+          suffixIcon: IconButton(
+            icon: Icon(
+              obscureText ? Icons.visibility : Icons.visibility_off,
+            ),
+            onPressed: toggleObscureText,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSocialLoginButton({
+    required VoidCallback onPressed,
+    required String label,
+    required String assetPath,
+  }) {
+    return SizedBox(
+      height: 45, // Ensure consistent height for social login buttons
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(0)),
+            side: BorderSide(color: Colors.grey),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        icon: Image.asset(
+          assetPath,
+          height: 30,
+          width: 30,
+        ),
+        label: Text(label),
       ),
     );
   }

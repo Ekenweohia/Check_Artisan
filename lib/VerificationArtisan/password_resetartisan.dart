@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io';
 
 abstract class PasswordResetArtisanEvent extends Equatable {
   const PasswordResetArtisanEvent();
@@ -59,7 +60,8 @@ class PasswordResetBloc
     try {
       if (useApi) {
         final response = await http.post(
-          Uri.parse(''), // API for password reset
+          Uri.parse(
+              'https://checkartisan.com/api/forgot-password'), // API for password reset
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -69,44 +71,36 @@ class PasswordResetBloc
         );
 
         if (response.statusCode == 200) {
-          emit(PasswordResetSuccess());
+          final responseBody = jsonDecode(response.body);
+          if (responseBody['data'] == 'Email sent.') {
+            emit(PasswordResetSuccess());
+          } else {
+            emit(PasswordResetFailure('Unexpected response: ${response.body}'));
+          }
         } else {
-          final error = jsonDecode(response.body)['error'];
+          final error = jsonDecode(response.body)['error'] ?? 'Unknown error';
           emit(PasswordResetFailure(error));
         }
       } else {
         await Future.delayed(const Duration(seconds: 1));
         emit(PasswordResetSuccess());
       }
+    } on SocketException {
+      emit(const PasswordResetFailure('No internet connection'));
     } catch (e) {
-      emit(PasswordResetFailure(e.toString()));
+      emit(PasswordResetFailure('Network request failed: ${e.toString()}'));
     }
   }
 }
 
-class PasswordResetApp extends StatelessWidget {
-  const PasswordResetApp({Key? key}) : super(key: key);
+class PasswordResetAppScreen extends StatefulWidget {
+  const PasswordResetAppScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Password Reset',
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-      ),
-      home: const PasswordResetScreen(),
-    );
-  }
+  PasswordResetAppScreenState createState() => PasswordResetAppScreenState();
 }
 
-class PasswordResetScreen extends StatefulWidget {
-  const PasswordResetScreen({Key? key}) : super(key: key);
-
-  @override
-  PasswordResetScreenState createState() => PasswordResetScreenState();
-}
-
-class PasswordResetScreenState extends State<PasswordResetScreen> {
+class PasswordResetAppScreenState extends State<PasswordResetAppScreen> {
   final TextEditingController _emailPhoneController = TextEditingController();
 
   @override
@@ -115,7 +109,7 @@ class PasswordResetScreenState extends State<PasswordResetScreen> {
       backgroundColor: Colors.white,
       body: BlocProvider(
         create: (context) =>
-            PasswordResetBloc(useApi: false), // change to true when i input API
+            PasswordResetBloc(useApi: false), // change to true when using API
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -164,7 +158,7 @@ class PasswordResetScreenState extends State<PasswordResetScreen> {
                         .show(context);
                   } else if (state is PasswordResetFailure) {
                     AnimatedSnackBar.rectangle('Error',
-                            'Sorry An Error Occured Check Your Internet Connection',
+                            'Sorry An Error Occurred. Check Your Internet Connection',
                             type: AnimatedSnackBarType.error)
                         .show(context);
                   }
@@ -178,9 +172,16 @@ class PasswordResetScreenState extends State<PasswordResetScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         final emailOrPhone = _emailPhoneController.text;
-                        context
-                            .read<PasswordResetBloc>()
-                            .add(SendPasswordResetEmail(emailOrPhone));
+                        if (_validateInput(emailOrPhone)) {
+                          context
+                              .read<PasswordResetBloc>()
+                              .add(SendPasswordResetEmail(emailOrPhone));
+                        } else {
+                          AnimatedSnackBar.rectangle('Invalid Input',
+                                  'Please enter a valid email or phone number',
+                                  type: AnimatedSnackBarType.warning)
+                              .show(context);
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF004D40),
@@ -204,5 +205,12 @@ class PasswordResetScreenState extends State<PasswordResetScreen> {
         ),
       ),
     );
+  }
+
+  bool _validateInput(String input) {
+    final emailRegex =
+        RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    final phoneRegex = RegExp(r'^\+?[1-9]\d{1,14}$');
+    return emailRegex.hasMatch(input) || phoneRegex.hasMatch(input);
   }
 }

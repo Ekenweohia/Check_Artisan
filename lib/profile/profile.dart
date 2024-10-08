@@ -2,9 +2,7 @@ import 'package:check_artisan/RegistrationClient/login_client.dart';
 import 'package:check_artisan/page_navigation.dart';
 import 'package:check_artisan/profile/change_password.dart';
 import 'package:check_artisan/profile/notification.dart';
-import 'package:check_artisan/profile/settings.dart' as profile;
 import 'package:flutter/material.dart';
-import 'package:check_artisan/Home_Client/homeclient.dart';
 import 'package:check_artisan/profile/edit_profile.dart';
 import 'package:check_artisan/profile/info.dart';
 
@@ -18,7 +16,7 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
-          padding: const EdgeInsets.only(top: 8.0),
+          padding: const EdgeInsets.only(top: 13.0),
           child: IconButton(
             icon: const Icon(Icons.arrow_back, color: Color(0xFF004D40)),
             onPressed: () {
@@ -30,7 +28,7 @@ class ProfileScreen extends StatelessWidget {
         centerTitle: true,
         actions: [
           Padding(
-            padding: const EdgeInsets.only(top: 8.0),
+            padding: const EdgeInsets.only(top: 13.0),
             child: IconButton(
               icon: const Icon(Icons.notifications, color: Color(0xFF004D40)),
               onPressed: () {
@@ -69,7 +67,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: screenSize.height * 0.03),
+            SizedBox(height: screenSize.height * 0.05),
             ProfileOption(
               text: 'Edit Profile',
               iconPath: 'assets/Buttons/edit.png',
@@ -111,44 +109,6 @@ class ProfileScreen extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              CheckartisanNavigator.push(context, const HomeClient());
-              break;
-            case 1:
-              // Navigate to Location screen
-              break;
-            case 2:
-              CheckartisanNavigator.push(
-                  context, const profile.SettingsScreen());
-              break;
-            case 3:
-              break;
-          }
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Colors.grey),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.location_on, color: Colors.grey),
-            label: 'Location',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.build, color: Colors.grey),
-            label: 'Settings',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person, color: Color(0xFF004D40)),
-            label: 'Profile',
-          ),
-        ],
-        selectedItemColor: const Color(0xFF004D40),
-        unselectedItemColor: Colors.grey,
-      ),
     );
   }
 }
@@ -170,7 +130,7 @@ class ProfileOption extends StatelessWidget {
     var screenSize = MediaQuery.of(context).size;
 
     return SizedBox(
-      height: screenSize.height * 0.08,
+      height: screenSize.height * 0.065, // Reduced height
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
@@ -179,10 +139,14 @@ class ProfileOption extends StatelessWidget {
         child: ListTile(
           title: Text(
             text,
-            style: TextStyle(fontSize: screenSize.width * 0.04),
+            style: TextStyle(
+                fontSize: screenSize.width * 0.035), // Reduced font size
           ),
-          trailing: Image.asset(iconPath,
-              width: screenSize.width * 0.05, height: screenSize.width * 0.05),
+          trailing: Image.asset(
+            iconPath,
+            width: screenSize.width * 0.045, // Reduced icon width
+            height: screenSize.width * 0.045, // Reduced icon height
+          ),
           onTap: onTap,
         ),
       ),

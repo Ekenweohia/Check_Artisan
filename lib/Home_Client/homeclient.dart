@@ -1,59 +1,144 @@
-import 'package:check_artisan/Artisan_DetailsScreens/artisanlistscreen.dart';
 import 'package:check_artisan/Home_Client/tradetype.dart';
 import 'package:check_artisan/profile/notification.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'package:check_artisan/Artisan_DetailsScreens/artisanlistscreen.dart';
 import 'package:check_artisan/profile/profile.dart';
 import 'package:check_artisan/profile/settings.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_floating_bottom_bar/flutter_floating_bottom_bar.dart';
 
-class HomeClient extends StatelessWidget {
+class HomeClient extends StatefulWidget {
   const HomeClient({Key? key}) : super(key: key);
 
   @override
+  State<HomeClient> createState() => _HomeClientState();
+}
+
+class _HomeClientState extends State<HomeClient>
+    with SingleTickerProviderStateMixin {
+  int currentPage = 0;
+  late TabController tabController;
+
+  final List<Widget> pages = [
+    const HomeClientContent(),
+    const SizedBox(),
+    const SettingsScreen(),
+    const ProfileScreen(),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    tabController = TabController(length: pages.length, vsync: this);
+    tabController.addListener(() {
+      setState(() {
+        currentPage = tabController.index;
+      });
+    });
+  }
+
+  void onTabTapped(int index) {
+    setState(() {
+      currentPage = index;
+      tabController.animateTo(index);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    var colors = [
+      const Color(0xFF2C6B58),
+      const Color(0xFF2C6B58),
+      const Color(0xFF2C6B58),
+      const Color(0xFF2C6B58)
+    ]; // Example color list
+    var selectedColor = const Color(0xFF2C6B58);
+    var unselectedColor = Colors.grey;
+
     return Scaffold(
-      body: const HomeClientContent(),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              break;
-            case 1:
-              //Navigator.push(context, MaterialPageRoute(builder: (context) => const LocationScreen()));
-              break;
-            case 2:
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SettingsScreen()));
-              break;
-            case 3:
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ProfileScreen()));
-              break;
-          }
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Color(0xFF004D40)),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.location_on, color: Colors.grey),
-            label: 'Location',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.build, color: Colors.grey),
-            label: 'Settings',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person, color: Colors.grey),
-            label: 'Profile',
-          ),
-        ],
-        selectedItemColor: const Color(0xFF004D40),
-        unselectedItemColor: Colors.grey,
+      body: SafeArea(
+        child: pages[currentPage],
+      ),
+      bottomNavigationBar: BottomBar(
+        fit: StackFit.expand,
+        child: TabBar(
+          controller: tabController,
+          tabs: [
+            Tab(
+              icon: ImageIcon(
+                const AssetImage("assets/icons/home.png"),
+                color: currentPage == 0 ? selectedColor : unselectedColor,
+              ),
+            ),
+            Tab(
+              icon: ImageIcon(
+                const AssetImage("assets/icons/tools.png"),
+                color: currentPage == 1 ? selectedColor : unselectedColor,
+              ),
+            ),
+            Tab(
+              icon: ImageIcon(
+                const AssetImage("assets/icons/location.png"),
+                color: currentPage == 2 ? selectedColor : unselectedColor,
+              ),
+            ),
+            Tab(
+              icon: ImageIcon(
+                const AssetImage('assets/icons/profile.png'),
+                color: currentPage == 3 ? selectedColor : unselectedColor,
+              ),
+            ),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(500),
+        duration: const Duration(seconds: 1),
+        curve: Curves.decelerate,
+        showIcon: true,
+        width: MediaQuery.of(context).size.width * 0.8,
+        barColor: colors[currentPage].computeLuminance() > 0.5
+            ? Colors.black
+            : Colors.white,
+        start: 2,
+        end: 0,
+        offset: 10,
+        barAlignment: Alignment.bottomCenter,
+        iconHeight: 35,
+        iconWidth: 35,
+        reverse: false,
+        barDecoration: BoxDecoration(
+          color: colors[currentPage],
+          borderRadius: BorderRadius.circular(500),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        iconDecoration: BoxDecoration(
+          color: colors[currentPage],
+          borderRadius: BorderRadius.circular(500),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        hideOnScroll: true,
+        scrollOpposite: false,
+        onBottomBarHidden: () {},
+        onBottomBarShown: () {},
+        body: (context, controller) => TabBarView(
+          controller: tabController,
+          dragStartBehavior: DragStartBehavior.down,
+          physics: const BouncingScrollPhysics(),
+          children: pages,
+        ),
       ),
     );
   }
@@ -73,7 +158,7 @@ class HomeClientContent extends StatelessWidget {
     {"icon": Icons.carpenter, "label": "Carpenter"},
     {"icon": Icons.person, "label": "Barber"},
     {"icon": Icons.car_repair, "label": "Auto Mechanic"},
-    {"icon": Icons.grass, "label": "Gardener"},
+    {"icon": Icons.grass, "label": "Gardener"}, // change to asset images
   ];
 
   @override
@@ -154,34 +239,38 @@ class HomeClientContent extends StatelessWidget {
                 },
               ),
               SizedBox(height: screenHeight * 0.05),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF004D40),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TradeTypeScreen(),
+              Padding(
+                padding: const EdgeInsets.only(
+                    right: 16.0), // Adjust the value as needed
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF004D40),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
                         ),
-                      );
-                    },
-                    child: const Text(
-                      'See More',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const TradeTypeScreen(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'See More',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              )
             ],
           ),
         ),
@@ -206,9 +295,7 @@ class ArtisanCard extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) {
               return ArtisanListScreen(
-                title: '$label List',
-                artisanType: label,
-              );
+                  title: '$label List', artisanType: label);
             },
           ),
         );

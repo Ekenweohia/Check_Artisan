@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'package:check_artisan/loginsignupclient/home_screen.dart';
 import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
-import 'package:check_artisan/loginsignupclient/splash_1.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -31,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen>
     _animationController.repeat(reverse: true);
 
     Timer(const Duration(milliseconds: 10000), () {
-      CheckartisanNavigator.push(context, const Splash1());
+      CheckartisanNavigator.push(context, const HomeScreen());
     });
   }
 

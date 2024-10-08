@@ -1,12 +1,44 @@
 import 'package:check_artisan/Artisan_DetailsScreens/artisan_dashboard.dart';
 import 'package:check_artisan/Home_Client/homeclient.dart';
-import 'package:check_artisan/page_navigation.dart'; // Ensure this is the correct path to your navigator class
 import 'package:check_artisan/profile/notification.dart';
 import 'package:check_artisan/profile/profile.dart' as profile;
+import 'package:check_artisan/utils.dart';
 import 'package:flutter/material.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController tabController;
+  int currentPage = 0;
+
+  final List<Widget> pages = [
+    const HomeClient(),
+    const ArtisanDashboard(),
+    const profile.ProfileScreen(),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    tabController = TabController(length: 4, vsync: this);
+    tabController.addListener(() {
+      setState(() {
+        currentPage = tabController.index;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +56,8 @@ class SettingsScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.notifications, color: Color(0xFF004D40)),
             onPressed: () {
-              CheckartisanNavigator.push(
-                context,
-                const ArtisanScreen(),
-              );
+              CheckartisanNavigator.pushReplacement(
+                  context, const ArtisanScreen());
             },
           ),
         ],
@@ -76,56 +106,6 @@ class SettingsScreen extends StatelessWidget {
             icon: Icons.list,
           ),
         ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              CheckartisanNavigator.push(
-                context,
-                const HomeClient(),
-              );
-              break;
-            case 1:
-              CheckartisanNavigator.push(
-                context,
-                const ArtisanDashboard(),
-              );
-              break;
-            case 2:
-              CheckartisanNavigator.push(
-                context,
-                const SettingsScreen(),
-              );
-              break;
-            case 3:
-              CheckartisanNavigator.push(
-                context,
-                const profile.ProfileScreen(),
-              );
-              break;
-          }
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Colors.grey),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.location_on, color: Colors.grey),
-            label: 'Location',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.build, color: Color(0xFF004D40)),
-            label: 'Settings',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person, color: Colors.grey),
-            label: 'Profile',
-          ),
-        ],
-        selectedItemColor: const Color(0xFF004D40),
-        unselectedItemColor: Colors.grey,
       ),
     );
   }

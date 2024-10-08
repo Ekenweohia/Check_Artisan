@@ -1,24 +1,46 @@
+import 'package:check_artisan/RegistrationClient/register_client.dart';
 import 'package:check_artisan/loginsignupclient/splash_3.dart';
 import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 
-class Splash2 extends StatelessWidget {
+class Splash2 extends StatefulWidget {
   const Splash2({Key? key}) : super(key: key);
+
+  @override
+  Splash2State createState() => Splash2State();
+}
+
+class Splash2State extends State<Splash2> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 5), () {
+      CheckartisanNavigator.pushReplacement(
+        context,
+        const Splash3(),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Stack(
         children: [
+          Positioned.fill(
+            child: Image.asset(
+              'assets/icons/Splash 11.png',
+              fit: BoxFit.cover,
+            ),
+          ),
           Center(
             child: Column(
               children: [
                 const Spacer(),
                 Image.asset(
-                  'assets/icons/track.png',
-                  width: 200,
-                  height: 200,
+                  'assets/icons/Splash2.png',
+                  width: 245,
+                  height: 248,
                 ),
                 const SizedBox(height: 20),
                 const Padding(
@@ -30,11 +52,12 @@ class Splash2 extends StatelessWidget {
                       fontFamily: 'Montserrat-Light.ttf',
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF2C6B58),
+                      color: Colors.white,
                     ),
                   ),
                 ),
                 const Spacer(),
+
                 const Padding(
                   padding: EdgeInsets.only(bottom: 32.0),
                   child: Row(
@@ -42,43 +65,52 @@ class Splash2 extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 5,
-                        backgroundColor: Color(0xFFD8D8D8),
+                        backgroundColor: Colors.grey,
                       ),
                       SizedBox(width: 8),
                       CircleAvatar(
                         radius: 5,
-                        backgroundColor: Color(0xFF2C6B58),
+                        backgroundColor: Colors.white,
                       ),
                       SizedBox(width: 8),
                       CircleAvatar(
                         radius: 5,
-                        backgroundColor: Color(0xFFD8D8D8),
+                        backgroundColor: Colors.grey,
                       ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      CircleAvatar(
-                        radius: 5,
-                        backgroundColor: Color(0xFFD8D8D8),
-                      )
                     ],
                   ),
                 ),
+                // Sign Up button
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 32.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 32, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                      side:
+                          const BorderSide(color: Color(0xFF2C6B58), width: 1),
+                    ),
+                    onPressed: () {
+                      CheckartisanNavigator.pushReplacement(
+                        context,
+                        const RegisterClient(),
+                      );
+                    },
+                    child: const Text(
+                      'SKIP',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF2C6B58),
+                      ),
+                    ),
+                  ),
+                ),
               ],
-            ),
-          ),
-          Positioned(
-            right: 0,
-            top: MediaQuery.of(context).size.height / 2 + 200,
-            child: GestureDetector(
-              onTap: () {
-                CheckartisanNavigator.push(context, const Splash3());
-              },
-              child: Image.asset(
-                'assets/Buttons/Group 1.png',
-                width: 114,
-                height: 100,
-              ),
             ),
           ),
         ],

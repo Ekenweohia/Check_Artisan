@@ -1,4 +1,7 @@
+import 'dart:io';
+import 'package:check_artisan/VerificationArtisan/email_confirmationartisan.dart';
 import 'package:check_artisan/circular_loading.dart';
+import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -22,6 +25,7 @@ class SendPasswordResetEmail extends PasswordResetEvent {
   List<Object> get props => [emailOrPhone];
 }
 
+// State
 abstract class PasswordResetState extends Equatable {
   const PasswordResetState();
 
@@ -58,7 +62,7 @@ class PasswordResetBloc extends Bloc<PasswordResetEvent, PasswordResetState> {
     try {
       if (useApi) {
         final response = await http.post(
-          Uri.parse(''), // API for password reset
+          Uri.parse('https://checkartisan.com/api/forgot-password'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -68,33 +72,25 @@ class PasswordResetBloc extends Bloc<PasswordResetEvent, PasswordResetState> {
         );
 
         if (response.statusCode == 200) {
-          emit(PasswordResetSuccess());
+          final responseBody = jsonDecode(response.body);
+          if (responseBody['data'] == 'Email sent.') {
+            emit(PasswordResetSuccess());
+          } else {
+            emit(PasswordResetFailure('Unexpected response: ${response.body}'));
+          }
         } else {
-          final error = jsonDecode(response.body)['error'];
+          final error = jsonDecode(response.body)['error'] ?? 'Unknown error';
           emit(PasswordResetFailure(error));
         }
       } else {
         await Future.delayed(const Duration(seconds: 1));
         emit(PasswordResetSuccess());
       }
+    } on SocketException {
+      emit(const PasswordResetFailure('No internet connection'));
     } catch (e) {
-      emit(PasswordResetFailure(e.toString()));
+      emit(PasswordResetFailure('Network request failed: ${e.toString()}'));
     }
-  }
-}
-
-class PasswordResetApp extends StatelessWidget {
-  const PasswordResetApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Password Reset',
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-      ),
-      home: const PasswordResetScreen(),
-    );
   }
 }
 
@@ -107,103 +103,144 @@ class PasswordResetScreen extends StatefulWidget {
 
 class PasswordResetScreenState extends State<PasswordResetScreen> {
   final TextEditingController _emailPhoneController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    _emailPhoneController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: BlocProvider(
-        create: (context) => PasswordResetBloc(
-            useApi: false), // will change to true when Api is ready
+        create: (context) => PasswordResetBloc(useApi: true),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/icons/password_reset.png',
-                width: 300,
-                height: 300,
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Reset Password',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'Enter the email/ phone number associated with your account and we\'ll send an email with instructions to reset your password',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: _emailPhoneController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                  ),
-                  labelText: 'Email/Phone Number',
-                ),
-              ),
-              const SizedBox(height: 90),
-              BlocConsumer<PasswordResetBloc, PasswordResetState>(
-                listener: (context, state) {
-                  if (state is PasswordResetSuccess) {
-                    AnimatedSnackBar.rectangle(
-                      'Success',
-                      'Password reset instructions sent!',
-                      type: AnimatedSnackBarType.success,
-                    ).show(context);
-                  } else if (state is PasswordResetFailure) {
-                    AnimatedSnackBar.rectangle(
-                      'Error',
-                      'Error: ${state.error}',
-                      type: AnimatedSnackBarType.error,
-                    ).show(context);
-                  }
-                },
-                builder: (context, state) {
-                  if (state is PasswordResetLoading) {
-                    return const CircularLoadingWidget();
-                  }
-                  return SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        final emailOrPhone = _emailPhoneController.text;
-                        context
-                            .read<PasswordResetBloc>()
-                            .add(SendPasswordResetEmail(emailOrPhone));
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF004D40),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0),
-                        ),
-                        textStyle: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+          child: BlocConsumer<PasswordResetBloc, PasswordResetState>(
+            listener: (context, state) {
+              if (state is PasswordResetSuccess) {
+                AnimatedSnackBar.rectangle(
+                  'Success',
+                  'Password reset instructions sent!',
+                  type: AnimatedSnackBarType.success,
+                ).show(context);
+                CheckartisanNavigator.push(
+                    context,
+                    EmailConfirmationArtisan(
+                        email: _emailPhoneController.text));
+              } else if (state is PasswordResetFailure) {
+                AnimatedSnackBar.rectangle(
+                  'Error',
+                  'Error: ${state.error}',
+                  type: AnimatedSnackBarType.error,
+                ).show(context);
+              }
+            },
+            builder: (context, state) {
+              return SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 50),
+                      Image.asset(
+                        'assets/icons/password_reset.png',
+                        width: 200,
+                        height: 200,
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Reset Password',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
                       ),
-                      child: const Text('SEND INSTRUCTIONS'),
-                    ),
-                  );
-                },
-              ),
-            ],
+                      const SizedBox(height: 10),
+                      const Text(
+                        'Enter the email/phone number associated with your account and we\'ll send an email with instructions to reset your password',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        controller: _emailPhoneController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12.0)),
+                          ),
+                          labelText: 'Email/Phone Number',
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email or phone number';
+                          }
+                          if (!_validateInput(value)) {
+                            return 'Please enter a valid email or phone number';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 90),
+                      if (state is PasswordResetLoading)
+                        const CircularLoadingWidget()
+                      else
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                final emailOrPhone = _emailPhoneController.text;
+                                context
+                                    .read<PasswordResetBloc>()
+                                    .add(SendPasswordResetEmail(emailOrPhone));
+                              } else {
+                                AnimatedSnackBar.rectangle(
+                                  'Warning',
+                                  'Please correct the errors in the form',
+                                  type: AnimatedSnackBarType.warning,
+                                ).show(context);
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF004D40),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 20),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(0),
+                              ),
+                              textStyle: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            child: const Text('SEND INSTRUCTIONS'),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),
     );
+  }
+
+  bool _validateInput(String input) {
+    final emailRegex =
+        RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    final phoneRegex = RegExp(r'^\+?[1-9]\d{1,14}$');
+    return emailRegex.hasMatch(input) || phoneRegex.hasMatch(input);
   }
 }

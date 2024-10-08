@@ -1,5 +1,5 @@
-import 'package:check_artisan/RegistrationArtisan/register_artisan.dart';
-import 'package:check_artisan/RegistrationClient/register_client.dart';
+import 'package:check_artisan/loginsignupclient/splash_1.dart';
+import 'package:check_artisan/loginsignupclient/splashartisan1.dart';
 import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +34,7 @@ class HomeScreen extends StatelessWidget {
                 const Spacer(),
                 ElevatedButton(
                   onPressed: () {
-                    CheckartisanNavigator.push(context, const RegisterClient());
+                    CheckartisanNavigator.push(context, const Splash1());
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
@@ -54,8 +54,7 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    CheckartisanNavigator.push(
-                        context, const RegisterArtisan());
+                    CheckartisanNavigator.push(context, const SplashArtisan1());
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
