@@ -238,257 +238,254 @@ class EmailClientState extends State<EmailClient> {
                   padding: const EdgeInsets.all(16.0),
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(24.0)),
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
                   ),
                   child: SingleChildScrollView(
-                    child: BlocProvider(
-                      create: (context) =>
-                          AuthBloc(useApi: false), // Set to true to use API
-                      child: BlocConsumer<AuthBloc, AuthState>(
-                        listener: (context, state) {
-                          if (state is AuthSuccess) {
-                            CheckartisanNavigator.push(
-                                context,
-                                EmailConfirmation(
-                                    email: _emailController.text));
-                          } else if (state is AuthFailure) {
-                            AnimatedSnackBar.rectangle('Error', state.error,
-                                    type: AnimatedSnackBarType.error)
-                                .show(context);
-                          }
-                        },
-                        builder: (context, state) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Got an Email? Let’s Get Started',
-                                style: GoogleFonts.montserrat(
-                                  textStyle: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 30,
-                              ),
-                              const SizedBox(height: 20),
-                              _buildSmallTextField(
-                                controller: _firstNameController,
-                                labelText: 'First Name',
-                              ),
-                              const SizedBox(height: 20),
-                              _buildSmallTextField(
-                                controller: _lastNameController,
-                                labelText: 'Last Name',
-                              ),
-                              const SizedBox(height: 20),
-                              _buildSmallTextField(
-                                controller: _emailController,
-                                labelText: 'Email',
-                              ),
-                              const SizedBox(height: 20),
-                              _buildSmallTextField(
-                                controller: _passwordController,
-                                labelText: 'Password',
-                                obscureText: _obscurePassword,
-                                onIconPressed: () {
-                                  setState(() {
-                                    _obscurePassword = !_obscurePassword;
-                                  });
-                                },
-                                icon: _obscurePassword
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                              ),
-                              const SizedBox(height: 20),
-                              _buildSmallTextField(
-                                controller: _confirmPasswordController,
-                                labelText: 'Confirm Password',
-                                obscureText: _obscureConfirmPassword,
-                                onIconPressed: () {
-                                  setState(() {
-                                    _obscureConfirmPassword =
-                                        !_obscureConfirmPassword;
-                                  });
-                                },
-                                icon: _obscureConfirmPassword
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                              ),
-                              const SizedBox(height: 20),
-                              _buildSmallTextField(
-                                controller: _phoneNumberController,
-                                labelText: 'Phone Number',
-                              ),
-                              const SizedBox(height: 20),
-                              Text(
-                                'CLICK HERE TO READ TERMS AND CONDITIONS',
-                                style: GoogleFonts.montserrat(
-                                  textStyle: const TextStyle(
-                                    color: Color(0xFF004D40),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  Switch(
-                                    value: _isSwitched,
-                                    onChanged: (bool value) {
-                                      setState(() {
-                                        _isSwitched = value;
-                                      });
-                                    },
-                                    activeColor: const Color(0xFF004D40),
-                                  ),
-                                  const Text(
-                                      'I agree to the terms and conditions'),
-                                ],
-                              ),
-                              const SizedBox(height: 16),
-                              if (state is AuthLoading)
-                                const CircularLoadingWidget()
-                              else
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      if (_validateInputs(context)) {
-                                        final firstName =
-                                            _firstNameController.text;
-                                        final lastName =
-                                            _lastNameController.text;
-                                        final email = _emailController.text;
-                                        final password =
-                                            _passwordController.text;
-                                        final phoneNumber =
-                                            _phoneNumberController.text;
-
-                                        context.read<AuthBloc>().add(
-                                              RegisterSubmitted(
-                                                firstName: firstName,
-                                                lastName: lastName,
-                                                email: email,
-                                                password: password,
-                                                phoneNumber: phoneNumber,
-                                              ),
-                                            );
-                                      }
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF004D40),
-                                      foregroundColor: Colors.white,
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 16),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(0),
-                                      ),
-                                      textStyle: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                      shadowColor: Colors.black26,
-                                      elevation: 8,
-                                    ),
-                                    child: const Text('SIGN UP'),
-                                  ),
-                                ),
-                              const SizedBox(height: 50),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ElevatedButton.icon(
-                                    onPressed: () {
-                                      context
-                                          .read<AuthBloc>()
-                                          .add(GoogleLogin());
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.white,
-                                      foregroundColor: Colors.black,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 12),
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(0)),
-                                        side: BorderSide(color: Colors.grey),
-                                      ),
-                                      textStyle: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    icon: Image.asset(
-                                      'assets/icons/google.png',
-                                      height: 30,
-                                      width: 30,
-                                    ),
-                                    label: const Text('Google account'),
-                                  ),
-                                  const SizedBox(width: 16),
-                                  ElevatedButton.icon(
-                                    onPressed: () {
-                                      context
-                                          .read<AuthBloc>()
-                                          .add(FacebookLogin());
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.white,
-                                      foregroundColor: Colors.black,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 12),
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(0)),
-                                        side: BorderSide(color: Colors.grey),
-                                      ),
-                                      textStyle: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    icon: Image.asset(
-                                      'assets/icons/facebook.png',
-                                      height: 30,
-                                      width: 30,
-                                    ),
-                                    label: const Text('Facebook account'),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 15),
-                              TextButton(
-                                onPressed: () {
-                                  CheckartisanNavigator.push(
-                                      context, const LoginClient());
-                                },
-                                child: RichText(
-                                  text: const TextSpan(
-                                    text: 'Already Have an account? ',
-                                    style: TextStyle(
-                                      color: Colors.black,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: BlocProvider(
+                        create: (context) => AuthBloc(useApi: false),
+                        child: BlocConsumer<AuthBloc, AuthState>(
+                          listener: (context, state) {
+                            if (state is AuthSuccess) {
+                              CheckartisanNavigator.push(
+                                  context, EmailConfirmation(email: _emailController.text));
+                            } else if (state is AuthFailure) {
+                              AnimatedSnackBar.rectangle('Error', state.error,
+                                      type: AnimatedSnackBarType.error)
+                                  .show(context);
+                            }
+                          },
+                          builder: (context, state) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Got an Email? Let’s Get Started',
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: const TextStyle(
+                                      fontSize: 20,
                                       fontWeight: FontWeight.bold,
+                                      color: Colors.black,
                                     ),
-                                    children: [
-                                      TextSpan(
-                                        text: 'LOGIN',
-                                        style: TextStyle(
-                                          color: Color(0xFF004D40),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
                                   ),
                                 ),
-                              ),
-                            ],
-                          );
-                        },
+                                const SizedBox(height: 30),
+                                _buildSmallTextField(
+                                  controller: _firstNameController,
+                                  labelText: 'First Name',
+                                ),
+                                const SizedBox(height: 20),
+                                _buildSmallTextField(
+                                  controller: _lastNameController,
+                                  labelText: 'Last Name',
+                                ),
+                                const SizedBox(height: 20),
+                                _buildSmallTextField(
+                                  controller: _emailController,
+                                  labelText: 'Email',
+                                ),
+                                const SizedBox(height: 20),
+                                _buildSmallTextField(
+                                  controller: _passwordController,
+                                  labelText: 'Password',
+                                  obscureText: _obscurePassword,
+                                  onIconPressed: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
+                                  icon: _obscurePassword
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
+                                const SizedBox(height: 20),
+                                _buildSmallTextField(
+                                  controller: _confirmPasswordController,
+                                  labelText: 'Confirm Password',
+                                  obscureText: _obscureConfirmPassword,
+                                  onIconPressed: () {
+                                    setState(() {
+                                      _obscureConfirmPassword = !_obscureConfirmPassword;
+                                    });
+                                  },
+                                  icon: _obscureConfirmPassword
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
+                                const SizedBox(height: 20),
+                                _buildSmallTextField(
+                                  controller: _phoneNumberController,
+                                  labelText: 'Phone Number',
+                                ),
+                                const SizedBox(height: 20),
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    'CLICK HERE TO READ TERMS AND CONDITIONS',
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: const TextStyle(
+                                        color: Color(0xFF004D40),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Row(
+  children: [
+    Switch(
+      value: _isSwitched,
+      onChanged: (bool value) {
+        setState(() {
+          _isSwitched = value;
+        });
+      },
+      activeColor: const Color(0xFF004D40), // Active color (when the switch is on)
+      inactiveThumbColor: Colors.grey, // Thumb color when the switch is off
+      inactiveTrackColor: Colors.grey.shade300, // Track color when the switch is off
+    ),
+    const SizedBox(width: 5,),
+    const Text('I agree to the terms and conditions', style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w500),),
+  ],
+),
+
+                                const SizedBox(height: 25),
+                                if (state is AuthLoading)
+                                  const CircularLoadingWidget()
+                                else
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        if (_validateInputs(context)) {
+                                          final firstName = _firstNameController.text;
+                                          final lastName = _lastNameController.text;
+                                          final email = _emailController.text;
+                                          final password = _passwordController.text;
+                                          final phoneNumber = _phoneNumberController.text;
+
+                                          context.read<AuthBloc>().add(
+                                                RegisterSubmitted(
+                                                  firstName: firstName,
+                                                  lastName: lastName,
+                                                  email: email,
+                                                  password: password,
+                                                  phoneNumber: phoneNumber,
+                                                ),
+                                              );
+                                        }
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(0xFF004D40),
+                                        foregroundColor: Colors.white,
+                                        padding: const EdgeInsets.symmetric(vertical: 16),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        textStyle: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        shadowColor: Colors.black26,
+                                        elevation: 8,
+                                      ),
+                                      child: const Text('SIGN UP'),
+                                    ),
+                                  ),
+                                const SizedBox(height: 60),
+                               Row(
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [
+    SizedBox(
+      width: 140, // Increased width for the Google button
+      height: 44, // Fixed height for the button
+      child: ElevatedButton.icon(
+        onPressed: () {
+          context.read<AuthBloc>().add(GoogleLogin());
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(0)),
+            side: BorderSide(color: Colors.grey),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        icon: Image.asset(
+          'assets/icons/google.png',
+          height: 24,
+          width: 24,
+        ),
+        label: const Text('Google'),
+      ),
+    ),
+    const SizedBox(width: 16), // Space between the buttons
+    SizedBox(
+      width: 140, // Increased width for the Facebook button
+      height: 44, // Fixed height for the button
+      child: ElevatedButton.icon(
+        onPressed: () {
+          context.read<AuthBloc>().add(FacebookLogin());
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(0)),
+            side: BorderSide(color: Colors.grey),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        icon: Image.asset(
+          'assets/icons/facebook.png',
+          height: 24,
+          width: 24,
+        ),
+        label: const Text('Facebook'),
+      ),
+    ),
+  ],
+),
+
+
+                                const SizedBox(height: 15),
+                                TextButton(
+                                  onPressed: () {
+                                    CheckartisanNavigator.push(context, const LoginClient());
+                                  },
+                                  child: RichText(
+                                    text: const TextSpan(
+                                      text: 'Already Have an account? ',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: 'LOGIN',
+                                          style: TextStyle(
+                                            color: Color(0xFF004D40),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -556,9 +553,7 @@ class EmailClientState extends State<EmailClient> {
   }
 
   void _showWarning(BuildContext context, String message) {
-    AnimatedSnackBar.rectangle('Warning', message,
-            type: AnimatedSnackBarType.warning)
-        .show(context);
+    AnimatedSnackBar.rectangle('Warning', message, type: AnimatedSnackBarType.warning).show(context);
   }
 
   Widget _buildSmallTextField({
@@ -569,16 +564,15 @@ class EmailClientState extends State<EmailClient> {
     IconData? icon,
   }) {
     return SizedBox(
-      height: 40, // Adjust the height of the TextField
+      height: 40,
       child: TextField(
         controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(
-          isDense: true, // Reduces the internal height
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            borderRadius: BorderRadius.all(Radius.circular(15.0)),
           ),
           labelText: labelText,
           filled: true,

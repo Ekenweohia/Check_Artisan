@@ -11,11 +11,14 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/icons/reg screen.jpg'),
-                fit: BoxFit.cover,
+          Opacity(
+            opacity: 0.8, // Set image opacity to 80%
+            child: Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/icons/reg screen.jpg'),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
@@ -32,44 +35,64 @@ class HomeScreen extends StatelessWidget {
                   width: 400,
                 ),
                 const Spacer(),
-                ElevatedButton(
-                  onPressed: () {
-                    CheckartisanNavigator.push(context, const Splash1());
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: const Color(0xFF2C6B58),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 32, vertical: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
+                Container(
+                  width: 209, // Set fixed width of 209px
+                  height: 37, // Set fixed height of 37px
+                  margin: const EdgeInsets.only(bottom: 17), // Gap of 10px between buttons
+                  child: ElevatedButton(
+                    onPressed: () {
+                      CheckartisanNavigator.push(context, const Splash1());
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: const Color(0xF2004D40),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 30), // Padding inside the button
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(5.0), // Border radius 5px top-left
+                          topRight: Radius.circular(5.0), 
+                          bottomLeft: Radius.circular(5.0), 
+                          bottomRight: Radius.circular(5.0),
+                        ),
+                      ),
+                      textStyle: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                    textStyle: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    child: const Text('SIGN UP AS A CLIENT'),
                   ),
-                  child: const Text('SIGN UP AS A CLIENT'),
                 ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    CheckartisanNavigator.push(context, const SplashArtisan1());
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: const Color(0xFF2C6B58),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 32, vertical: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
+                Container(
+                  width: 209, // Set fixed width of 209px
+                  height: 37, // Set fixed height of 37px
+                  margin: const EdgeInsets.only(bottom: 10), // Gap of 10px between buttons
+                  child: ElevatedButton(
+                    onPressed: () {
+                      CheckartisanNavigator.push(
+                          context, const SplashArtisan1());
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: const Color(0xF2004D40),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 30), // Padding inside the button
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(5.0), // Border radius 5px top-left
+                          topRight: Radius.circular(5.0), 
+                          bottomLeft: Radius.circular(5.0), 
+                          bottomRight: Radius.circular(5.0),
+                        ),
+                      ),
+                      textStyle: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                    textStyle: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    child: const Text('SIGN UP AS AN ARTISAN'),
                   ),
-                  child: const Text('SIGN UP AS AN ARTISAN'),
                 ),
                 const Spacer(flex: 2),
               ],

@@ -150,7 +150,7 @@ class EmailConfirmationArtisan extends StatelessWidget {
                   width: 300,
                   height: 300,
                 ),
-                const SizedBox(height: 150),
+                const SizedBox(height: 8), // Reduced spacing to make elements closer
                 const Text(
                   'Confirm your email address',
                   style: TextStyle(
@@ -159,7 +159,7 @@ class EmailConfirmationArtisan extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 4), // Reduced spacing between texts
                 const Text(
                   'We sent a confirmation mail to:',
                   textAlign: TextAlign.center,
@@ -168,7 +168,7 @@ class EmailConfirmationArtisan extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 2), // Minimal spacing for compact layout
                 Text(
                   email,
                   textAlign: TextAlign.center,
@@ -178,7 +178,7 @@ class EmailConfirmationArtisan extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 2), // Reduced spacing for compactness
                 const Text(
                   'Check your email and click on the confirmation link to continue',
                   textAlign: TextAlign.center,
@@ -187,7 +187,7 @@ class EmailConfirmationArtisan extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16), // Slightly reduced spacing before the button
                 BlocConsumer<EmailConfirmationBloc,
                     EmailConfirmationArtisanState>(
                   listener: (context, state) {

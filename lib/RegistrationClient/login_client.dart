@@ -74,7 +74,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       if (useApi) {
         final response = await http.post(
-          Uri.parse(''),
+          Uri.parse(''), // Add your login API URL here
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -139,221 +139,193 @@ class LoginClient extends StatefulWidget {
 
 class LoginClientState extends State<LoginClient> {
   final TextEditingController _emailOrPhoneController = TextEditingController();
-  final TextEditingController _loginPasswordController =
-      TextEditingController();
+  final TextEditingController _loginPasswordController = TextEditingController();
   bool _obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          double padding = MediaQuery.of(context).size.width * 0.05;
-          return Stack(
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/icons/reg screen.jpg'),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Container(
+            color: const Color(0xF2004D40),
+          ),
+          Column(
             children: [
-              Container(
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/icons/reg screen.jpg'),
-                    fit: BoxFit.cover,
-                  ),
+              const SizedBox(height: 80),
+              Center(
+                child: Image.asset(
+                  'assets/icons/logo checkartisan 1.png',
+                  width: 200,
                 ),
               ),
-              Container(
-                color: const Color(0xF2004D40),
-              ),
-              Column(
-                children: [
-                  SizedBox(height: constraints.maxHeight * 0.10),
-                  Center(
-                    child: Image.asset(
-                      'assets/icons/logo checkartisan 1.png',
-                      width: constraints.maxWidth * 0.5,
-                    ),
+              const SizedBox(height: 40),
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
                   ),
-                  SizedBox(height: constraints.maxHeight * 0.10),
-                  Expanded(
-                    child: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(padding),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(24.0)),
-                      ),
-                      child: SingleChildScrollView(
-                        child: BlocProvider(
-                          create: (context) => AuthBloc(useApi: false),
-                          child: BlocConsumer<AuthBloc, AuthState>(
-                            listener: (context, state) {
-                              if (state is AuthSuccess) {
-                                CheckartisanNavigator.push(
-                                    context, const HomeClient());
-                              } else if (state is AuthFailure) {
-                                AnimatedSnackBar.rectangle(
-                                        'Error', 'Check Internet Connection',
-                                        type: AnimatedSnackBarType.error)
-                                    .show(context);
-                              }
-                            },
-                            builder: (context, state) {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    'Welcome Back',
-                                    style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: BlocProvider(
+                        create: (context) => AuthBloc(useApi: false),
+                        child: BlocConsumer<AuthBloc, AuthState>(
+                          listener: (context, state) {
+                            if (state is AuthSuccess) {
+                              CheckartisanNavigator.push(context, const HomeClient());
+                            } else if (state is AuthFailure) {
+                              AnimatedSnackBar.rectangle(
+                                  'Error', 'Check Internet Connection',
+                                  type: AnimatedSnackBarType.error)
+                                  .show(context);
+                            }
+                          },
+                          builder: (context, state) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  'Welcome Back',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
                                   ),
-                                  const SizedBox(height: 16),
-                                  _buildSmallTextField(
-                                    controller: _emailOrPhoneController,
-                                    labelText: 'Email/Phone Number',
-                                  ),
-                                  const SizedBox(height: 16),
-                                  _buildPasswordTextField(
-                                    controller: _loginPasswordController,
-                                    labelText: 'Password',
-                                    obscureText: _obscurePassword,
-                                    toggleObscureText: () {
-                                      setState(() {
-                                        _obscurePassword = !_obscurePassword;
-                                      });
-                                    },
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: TextButton(
+                                ),
+                                const SizedBox(height: 16),
+                                _buildSmallTextField(
+                                  controller: _emailOrPhoneController,
+                                  labelText: 'Email/Phone Number',
+                                ),
+                                const SizedBox(height: 16),
+                                _buildPasswordTextField(
+                                  controller: _loginPasswordController,
+                                  labelText: 'Password',
+                                  obscureText: _obscurePassword,
+                                  toggleObscureText: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
+                                ),
+                                const SizedBox(height: 30),
+                                if (state is AuthLoading)
+                                  const CircularProgressIndicator()
+                                else
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
                                       onPressed: () {
-                                        CheckartisanNavigator.push(context,
-                                            const PasswordResetScreen());
-                                      },
-                                      child: const Text(
-                                        'Forgot Password?',
-                                        style:
-                                            TextStyle(color: Color(0xFF004D40)),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  if (state is AuthLoading)
-                                    const CircularProgressIndicator()
-                                  else
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          final emailOrPhone =
-                                              _emailOrPhoneController.text;
-                                          final password =
-                                              _loginPasswordController.text;
+                                        final emailOrPhone = _emailOrPhoneController.text;
+                                        final password = _loginPasswordController.text;
 
-                                          context.read<AuthBloc>().add(
-                                                LoginSubmitted(
-                                                  emailOrPhone: emailOrPhone,
-                                                  password: password,
-                                                ),
-                                              );
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              const Color(0xFF004D40),
-                                          foregroundColor: Colors.white,
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 20),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                          ),
-                                          textStyle: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                          shadowColor: Colors.black26,
-                                          elevation: 8,
+                                        context.read<AuthBloc>().add(
+                                              LoginSubmitted(
+                                                emailOrPhone: emailOrPhone,
+                                                password: password,
+                                              ),
+                                            );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(0xFF004D40),
+                                        foregroundColor: Colors.white,
+                                        padding: const EdgeInsets.symmetric(vertical: 16),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
                                         ),
-                                        child: const Text('LOGIN'),
+                                        textStyle: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        shadowColor: Colors.black26,
+                                        elevation: 8,
                                       ),
+                                      child: const Text('LOGIN'),
                                     ),
-                                  const SizedBox(height: 20),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      BlocBuilder<AuthBloc, AuthState>(
-                                        builder: (context, state) {
-                                          return _buildSocialLoginButton(
-                                            onPressed: () {
-                                              context
-                                                  .read<AuthBloc>()
-                                                  .add(GoogleLogin());
-                                            },
-                                            label: 'Google account',
-                                            assetPath:
-                                                'assets/icons/google.png',
-                                          );
-                                        },
-                                      ),
-                                      const SizedBox(width: 16),
-                                      BlocBuilder<AuthBloc, AuthState>(
-                                        builder: (context, state) {
-                                          return _buildSocialLoginButton(
-                                            onPressed: () {
-                                              context
-                                                  .read<AuthBloc>()
-                                                  .add(FacebookLogin());
-                                            },
-                                            label: 'Facebook account',
-                                            assetPath:
-                                                'assets/icons/facebook.png',
-                                          );
-                                        },
-                                      ),
-                                    ],
                                   ),
-                                  const SizedBox(height: 20),
-                                  GestureDetector(
-                                    onTap: () {
-                                      CheckartisanNavigator.push(
-                                          context, const RegisterClient());
+                                const SizedBox(height: 0.1),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      CheckartisanNavigator.push(context, const PasswordResetScreen());
                                     },
-                                    child: RichText(
-                                      text: const TextSpan(
-                                        text: 'Don’t Have an account?',
-                                        style: TextStyle(
-                                          color: Colors
-                                              .black, // Black color for this part
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text: 'SIGN UP',
-                                            style: TextStyle(
-                                              color: Color(
-                                                  0xFF004D40), // Green color for this part
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                    child: const Text(
+                                      'Forgot Password?',
+                                      style: TextStyle(
+                                          color: Color(0xFF004D40), fontWeight: FontWeight.bold),
                                     ),
                                   ),
-                                ],
-                              );
-                            },
-                          ),
+                                ),
+                                const SizedBox(height: 45),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    _buildSocialLoginButton(
+                                      onPressed: () {
+                                        context.read<AuthBloc>().add(GoogleLogin());
+                                      },
+                                      label: 'Google',
+                                      assetPath: 'assets/icons/google.png',
+                                    ),
+                                    const SizedBox(width: 16),
+                                    _buildSocialLoginButton(
+                                      onPressed: () {
+                                        context.read<AuthBloc>().add(FacebookLogin());
+                                      },
+                                      label: 'Facebook',
+                                      assetPath: 'assets/icons/facebook.png',
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 20),
+                                GestureDetector(
+                                  onTap: () {
+                                    CheckartisanNavigator.push(context, const RegisterClient());
+                                  },
+                                  child: RichText(
+                                    text: const TextSpan(
+                                      text: 'Don’t Have an account? ',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: 'SIGN UP',
+                                          style: TextStyle(
+                                            color: Color(0xFF004D40),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
                         ),
                       ),
                     ),
                   ),
-                ],
+                ),
               ),
             ],
-          );
-        },
+          ),
+        ],
       ),
     );
   }
@@ -363,15 +335,14 @@ class LoginClientState extends State<LoginClient> {
     required String labelText,
   }) {
     return SizedBox(
-      height: 45, // Small height for TextField
+      height: 45,
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-          isDense: true, // Makes the TextField more compact
-          contentPadding: const EdgeInsets.symmetric(
-              vertical: 10, horizontal: 12), // Adjust padding
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12.0)),
+            borderRadius: BorderRadius.all(Radius.circular(15.0)),
           ),
           labelText: labelText,
           filled: true,
@@ -388,24 +359,21 @@ class LoginClientState extends State<LoginClient> {
     required VoidCallback toggleObscureText,
   }) {
     return SizedBox(
-      height: 45, // Small height for TextField
+      height: 45,
       child: TextField(
         controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(
-          isDense: true, // Makes the TextField more compact
-          contentPadding: const EdgeInsets.symmetric(
-              vertical: 10, horizontal: 12), // Adjust padding
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12.0)),
+            borderRadius: BorderRadius.all(Radius.circular(15.0)),
           ),
           labelText: labelText,
           filled: true,
           fillColor: Colors.white,
           suffixIcon: IconButton(
-            icon: Icon(
-              obscureText ? Icons.visibility : Icons.visibility_off,
-            ),
+            icon: Icon(obscureText ? Icons.visibility : Icons.visibility_off),
             onPressed: toggleObscureText,
           ),
         ),
@@ -419,7 +387,8 @@ class LoginClientState extends State<LoginClient> {
     required String assetPath,
   }) {
     return SizedBox(
-      height: 45, // Ensure consistent height for social login buttons
+      width: 140,
+      height: 44,
       child: ElevatedButton.icon(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
@@ -437,10 +406,13 @@ class LoginClientState extends State<LoginClient> {
         ),
         icon: Image.asset(
           assetPath,
-          height: 30,
-          width: 30,
+          height: 24,
+          width: 24,
         ),
-        label: Text(label),
+        label: Text(
+          label,
+          style: const TextStyle(fontSize: 12),
+        ),
       ),
     );
   }

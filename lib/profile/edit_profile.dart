@@ -56,9 +56,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+            body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 50.0), // Increased padding
           child: ConstrainedBox(
             constraints: BoxConstraints(
               minHeight: MediaQuery.of(context).size.height - kToolbarHeight,
@@ -94,7 +94,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   const SizedBox(height: 20),
                   CustomDropdownField(
                     label: 'Country',
-                    items: ['Nigeria', 'Ghana', 'Kenya'],
+                    items: const ['Nigeria', 'Ghana', 'Kenya'],
                     selectedItem: selectedCountry,
                     onChanged: (value) =>
                         setState(() => selectedCountry = value),
@@ -102,14 +102,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   const SizedBox(height: 20),
                   CustomDropdownField(
                     label: 'State',
-                    items: ['Abia', 'Lagos', 'Kano'],
+                    items: const ['Abia', 'Lagos', 'Kano'],
                     selectedItem: selectedState,
                     onChanged: (value) => setState(() => selectedState = value),
                   ),
                   const SizedBox(height: 20),
                   CustomDropdownField(
                     label: 'City',
-                    items: ['Umuahia', 'Ikeja', 'Kaduna'],
+                    items: const ['Umuahia', 'Ikeja', 'Kaduna'],
                     selectedItem: selectedCity,
                     onChanged: (value) => setState(() => selectedCity = value),
                   ),
@@ -119,33 +119,72 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       label: 'Description',
                       isMultiline: true),
                   const SizedBox(height: 40),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        debugPrint('First Name: ${_firstNameController.text}');
-                        debugPrint('Last Name: ${_lastNameController.text}');
-                        debugPrint('Email: ${_emailController.text}');
-                        debugPrint('Password: ${_passwordController.text}');
-                        debugPrint('Address: ${_addressController.text}');
-                        debugPrint('Country: $selectedCountry');
-                        debugPrint('State: $selectedState');
-                        debugPrint('City: $selectedCity');
-                        debugPrint(
-                            'Description: ${_descriptionController.text}');
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF004D40),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end, // Align buttons to the left
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context); // Navigate back on cancel
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          minimumSize: const Size(106, 37), // Fixed width and height
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 15),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(5),
+                              topRight: Radius.circular(5),
+                              bottomLeft: Radius.circular(5),
+                              bottomRight: Radius.circular(5),
+                            ),
+                            side: BorderSide(
+                              color: Colors.grey, // Border color green
+                            ),
+                          ),
+                        ),
+                        child: const Text(
+                          'CANCEL',
+                          style: TextStyle(
+                            color: Color(0xFF004D40), // Green text color
+                          ),
+                        ),
                       ),
-                    ),
-                    child: const Text(
-                      'EDIT PROFILE',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                      const SizedBox(width: 10), // Gap between buttons
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            debugPrint('First Name: ${_firstNameController.text}');
+                            debugPrint('Last Name: ${_lastNameController.text}');
+                            debugPrint('Email: ${_emailController.text}');
+                            debugPrint('Password: ${_passwordController.text}');
+                            debugPrint('Address: ${_addressController.text}');
+                            debugPrint('Country: $selectedCountry');
+                            debugPrint('State: $selectedState');
+                            debugPrint('City: $selectedCity');
+                            debugPrint('Description: ${_descriptionController.text}');
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF004D40),
+                          minimumSize: const Size(89, 37), // Fixed width and height
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 15),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(5),
+                              topRight: Radius.circular(5),
+                              bottomLeft: Radius.circular(5),
+                              bottomRight: Radius.circular(5),
+                            ),
+                          ),
+                        ),
+                        child: const Text(
+                          'EDIT PROFILE',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -153,6 +192,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
         ),
       ),
+
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:check_artisan/Home_Client/homeclient.dart';
 import 'package:check_artisan/circular_loading.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -219,13 +220,12 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
         create: (context) => OTPVerificationBloc(useApi: true),
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 25.0),
             child: LayoutBuilder(
               builder: (context, constraints) {
                 return SingleChildScrollView(
                   child: ConstrainedBox(
-                    constraints:
-                        BoxConstraints(minHeight: constraints.maxHeight),
+                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
                     child: IntrinsicHeight(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -235,7 +235,7 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
                             width: constraints.maxWidth * 0.7,
                             height: constraints.maxWidth * 0.7,
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 1),
                           const Text(
                             'OTP Verification',
                             style: TextStyle(
@@ -263,9 +263,8 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
                               _otpTextField(_otpController4, false),
                             ],
                           ),
-                          const SizedBox(height: 20),
-                          BlocConsumer<OTPVerificationBloc,
-                              OTPVerificationState>(
+                          const SizedBox(height: 30),
+                          BlocConsumer<OTPVerificationBloc, OTPVerificationState>(
                             listener: (context, state) {
                               if (state is OTPVerificationSuccess) {
                                 AnimatedSnackBar.rectangle(
@@ -273,12 +272,12 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
                                   'OTP Verified Successfully',
                                   type: AnimatedSnackBarType.success,
                                 ).show(context);
-                                // Navigate to the HomeClient screen
                                 Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const HomeClient()));
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const HomeClient(),
+                                  ),
+                                );
                               } else if (state is OTPVerificationFailure) {
                                 AnimatedSnackBar.rectangle(
                                   'Error',
@@ -299,22 +298,34 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
                               }
                               return Column(
                                 children: [
-                                  TextButton(
-                                    onPressed: () {
-                                      context
-                                          .read<OTPVerificationBloc>()
-                                          .add(ResendOTP(widget.phoneNumber));
-                                    },
-                                    child: const Text(
-                                      'Didn’t receive OTP? RESEND',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Color(0xFF004D40),
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                  RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        const TextSpan(
+                                          text: 'Didn’t receive OTP? ',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: 'RESEND',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Color(0xFF004D40),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              context.read<OTPVerificationBloc>()
+                                                  .add(ResendOTP(widget.phoneNumber));
+                                            },
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 50), // Space between text button and verify button
                                   SizedBox(
                                     width: double.infinity,
                                     child: ElevatedButton(
@@ -323,22 +334,18 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
                                             _otpController2.text +
                                             _otpController3.text +
                                             _otpController4.text;
-                                        context.read<OTPVerificationBloc>().add(
-                                            VerifyOTP(widget.phoneNumber, otp));
+                                        context.read<OTPVerificationBloc>()
+                                            .add(VerifyOTP(widget.phoneNumber, otp));
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            const Color(0xFF004D40),
+                                        backgroundColor: const Color(0xFF004D40),
                                         foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 20),
+                                        padding: const EdgeInsets.symmetric(vertical: 20),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30),
+                                          borderRadius: BorderRadius.circular(5),
                                         ),
                                         textStyle: const TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w600),
+                                            fontSize: 15, fontWeight: FontWeight.w600),
                                       ),
                                       child: const Text('VERIFY'),
                                     ),
@@ -365,7 +372,7 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
       width: 50,
       height: 50,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(15),
         color: Colors.white,
         boxShadow: const [
           BoxShadow(

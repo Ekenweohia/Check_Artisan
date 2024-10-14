@@ -158,29 +158,6 @@ class _ArtisanDashboardState extends State<ArtisanDashboard>
       ),
       bottomNavigationBar: BottomBar(
         fit: StackFit.expand,
-        child: TabBar(
-          controller: tabController,
-          tabs: [
-            Tab(
-              icon: ImageIcon(
-                const AssetImage("assets/icons/home.png"),
-                color: currentPage == 0 ? selectedColor : unselectedColor,
-              ),
-            ),
-            Tab(
-              icon: ImageIcon(
-                const AssetImage("assets/icons/job_list.png"),
-                color: currentPage == 1 ? selectedColor : unselectedColor,
-              ),
-            ),
-            Tab(
-              icon: ImageIcon(
-                const AssetImage('assets/icons/profile.png'),
-                color: currentPage == 2 ? selectedColor : unselectedColor,
-              ),
-            ),
-          ],
-        ),
         borderRadius: BorderRadius.circular(500),
         duration: const Duration(seconds: 1),
         curve: Curves.decelerate,
@@ -229,6 +206,29 @@ class _ArtisanDashboardState extends State<ArtisanDashboard>
           dragStartBehavior: DragStartBehavior.down,
           physics: const BouncingScrollPhysics(),
           children: pages, // Tab pages
+        ),
+        child: TabBar(
+          controller: tabController,
+          tabs: [
+            Tab(
+              icon: ImageIcon(
+                const AssetImage("assets/icons/home.png"),
+                color: currentPage == 0 ? selectedColor : unselectedColor,
+              ),
+            ),
+            Tab(
+              icon: ImageIcon(
+                const AssetImage("assets/icons/job_list.png"),
+                color: currentPage == 1 ? selectedColor : unselectedColor,
+              ),
+            ),
+            Tab(
+              icon: ImageIcon(
+                const AssetImage('assets/icons/profile.png'),
+                color: currentPage == 2 ? selectedColor : unselectedColor,
+              ),
+            ),
+          ],
         ),
       ),
     );

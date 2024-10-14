@@ -139,8 +139,7 @@ class LoginArtisan extends StatefulWidget {
 
 class LoginArtisanState extends State<LoginArtisan> {
   final TextEditingController _emailOrPhoneController = TextEditingController();
-  final TextEditingController _loginPasswordController =
-      TextEditingController();
+  final TextEditingController _loginPasswordController = TextEditingController();
   bool _obscurePassword = true;
 
   @override
@@ -178,8 +177,7 @@ class LoginArtisanState extends State<LoginArtisan> {
                       padding: EdgeInsets.all(padding),
                       decoration: const BoxDecoration(
                         color: Colors.white,
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(24.0)),
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
                       ),
                       child: SingleChildScrollView(
                         child: BlocProvider(
@@ -187,8 +185,7 @@ class LoginArtisanState extends State<LoginArtisan> {
                           child: BlocConsumer<AuthBloc, AuthState>(
                             listener: (context, state) {
                               if (state is AuthSuccess) {
-                                CheckartisanNavigator.push(
-                                    context, const ArtisanDashboard());
+                                CheckartisanNavigator.push(context, const ArtisanDashboard());
                               } else if (state is AuthFailure) {
                                 AnimatedSnackBar.rectangle(
                                         'Error', 'Check Internet Connection',
@@ -225,21 +222,6 @@ class LoginArtisanState extends State<LoginArtisan> {
                                     },
                                   ),
                                   const SizedBox(height: 16),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: TextButton(
-                                      onPressed: () {
-                                        CheckartisanNavigator.push(context,
-                                            const PasswordResetAppScreen());
-                                      },
-                                      child: const Text(
-                                        'Forgot Password?',
-                                        style:
-                                            TextStyle(color: Color(0xFF004D40)),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
                                   if (state is AuthLoading)
                                     const CircularProgressIndicator()
                                   else
@@ -247,10 +229,8 @@ class LoginArtisanState extends State<LoginArtisan> {
                                       width: double.infinity,
                                       child: ElevatedButton(
                                         onPressed: () {
-                                          final emailOrPhone =
-                                              _emailOrPhoneController.text;
-                                          final password =
-                                              _loginPasswordController.text;
+                                          final emailOrPhone = _emailOrPhoneController.text;
+                                          final password = _loginPasswordController.text;
 
                                           context.read<AuthBloc>().add(
                                                 LoginSubmitted(
@@ -260,14 +240,11 @@ class LoginArtisanState extends State<LoginArtisan> {
                                               );
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              const Color(0xFF004D40),
+                                          backgroundColor: const Color(0xFF004D40),
                                           foregroundColor: Colors.white,
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 20),
+                                          padding: const EdgeInsets.symmetric(vertical: 20),
                                           shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
+                                            borderRadius: BorderRadius.circular(12),
                                           ),
                                           textStyle: const TextStyle(
                                             fontSize: 16,
@@ -279,61 +256,57 @@ class LoginArtisanState extends State<LoginArtisan> {
                                         child: const Text('LOGIN'),
                                       ),
                                     ),
+                                  const SizedBox(height: 10),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: TextButton(
+                                      onPressed: () {
+                                        CheckartisanNavigator.push(context, const PasswordResetAppScreen());
+                                      },
+                                      child: const Text(
+                                        'Forgot Password?',
+                                        style: TextStyle(color: Color(0xFF004D40), fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
                                   const SizedBox(height: 20),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      BlocBuilder<AuthBloc, AuthState>(
-                                        builder: (context, state) {
-                                          return _buildSocialLoginButton(
-                                            onPressed: () {
-                                              context
-                                                  .read<AuthBloc>()
-                                                  .add(GoogleLogin());
-                                            },
-                                            label: 'Google account',
-                                            assetPath:
-                                                'assets/icons/google.png',
-                                          );
+                                      _buildSocialLoginButton(
+                                        onPressed: () {
+                                          context.read<AuthBloc>().add(GoogleLogin());
                                         },
+                                        label: 'Google account',
+                                        assetPath: 'assets/icons/google.png',
                                       ),
                                       const SizedBox(width: 16),
-                                      BlocBuilder<AuthBloc, AuthState>(
-                                        builder: (context, state) {
-                                          return _buildSocialLoginButton(
-                                            onPressed: () {
-                                              context
-                                                  .read<AuthBloc>()
-                                                  .add(FacebookLogin());
-                                            },
-                                            label: 'Facebook account',
-                                            assetPath:
-                                                'assets/icons/facebook.png',
-                                          );
+                                      _buildSocialLoginButton(
+                                        onPressed: () {
+                                          context.read<AuthBloc>().add(FacebookLogin());
                                         },
+                                        label: 'Facebook account',
+                                        assetPath: 'assets/icons/facebook.png',
                                       ),
                                     ],
                                   ),
                                   const SizedBox(height: 20),
                                   GestureDetector(
                                     onTap: () {
-                                      CheckartisanNavigator.push(
-                                          context, const RegisterArtisan());
+                                      CheckartisanNavigator.push(context, const RegisterArtisan());
                                     },
                                     child: RichText(
                                       text: const TextSpan(
-                                        text: 'Don’t Have an account?',
+                                        text: 'Don’t Have an account? ',
                                         style: TextStyle(
-                                          color: Colors
-                                              .black, // Black color for this part
+                                          color: Colors.black, // Black color for this part
                                           fontWeight: FontWeight.bold,
                                         ),
                                         children: [
                                           TextSpan(
                                             text: 'SIGN UP',
                                             style: TextStyle(
-                                              color: Color(
-                                                  0xFF004D40), // Green color for this part
+                                              color: Color(0xFF004D40), // Green color for this part
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -363,13 +336,12 @@ class LoginArtisanState extends State<LoginArtisan> {
     required String labelText,
   }) {
     return SizedBox(
-      height: 45, // Small height for TextField
+      height: 45,
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-          isDense: true, // Makes the TextField more compact
-          contentPadding: const EdgeInsets.symmetric(
-              vertical: 10, horizontal: 12), // Adjust padding
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(12.0)),
           ),
@@ -388,14 +360,13 @@ class LoginArtisanState extends State<LoginArtisan> {
     required VoidCallback toggleObscureText,
   }) {
     return SizedBox(
-      height: 45, // Small height for TextField
+      height: 45,
       child: TextField(
         controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(
-          isDense: true, // Makes the TextField more compact
-          contentPadding: const EdgeInsets.symmetric(
-              vertical: 10, horizontal: 12), // Adjust padding
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(12.0)),
           ),
@@ -403,9 +374,7 @@ class LoginArtisanState extends State<LoginArtisan> {
           filled: true,
           fillColor: Colors.white,
           suffixIcon: IconButton(
-            icon: Icon(
-              obscureText ? Icons.visibility : Icons.visibility_off,
-            ),
+            icon: Icon(obscureText ? Icons.visibility : Icons.visibility_off),
             onPressed: toggleObscureText,
           ),
         ),
@@ -419,7 +388,7 @@ class LoginArtisanState extends State<LoginArtisan> {
     required String assetPath,
   }) {
     return SizedBox(
-      height: 45, // Ensure consistent height for social login buttons
+      height: 45,
       child: ElevatedButton.icon(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(

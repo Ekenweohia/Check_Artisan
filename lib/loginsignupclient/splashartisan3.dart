@@ -80,34 +80,43 @@ class SplashArtisan3State extends State<SplashArtisan3> {
                     ],
                   ),
                 ),
-                // Sign Up button
+                // Updated SKIP button with specific requirements
                 Padding(
                   padding: const EdgeInsets.only(bottom: 32.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white, // Button background color
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 32, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(0), // Rounded corners
-                      ),
-                      side: const BorderSide(
+                  child: SizedBox(
+                    width: 150, // Fixed width of 150px
+                    height: 40, // Fixed height of 40px
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white, // Button background color
+                        padding: EdgeInsets.zero, // Remove padding to centralize text
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(5), // Border radius 5px for the top-left corner
+                            topRight: Radius.circular(0),
+                            bottomLeft: Radius.circular(0),
+                            bottomRight: Radius.circular(0),
+                          ),
+                        ),
+                        side: const BorderSide(
                           color: Color(0xFF2C6B58),
-                          width: 1), // Optional border
-                    ),
-                    onPressed: () {
-                      CheckartisanNavigator.pushReplacement(
-                        context,
-                        const RegisterArtisan(),
-                      );
-                    },
-                    child: const Text(
-                      'SKIP',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF2C6B58), // Text color
+                          width: 1, // Button border
+                        ),
+                      ),
+                      onPressed: () {
+                        CheckartisanNavigator.pushReplacement(
+                          context,
+                          const RegisterArtisan(),
+                        );
+                      },
+                      child: const Text(
+                        'SKIP',
+                        textAlign: TextAlign.center, // Ensure text is centered
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF2C6B58), // Text color
+                        ),
                       ),
                     ),
                   ),

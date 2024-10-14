@@ -43,7 +43,7 @@ class RegisterArtisan extends StatelessWidget {
                   ),
                   child: SingleChildScrollView(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center, // Center alignment for text and buttons
                       children: [
                         const Text(
                           'Welcome to CheckArtisan',
@@ -63,7 +63,7 @@ class RegisterArtisan extends StatelessWidget {
                         const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(
-                            "CheckArtsian supports quality tradespersons around Nigeria."
+                            "CheckArtisan supports quality tradespersons around Nigeria."
                             "Our application process is strict and only those who meet our high standards are accepted.",
                             textAlign: TextAlign.left,
                             style: TextStyle(
@@ -73,53 +73,59 @@ class RegisterArtisan extends StatelessWidget {
                                 fontFamily: 'Montserrat-Light.ttf'),
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        const Align(
-                          alignment: Alignment.centerLeft,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            CheckartisanNavigator.push(
-                                context, const EmailArtisan());
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF004D40),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 32, vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24.0),
+                        const SizedBox(height: 40), // Increased spacing to move buttons up
+                        // Centering the buttons and making them the same size
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 250, // Fixed width to make both buttons the same size
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  CheckartisanNavigator.push(
+                                      context, const EmailArtisan());
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF004D40),
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 16.0), // Consistent vertical padding
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                  textStyle: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                child: const Text('HAVE AN EMAIL?'),
+                              ),
                             ),
-                            textStyle: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              width: 250, // Fixed width to make both buttons the same size
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  CheckartisanNavigator.push(
+                                      context, const PhoneArtisan());
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF004D40),
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 16.0), // Consistent vertical padding
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                  textStyle: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                child: const Text('USE MY PHONE NUMBER'),
+                              ),
                             ),
-                          ),
-                          child: const Text('HAVE AN EMAIL?'),
-                        ),
-                        const SizedBox(height: 20),
-                        const Align(
-                          alignment: Alignment.centerLeft,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            CheckartisanNavigator.push(
-                                context, const PhoneArtisan());
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF004D40),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 32, vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24.0),
-                            ),
-                            textStyle: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          child: const Text('USE MY PHONE NUMBER'),
+                          ],
                         ),
                       ],
                     ),

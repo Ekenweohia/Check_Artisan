@@ -230,7 +230,7 @@ class OTPVerificationArtisanScreenState
             useApi: false), // Change to true when API is ready
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 25.0),
             child: LayoutBuilder(
               builder: (context, constraints) {
                 return SingleChildScrollView(
@@ -246,7 +246,7 @@ class OTPVerificationArtisanScreenState
                             width: constraints.maxWidth * 0.7,
                             height: constraints.maxWidth * 0.7,
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 10),
                           const Text(
                             'OTP Verification',
                             style: TextStyle(
@@ -274,7 +274,7 @@ class OTPVerificationArtisanScreenState
                               _otpTextField(_otpController4, false),
                             ],
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 30),
                           BlocConsumer<OTPVerificationBloc,
                               OTPVerificationArtisanState>(
                             listener: (context, state) {
@@ -314,7 +314,7 @@ class OTPVerificationArtisanScreenState
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 50),
                                   SizedBox(
                                     width: double.infinity,
                                     child: ElevatedButton(

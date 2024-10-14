@@ -33,7 +33,7 @@ class RegisterClient extends StatelessWidget {
                   width: screenSize.width * 0.5,
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
               Expanded(
                 child: Container(
                   width: double.infinity,
@@ -45,15 +45,16 @@ class RegisterClient extends StatelessWidget {
                   ),
                   child: SingleChildScrollView(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const Text(
-                          'Welcome to CheckArtisan',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                        const Center(
+                          child: Text(
+                            'Welcome to CheckArtisan',
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -71,64 +72,68 @@ class RegisterClient extends StatelessWidget {
                             "and relax as our network of skilled workmen brings your projects to life. Say goodbye to the hassle of searching for trustworthy contractors – we've got you covered.\n\nWelcome aboard, and let's get to work!",
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 13,
                               fontWeight: FontWeight.w600,
                               fontFamily: 'Montserrat-SemiBold.ttf',
                               color: Colors.black,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        const Align(
-                          alignment: Alignment.centerLeft,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            CheckartisanNavigator.push(
-                                context, const EmailClient());
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF004D40),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: screenSize.width * 0.08,
-                              vertical: screenSize.height * 0.02,
+                        const SizedBox(height: 15), // Increased spacing to move buttons up
+                        // Centering the buttons and making them the same size
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 250, // Fixed width to make both buttons the same size
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  CheckartisanNavigator.push(
+                                      context, const EmailClient());
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF004D40),
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16.0, // Consistent vertical padding
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                  textStyle: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                child: const Text('HAVE AN EMAIL?'),
+                              ),
                             ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24.0),
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              width: 250, // Fixed width to make both buttons the same size
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  CheckartisanNavigator.push(
+                                      context, const PhoneClient());
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF004D40),
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16.0, // Consistent vertical padding
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                  textStyle: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                child: const Text('USE MY PHONE NUMBER'),
+                              ),
                             ),
-                            textStyle: TextStyle(
-                              fontSize: screenSize.width * 0.04,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          child: const Text('HAVE AN EMAIL?'),
-                        ),
-                        const SizedBox(height: 20),
-                        const Align(
-                          alignment: Alignment.centerLeft,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            CheckartisanNavigator.push(
-                                context, const PhoneClient());
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF004D40),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: screenSize.width * 0.08,
-                              vertical: screenSize.height * 0.02,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24.0),
-                            ),
-                            textStyle: TextStyle(
-                              fontSize: screenSize.width * 0.04,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          child: const Text('USE MY PHONE NUMBER'),
+                          ],
                         ),
                       ],
                     ),

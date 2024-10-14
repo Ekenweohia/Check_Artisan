@@ -52,12 +52,10 @@ class EmailConfirmationFailure extends EmailConfirmationState {
   List<Object> get props => [error];
 }
 
-class EmailConfirmationBloc
-    extends Bloc<EmailConfirmationEvent, EmailConfirmationState> {
+class EmailConfirmationBloc extends Bloc<EmailConfirmationEvent, EmailConfirmationState> {
   final bool useApi;
 
-  EmailConfirmationBloc({this.useApi = false})
-      : super(EmailConfirmationInitial()) {
+  EmailConfirmationBloc({this.useApi = false}) : super(EmailConfirmationInitial()) {
     on<SendEmailConfirmation>(_onSendEmailConfirmation);
     on<ResendEmailConfirmation>(_onResendEmailConfirmation);
   }
@@ -85,8 +83,8 @@ class EmailConfirmationBloc
     }
   }
 
-  Future<void> _onResendEmailConfirmation(ResendEmailConfirmation event,
-      Emitter<EmailConfirmationState> emit) async {
+  Future<void> _onResendEmailConfirmation(
+      ResendEmailConfirmation event, Emitter<EmailConfirmationState> emit) async {
     emit(EmailConfirmationLoading());
 
     try {
@@ -149,7 +147,8 @@ class EmailConfirmation extends StatelessWidget {
                   width: 300,
                   height: 300,
                 ),
-                const SizedBox(height: 150),
+                // Reduced spacing between the image and the text to bring them closer together
+                const SizedBox(height: 8), // Smaller spacing for tighter layout
                 const Text(
                   'Confirm your email address',
                   style: TextStyle(
@@ -158,7 +157,7 @@ class EmailConfirmation extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 4), // Reduced spacing to keep the text close
                 const Text(
                   'We sent a confirmation mail to:',
                   textAlign: TextAlign.center,
@@ -167,7 +166,7 @@ class EmailConfirmation extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 2), // Minimal spacing for better compactness
                 Text(
                   email,
                   textAlign: TextAlign.center,
@@ -177,7 +176,7 @@ class EmailConfirmation extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 2), // Minimal spacing to keep it visually connected
                 const Text(
                   'Check your email and click on the confirmation link to continue',
                   textAlign: TextAlign.center,
@@ -186,7 +185,7 @@ class EmailConfirmation extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16), // Slightly reduced spacing before the button
                 BlocConsumer<EmailConfirmationBloc, EmailConfirmationState>(
                   listener: (context, state) {
                     if (state is EmailConfirmationSuccess) {
@@ -207,18 +206,24 @@ class EmailConfirmation extends StatelessWidget {
                     if (state is EmailConfirmationLoading) {
                       return const CircularLoadingWidget();
                     }
-                    return TextButton(
-                      onPressed: () {
-                        context
-                            .read<EmailConfirmationBloc>()
-                            .add(ResendEmailConfirmation(email));
-                      },
-                      child: const Text(
-                        'Resend Email',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Color(0xFF004D40),
-                          fontWeight: FontWeight.bold,
+                    return SizedBox(
+                      width: double.infinity, // Full-width button
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0), // Button padding
+                        child: TextButton(
+                          onPressed: () {
+                            context
+                                .read<EmailConfirmationBloc>()
+                                .add(ResendEmailConfirmation(email));
+                          },
+                          child: const Text(
+                            'Resend Email',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Color(0xFF004D40),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
                     );

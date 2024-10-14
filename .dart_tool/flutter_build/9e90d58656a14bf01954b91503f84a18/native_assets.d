@@ -1,0 +1,1 @@
+ /home/user/CHECK_ARTISAN/.dart_tool/flutter_build/9e90d58656a14bf01954b91503f84a18/native_assets.yaml: 

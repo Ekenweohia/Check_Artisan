@@ -1,3 +1,20 @@
+// buildscript block must come before the plugins block
+buildscript {
+    ext {
+        kotlin_version = '1.8.10' // Declare Kotlin version here
+    }
+
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+// plugins block comes after the buildscript block
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
@@ -24,7 +41,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.example.check_artisan_main"
-    compileSdkVersion 34
+    compileSdkVersion 34 // Updated to 34 to meet dependency requirements
+    buildToolsVersion "34.0.0" // Updated to use the latest version
     ndkVersion "25.1.8937393"
 
     compileOptions {
@@ -43,7 +61,7 @@ android {
     defaultConfig {
         applicationId "com.example.check_artisan_main"
         minSdkVersion 21
-        targetSdkVersion 34
+        targetSdkVersion 34 // Updated to 34 to align with compileSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -61,4 +79,10 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+
+// Ensure Gradle Wrapper is updated
+task wrapper(type: Wrapper) {
+    gradleVersion = '7.4.2' // Ensure compatibility with Flutter and Android setup
+    distributionType = Wrapper.DistributionType.ALL
 }

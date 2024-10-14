@@ -123,7 +123,7 @@ class ChangePhoneNumberScreenState extends State<ChangePhoneNumberScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Change Phone Number'),
+        title: const Text('Change Phone Number', style: TextStyle(color: Color(0xFF004D40), fontSize: 12, fontWeight: FontWeight.w600)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -140,74 +140,90 @@ class ChangePhoneNumberScreenState extends State<ChangePhoneNumberScreen> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 70),
-            TextField(
-              controller: _oldPhoneNumberController,
-              decoration: InputDecoration(
-                labelText: 'Old Phone Number',
-                hintStyle: const TextStyle(color: Color(0xFF004D40)),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-              ),
-              style: const TextStyle(color: Color(0xFF004D40)),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _newPhoneNumberController,
-              decoration: InputDecoration(
-                labelText: 'New Phone Number',
-                hintStyle: const TextStyle(color: Color(0xFF004D40)),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0)),
-              ),
-              style: const TextStyle(color: Color(0xFF004D40)),
-            ),
-            const SizedBox(height: 32),
-            BlocConsumer<PhoneNumberBloc, PhoneNumberState>(
-              listener: (context, state) {
-                if (state is PhoneNumberChanged) {
-                  CheckartisanNavigator.push(
-                    context,
-                    OTPVerificationArtisanScreen(
-                      phoneNumber: _newPhoneNumberController.text,
-                    ),
-                  );
-                } else if (state is PhoneNumberError) {
-                  AnimatedSnackBar.rectangle(
-                    'Error',
-                    'Please Check Internet Connection',
-                    type: AnimatedSnackBarType.error,
-                  );
-                }
-              },
-              builder: (context, state) {
-                if (state is PhoneNumberLoading) {
-                  return const CircularProgressIndicator();
-                }
-                return SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _changePhoneNumber,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF004D40),
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                    ),
-                    child: const Text(
-                      'SAVE',
-                      style: TextStyle(fontSize: 16, color: Colors.white),
-                    ),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+        child: BlocProvider(
+          create: (context) => PhoneNumberBloc(useApi: false),
+          child: BlocConsumer<PhoneNumberBloc, PhoneNumberState>(
+            listener: (context, state) {
+              if (state is PhoneNumberChanged) {
+                CheckartisanNavigator.push(
+                  context,
+                  OTPVerificationArtisanScreen(
+                    phoneNumber: _newPhoneNumberController.text,
                   ),
                 );
-              },
-            ),
-          ],
+              } else if (state is PhoneNumberError) {
+                AnimatedSnackBar.rectangle(
+                  'Error',
+                  'Please Check Internet Connection',
+                  type: AnimatedSnackBarType.error,
+                ).show(context);
+              }
+            },
+            builder: (context, state) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 16),
+                  _buildSmallTextField(
+                    controller: _oldPhoneNumberController,
+                    labelText: 'Old Phone Number',
+                  ),
+                  const SizedBox(height: 16),
+                  _buildSmallTextField(
+                    controller: _newPhoneNumberController,
+                    labelText: 'New Phone Number',
+                  ),
+                  const SizedBox(height: 32),
+                  if (state is PhoneNumberLoading)
+                    const CircularProgressIndicator()
+                  else
+                    SizedBox(
+                      width: 200, // Fixed width to align with the "LOGIN" button style in LoginClient
+                      child: ElevatedButton(
+                        onPressed: _changePhoneNumber,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF004D40),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          textStyle: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          elevation: 8,
+                        ),
+                        child: const Text('GENERATE OTP'),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSmallTextField({
+    required TextEditingController controller,
+    required String labelText,
+  }) {
+    return SizedBox(
+      height: 45,
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(15.0)),
+          ),
+          labelText: labelText,
+          filled: true,
+          fillColor: Colors.white,
         ),
       ),
     );

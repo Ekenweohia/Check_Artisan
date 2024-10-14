@@ -10,7 +10,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:check_artisan/RegistrationClient/login_client.dart';
 
 abstract class RegistrationEvent extends Equatable {
@@ -99,7 +98,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
           emit(RegistrationFailure(error));
         }
       } else {
-        await Future.delayed(const Duration(seconds: 1));
+        await Future.delayed(const Duration(seconds: 3));
         emit(RegistrationSuccess());
       }
     } catch (e) {
@@ -115,10 +114,10 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       if (account != null) {
         emit(RegistrationSuccess());
       } else {
-        emit(const RegistrationFailure('Google sign-in failed'));
+        emit(const RegistrationFailure('Google sign-in was cancelled.'));
       }
     } catch (e) {
-      emit(RegistrationFailure(e.toString()));
+      emit(RegistrationFailure('Google sign-in failed: $e'));
     }
   }
 
@@ -130,10 +129,10 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       if (result.status == LoginStatus.success) {
         emit(RegistrationSuccess());
       } else {
-        emit(const RegistrationFailure('Facebook sign-in failed'));
+        emit(const RegistrationFailure('Facebook sign-in failed.'));
       }
     } catch (e) {
-      emit(RegistrationFailure(e.toString()));
+      emit(RegistrationFailure('Facebook sign-in failed: $e'));
     }
   }
 }
@@ -188,126 +187,135 @@ class PhoneClientState extends State<PhoneClient> {
                   padding: const EdgeInsets.all(16.0),
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(24.0)),
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
                   ),
                   child: SingleChildScrollView(
-                    child: BlocProvider(
-                      create: (context) => RegistrationBloc(useApi: false),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Got a Phone Number? Let’s Get Started',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          _buildSmallTextField(
-                            controller: _firstNameController,
-                            labelText: 'First Name',
-                          ),
-                          const SizedBox(height: 20),
-                          _buildSmallTextField(
-                            controller: _lastNameController,
-                            labelText: 'Last Name',
-                          ),
-                          const SizedBox(height: 20),
-                          _buildSmallTextField(
-                            controller: _phoneController,
-                            labelText: 'Phone Number',
-                          ),
-                          const SizedBox(height: 20),
-                          _buildPasswordTextField(
-                            controller: _passwordController,
-                            labelText: 'Password',
-                            obscureText: _obscurePassword,
-                            toggleObscureText: () {
-                              setState(() {
-                                _obscurePassword = !_obscurePassword;
-                              });
-                            },
-                          ),
-                          const SizedBox(height: 20),
-                          _buildPasswordTextField(
-                            controller: _confirmPasswordController,
-                            labelText: 'Confirm Password',
-                            obscureText: _obscureConfirmPassword,
-                            toggleObscureText: () {
-                              setState(() {
-                                _obscureConfirmPassword =
-                                    !_obscureConfirmPassword;
-                              });
-                            },
-                          ),
-                          const SizedBox(height: 20),
-                          const Text(
-                            'CLICK HERE TO READ TERMS AND CONDITIONS',
-                            style: TextStyle(
-                              color: Color(0xFF004D40),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              Switch(
-                                value: _isSwitched,
-                                onChanged: (bool value) {
-                                  setState(() {
-                                    _isSwitched = value;
-                                  });
-                                },
-                                activeColor: const Color(0xFF004D40),
-                              ),
-                              const Text('I agree to the terms and conditions'),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          BlocConsumer<RegistrationBloc, RegistrationState>(
-                            listener: (context, state) {
-                              if (state is RegistrationSuccess) {
-                                CheckartisanNavigator.push(
-                                    context,
-                                    OTPVerificationScreen(
-                                        phoneNumber: _phoneController.text));
-                              } else if (state is RegistrationFailure) {
-                                AnimatedSnackBar.rectangle('Error',
-                                        'Please Check Internet Connection',
-                                        type: AnimatedSnackBarType.error)
-                                    .show(context);
-                              }
-                            },
-                            builder: (context, state) {
-                              if (state is RegistrationLoading) {
-                                return const CircularLoadingWidget();
-                              }
-                              return SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    final firstName = _firstNameController.text;
-                                    final lastName = _lastNameController.text;
-                                    final phoneNumber = _phoneController.text;
-                                    final password = _passwordController.text;
-                                    final confirmPassword =
-                                        _confirmPasswordController.text;
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: BlocProvider(
+                        create: (context) => RegistrationBloc(useApi: false),
+                        child: BlocConsumer<RegistrationBloc, RegistrationState>(
+                          listener: (context, state) {
+                            if (state is RegistrationSuccess) {
+                              CheckartisanNavigator.push(
+                                  context,
+                                  OTPVerificationScreen(
+                                      phoneNumber: _phoneController.text));
+                            } else if (state is RegistrationFailure) {
+                              AnimatedSnackBar.rectangle(
+                                  'Error', state.error,
+                                  type: AnimatedSnackBarType.error)
+                                  .show(context);
+                            }
+                          },
+                          builder: (context, state) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Got a Phone Number? Let’s Get Started',
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 30),
+                                _buildSmallTextField(
+                                  controller: _firstNameController,
+                                  labelText: 'First Name',
+                                ),
+                                const SizedBox(height: 20),
+                                _buildSmallTextField(
+                                  controller: _lastNameController,
+                                  labelText: 'Last Name',
+                                ),
+                                const SizedBox(height: 20),
+                                _buildSmallTextField(
+                                  controller: _phoneController,
+                                  labelText: 'Phone Number',
+                                ),
+                                const SizedBox(height: 20),
+                                _buildSmallTextField(
+                                  controller: _passwordController,
+                                  labelText: 'Password',
+                                  obscureText: _obscurePassword,
+                                  onIconPressed: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
+                                  icon: _obscurePassword
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
+                                const SizedBox(height: 20),
+                                _buildSmallTextField(
+                                  controller: _confirmPasswordController,
+                                  labelText: 'Confirm Password',
+                                  obscureText: _obscureConfirmPassword,
+                                  onIconPressed: () {
+                                    setState(() {
+                                      _obscureConfirmPassword = !_obscureConfirmPassword;
+                                    });
+                                  },
+                                  icon: _obscureConfirmPassword
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
+                                const SizedBox(height: 20),
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    'CLICK HERE TO READ TERMS AND CONDITIONS',
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: const TextStyle(
+                                        color: Color(0xFF004D40),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 15),
+                               Row(
+  children: [
+    Switch(
+      value: _isSwitched,
+      onChanged: (bool value) {
+        setState(() {
+          _isSwitched = value;
+        });
+      },
+      activeColor: const Color(0xFF004D40), // Active color (when the switch is on)
+      inactiveThumbColor: Colors.grey, // Thumb color when the switch is off
+      inactiveTrackColor: Colors.grey.shade300, // Track color when the switch is off
+    ),
+    const SizedBox(width: 5,),
+    const Text('I agree to the terms and conditions', style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w500),),
+  ],
+),
 
-                                    if (password != confirmPassword) {
-                                      AnimatedSnackBar.rectangle(
-                                        "Warning",
-                                        "Passwords do not match",
-                                        type: AnimatedSnackBarType.warning,
-                                        mobileSnackBarPosition:
-                                            MobileSnackBarPosition.bottom,
-                                      ).show(context);
-                                      return;
-                                    }
+                                const SizedBox(height: 25),
+                                if (state is RegistrationLoading)
+                                  const CircularLoadingWidget()
+                                else
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        final firstName = _firstNameController.text;
+                                        final lastName = _lastNameController.text;
+                                        final phoneNumber = _phoneController.text;
+                                        final password = _passwordController.text;
+                                        final confirmPassword = _confirmPasswordController.text;
 
-                                    context.read<RegistrationBloc>().add(
+                                        if (!_validateInputs(context, firstName, lastName, phoneNumber, password, confirmPassword)) {
+                                          return;
+                                        }
+
+                                        context.read<RegistrationBloc>().add(
                                           SubmitRegistration(
                                             firstName: firstName,
                                             lastName: lastName,
@@ -315,73 +323,73 @@ class PhoneClientState extends State<PhoneClient> {
                                             password: password,
                                           ),
                                         );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(0xFF004D40),
+                                        foregroundColor: Colors.white,
+                                        padding: const EdgeInsets.symmetric(vertical: 16),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        textStyle: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        shadowColor: Colors.black26,
+                                        elevation: 8,
+                                      ),
+                                      child: const Text('SIGN UP'),
+                                    ),
+                                  ),
+                                const SizedBox(height: 60),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    _buildSocialLoginButton(
+                                      onPressed: () {
+                                        context.read<RegistrationBloc>().add(GoogleLogin());
+                                      },
+                                      label: 'Google',
+                                      assetPath: 'assets/icons/google.png',
+                                    ),
+                                    const SizedBox(width: 16),
+                                    _buildSocialLoginButton(
+                                      onPressed: () {
+                                        context.read<RegistrationBloc>().add(FacebookLogin());
+                                      },
+                                      label: 'Facebook',
+                                      assetPath: 'assets/icons/facebook.png',
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 15),
+                                TextButton(
+                                  onPressed: () {
+                                    CheckartisanNavigator.push(context, const LoginClient());
                                   },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF004D40),
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 16),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(0),
+                                  child: RichText(
+                                    text: const TextSpan(
+                                      text: 'Already Have an account? ',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: 'LOGIN',
+                                          style: TextStyle(
+                                            color: Color(0xFF004D40),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  child: const Text('SIGN UP'),
                                 ),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 50),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              _buildSocialLoginButton(
-                                onPressed: () {
-                                  context
-                                      .read<RegistrationBloc>()
-                                      .add(GoogleLogin());
-                                },
-                                label: 'Google account',
-                                assetPath: 'assets/icons/google.png',
-                              ),
-                              const SizedBox(width: 15),
-                              _buildSocialLoginButton(
-                                onPressed: () {
-                                  context
-                                      .read<RegistrationBloc>()
-                                      .add(FacebookLogin());
-                                },
-                                label: 'Facebook account',
-                                assetPath: 'assets/icons/facebook.png',
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 15),
-                          TextButton(
-                            onPressed: () {
-                              CheckartisanNavigator.push(
-                                  context, const LoginClient());
-                            },
-                            child: RichText(
-                              text: const TextSpan(
-                                text: 'Already Have an account? ',
-                                style: TextStyle(
-                                  color:
-                                      Colors.black, // Black color for this part
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                children: [
-                                  TextSpan(
-                                    text: 'LOGIN',
-                                    style: TextStyle(
-                                      color: Color(0xFF004D40),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -394,59 +402,80 @@ class PhoneClientState extends State<PhoneClient> {
     );
   }
 
+  bool _validateInputs(BuildContext context, String firstName, String lastName, String phoneNumber, String password, String confirmPassword) {
+    if (!RegExp(r'^[a-zA-Z]+$').hasMatch(firstName)) {
+      _showWarning(context, 'Please enter a valid first name');
+      return false;
+    }
+
+    if (!RegExp(r'^[a-zA-Z]+$').hasMatch(lastName)) {
+      _showWarning(context, 'Please enter a valid last name');
+      return false;
+    }
+
+    if (!RegExp(r'^\+?[0-9]{9,15}$').hasMatch(phoneNumber)) {
+      _showWarning(context, 'Please enter a valid phone number');
+      return false;
+    }
+
+    if (password.length < 8 ||
+        !RegExp(r'[A-Z]').hasMatch(password) ||
+        !RegExp(r'[a-z]').hasMatch(password) ||
+        !RegExp(r'[0-9]').hasMatch(password) ||
+        !RegExp(r'[!@#\$&*~]').hasMatch(password)) {
+      _showWarning(
+          context,
+          'Password must be at least 8 characters long, '
+          'include an uppercase letter, a lowercase letter, a number, '
+          'and a special character');
+      return false;
+    }
+
+    if (password != confirmPassword) {
+      _showWarning(context, 'Passwords do not match');
+      return false;
+    }
+
+    if (!_isSwitched) {
+      _showWarning(context, 'You must agree to the terms and conditions');
+      return false;
+    }
+
+    return true;
+  }
+
+  void _showWarning(BuildContext context, String message) {
+    AnimatedSnackBar.rectangle('Warning', message, type: AnimatedSnackBarType.warning).show(context);
+  }
+
   Widget _buildSmallTextField({
     required TextEditingController controller,
     required String labelText,
+    bool obscureText = false,
+    VoidCallback? onIconPressed,
+    IconData? icon,
   }) {
     return SizedBox(
-      height: 45, // Uniform height for all TextFields
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          isDense: true, // Makes the TextField denser
-          contentPadding: const EdgeInsets.symmetric(
-              vertical: 10, horizontal: 12), // Adjust padding
-          border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12.0)),
-          ),
-          labelText: labelText,
-          filled: true,
-          fillColor: Colors.white,
-        ),
-        style: GoogleFonts.montserrat(fontSize: 14), // Apply Montserrat font
-      ),
-    );
-  }
-
-  Widget _buildPasswordTextField({
-    required TextEditingController controller,
-    required String labelText,
-    required bool obscureText,
-    required VoidCallback toggleObscureText,
-  }) {
-    return SizedBox(
-      height: 45, // Uniform height for all TextFields
+      height: 40,
       child: TextField(
         controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(
-          isDense: true, // Makes the TextField denser
-          contentPadding: const EdgeInsets.symmetric(
-              vertical: 10, horizontal: 12), // Adjust padding
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            borderRadius: BorderRadius.all(Radius.circular(15.0)),
           ),
           labelText: labelText,
           filled: true,
           fillColor: Colors.white,
-          suffixIcon: IconButton(
-            icon: Icon(
-              obscureText ? Icons.visibility : Icons.visibility_off,
-            ),
-            onPressed: toggleObscureText,
-          ),
+          suffixIcon: icon != null
+              ? IconButton(
+                  icon: Icon(icon),
+                  onPressed: onIconPressed,
+                )
+              : null,
         ),
-        style: GoogleFonts.montserrat(fontSize: 14), // Apply Montserrat font
       ),
     );
   }
@@ -456,29 +485,33 @@ class PhoneClientState extends State<PhoneClient> {
     required String label,
     required String assetPath,
   }) {
-    return ElevatedButton.icon(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(0)),
-          side: BorderSide(color: Colors.grey),
+    return SizedBox(
+      width: 140,
+      height: 44,
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(0)),
+            side: BorderSide(color: Colors.grey),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
         ),
-        textStyle: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
+        icon: Image.asset(
+          assetPath,
+          height: 24,
+          width: 24,
         ),
-      ),
-      icon: Image.asset(
-        assetPath,
-        height: 30,
-        width: 30,
-      ),
-      label: Text(
-        label,
-        style: GoogleFonts.montserrat(fontSize: 12), // Apply Montserrat font
+        label: Text(
+          label,
+          style: GoogleFonts.montserrat(fontSize: 12),
+        ),
       ),
     );
   }

@@ -75,8 +75,7 @@ class ArtisanListBloc extends Bloc<ArtisanListEvent, ArtisanListState> {
     if (currentState is ArtisanListLoaded && currentState.hasReachedMax) return;
 
     emit(ArtisanListLoading(
-        artisans:
-            currentState is ArtisanListLoaded ? currentState.artisans : []));
+        artisans: currentState is ArtisanListLoaded ? currentState.artisans : []));
 
     try {
       // Cache logic (optional)
@@ -115,7 +114,6 @@ class ArtisanListBloc extends Bloc<ArtisanListEvent, ArtisanListState> {
         await prefs.setString(
             'artisan_list_${event.tradeType}_${event.page}', jsonEncode(data));
 
-        // If the list of artisans is empty, it means there are no more items to load
         final hasReachedMax = artisans.isEmpty;
 
         final currentArtisans =
@@ -166,16 +164,16 @@ class Artisan {
   factory Artisan.fromJson(Map<String, dynamic> json) {
     return Artisan(
       id: json['id'],
-      artisanId: json['artisan_id'],
-      companyName: json['companyname'],
-      description: json['description'],
-      avatar: json['avatar'],
-      rating: json['rating'],
-      cityName: json['cityName'],
-      stateName: json['stateName'],
-      countryName: json['countryName'],
-      firstName: json['user']['firstname'],
-      lastName: json['user']['lastname'],
+      artisanId: json['artisan_id'].toString(),
+      companyName: json['companyname'] ?? '',
+      description: json['description'] ?? '',
+      avatar: json['avatar'] ?? '',
+      rating: json['rating'].toString(),
+      cityName: json['cityName'] ?? '',
+      stateName: json['stateName'] ?? '',
+      countryName: json['countryName'] ?? '',
+      firstName: json['user']['firstname'] ?? '',
+      lastName: json['user']['lastname'] ?? '',
       skills: (json['skills'] as List)
           .map<Skill>((skillJson) => Skill.fromJson(skillJson['skill']))
           .toList(),
@@ -200,7 +198,7 @@ class Skill {
   }
 }
 
-class ArtisanListScreen extends StatelessWidget {
+class ArtisanListScreen extends StatefulWidget {
   final String title;
   final String? artisanType;
 
@@ -211,13 +209,38 @@ class ArtisanListScreen extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context).size;
-    final ScrollController scrollController = ScrollController();
+  _ArtisanListScreenState createState() => _ArtisanListScreenState();
+}
 
+class _ArtisanListScreenState extends State<ArtisanListScreen> {
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      context.read<ArtisanListBloc>().add(LoadArtisanList(
+          tradeType: widget.artisanType,
+          page: (context.read<ArtisanListBloc>().state as ArtisanListLoaded).artisans.length ~/ 10 + 1));
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          ArtisanListBloc()..add(LoadArtisanList(tradeType: artisanType)),
+          ArtisanListBloc()..add(LoadArtisanList(tradeType: widget.artisanType)),
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -226,7 +249,7 @@ class ArtisanListScreen extends StatelessWidget {
               Navigator.pop(context);
             },
           ),
-          title: Text(title),
+          title: Text(widget.title),
           centerTitle: true,
         ),
         body: BlocBuilder<ArtisanListBloc, ArtisanListState>(
@@ -234,19 +257,9 @@ class ArtisanListScreen extends StatelessWidget {
             if (state is ArtisanListLoading && state.artisans.isEmpty) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is ArtisanListLoaded) {
-              // Adding scroll listener for pagination
-              scrollController.addListener(() {
-                if (scrollController.position.pixels ==
-                    scrollController.position.maxScrollExtent) {
-                  context.read<ArtisanListBloc>().add(LoadArtisanList(
-                      tradeType: artisanType,
-                      page: (state.artisans.length ~/ 10) + 1));
-                }
-              });
-
               return ListView.builder(
-                controller: scrollController,
-                padding: EdgeInsets.all(screenSize.width * 0.04),
+                controller: _scrollController,
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
                 itemCount: state.hasReachedMax
                     ? state.artisans.length
                     : state.artisans.length + 1,
@@ -257,7 +270,7 @@ class ArtisanListScreen extends StatelessWidget {
 
                   final artisan = state.artisans[index];
                   return Padding(
-                    padding: EdgeInsets.only(bottom: screenSize.width * 0.04),
+                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width * 0.04),
                     child: ArtisanCard(artisan: artisan),
                   );
                 },
@@ -288,7 +301,7 @@ class ArtisanCard extends StatelessWidget {
 
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(10.0),
       ),
       elevation: 4,
       child: Padding(
@@ -312,6 +325,7 @@ class ArtisanCard extends StatelessWidget {
                           fontSize: screenSize.width * 0.04,
                           fontWeight: FontWeight.bold,
                         ),
+                       
                       ),
                       Text(
                         '${artisan.stateName}, ${artisan.cityName}',
@@ -320,53 +334,52 @@ class ArtisanCard extends StatelessWidget {
                           color: Colors.grey,
                         ),
                       ),
-                      Text(
-                        'Rating: ${artisan.rating}',
-                        style: TextStyle(
-                          fontSize: screenSize.width * 0.035,
-                          color: const Color(0xff201717),
-                        ),
-                      ),
                     ],
                   ),
                 ),
               ],
             ),
-            SizedBox(height: screenSize.height * 0.02),
+            const SizedBox(height: 15),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    CheckartisanNavigator.push(
-                        context, const QuoteRequestsScreen());
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: const Color(0xFF004D40),
-                    side: const BorderSide(color: Color(0xFF004D40)),
-                  ),
-                  child: Text(
-                    'GET QUOTE',
-                    style: TextStyle(fontSize: screenSize.width * 0.035),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    CheckartisanNavigator.push(
-                        context, const ArtisanProfileScreen());
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF004D40),
-                    foregroundColor: Colors.white,
-                  ),
-                  child: Text(
-                    'VIEW PROFILE',
-                    style: TextStyle(fontSize: screenSize.width * 0.035),
-                  ),
-                ),
-              ],
-            ),
+  mainAxisAlignment: MainAxisAlignment.center, // Center the buttons
+  children: [
+    ElevatedButton(
+      onPressed: () {
+        CheckartisanNavigator.push(context, const QuoteRequestsScreen());
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF004D40),
+        side: const BorderSide(color: Color(0xffC4C4C4)),
+        shape: RoundedRectangleBorder( // Adding border radius
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+      ),
+      child: Text(
+        'GET QUOTE',
+        style: TextStyle(fontSize: screenSize.width * 0.035),
+      ),
+    ),
+    const SizedBox(width: 10), // Reduce space between the buttons
+    ElevatedButton(
+      onPressed: () {
+        CheckartisanNavigator.push(context, const ArtisanProfileScreen());
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF004D40),
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder( // Adding border radius
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+      ),
+      child: Text(
+        'VIEW PROFILE',
+        style: TextStyle(fontSize: screenSize.width * 0.035),
+      ),
+    ),
+  ],
+)
+
           ],
         ),
       ),

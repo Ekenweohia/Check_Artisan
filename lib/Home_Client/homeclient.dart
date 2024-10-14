@@ -21,7 +21,7 @@ class _HomeClientState extends State<HomeClient>
 
   final List<Widget> pages = [
     const HomeClientContent(),
-    const SizedBox(),
+    const SizedBox(), 
     const SettingsScreen(),
     const ProfileScreen(),
   ];
@@ -61,35 +61,6 @@ class _HomeClientState extends State<HomeClient>
       ),
       bottomNavigationBar: BottomBar(
         fit: StackFit.expand,
-        child: TabBar(
-          controller: tabController,
-          tabs: [
-            Tab(
-              icon: ImageIcon(
-                const AssetImage("assets/icons/home.png"),
-                color: currentPage == 0 ? selectedColor : unselectedColor,
-              ),
-            ),
-            Tab(
-              icon: ImageIcon(
-                const AssetImage("assets/icons/tools.png"),
-                color: currentPage == 1 ? selectedColor : unselectedColor,
-              ),
-            ),
-            Tab(
-              icon: ImageIcon(
-                const AssetImage("assets/icons/location.png"),
-                color: currentPage == 2 ? selectedColor : unselectedColor,
-              ),
-            ),
-            Tab(
-              icon: ImageIcon(
-                const AssetImage('assets/icons/profile.png'),
-                color: currentPage == 3 ? selectedColor : unselectedColor,
-              ),
-            ),
-          ],
-        ),
         borderRadius: BorderRadius.circular(500),
         duration: const Duration(seconds: 1),
         curve: Curves.decelerate,
@@ -130,7 +101,7 @@ class _HomeClientState extends State<HomeClient>
           ],
         ),
         hideOnScroll: true,
-        scrollOpposite: false,
+        scrollOpposite: true,
         onBottomBarHidden: () {},
         onBottomBarShown: () {},
         body: (context, controller) => TabBarView(
@@ -138,6 +109,35 @@ class _HomeClientState extends State<HomeClient>
           dragStartBehavior: DragStartBehavior.down,
           physics: const BouncingScrollPhysics(),
           children: pages,
+        ),
+        child: TabBar(
+          controller: tabController,
+          tabs: [
+            Tab(
+              icon: ImageIcon(
+                const AssetImage("assets/icons/home.png"),
+                color: currentPage == 0 ? selectedColor : unselectedColor,
+              ),
+            ),
+            Tab(
+              icon: ImageIcon(
+                const AssetImage("assets/icons/location.png"),
+                color: currentPage == 1 ? selectedColor : unselectedColor,
+              ),
+            ),
+            Tab(
+              icon: ImageIcon(
+                const AssetImage("assets/icons/tools.png"),
+                color: currentPage == 2 ? selectedColor : unselectedColor,
+              ),
+            ),
+            Tab(
+              icon: ImageIcon(
+                const AssetImage('assets/icons/profile.png'),
+                color: currentPage == 3 ? selectedColor : unselectedColor,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -158,7 +158,7 @@ class HomeClientContent extends StatelessWidget {
     {"icon": Icons.carpenter, "label": "Carpenter"},
     {"icon": Icons.person, "label": "Barber"},
     {"icon": Icons.car_repair, "label": "Auto Mechanic"},
-    {"icon": Icons.grass, "label": "Gardener"}, // change to asset images
+    {"icon": Icons.grass, "label": "Gardener"},
   ];
 
   @override
@@ -174,7 +174,7 @@ class HomeClientContent extends StatelessWidget {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications, color: Color(0xFF004D40)),
+            icon: const Icon(Icons.notifications, color: Colors.black),
             onPressed: () {
               Navigator.push(
                 context,
@@ -186,8 +186,8 @@ class HomeClientContent extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: screenWidth * 0.04, vertical: screenHeight * 0.02),
+          padding: const EdgeInsets.symmetric(
+              horizontal: 30),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -198,26 +198,40 @@ class HomeClientContent extends StatelessWidget {
               ),
               const Text(
                 'How can we help you today?',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
+                style: TextStyle(fontSize: 16, color: Color(0xFF2C6B58), fontWeight: FontWeight.w400),
               ),
               SizedBox(height: screenHeight * 0.02),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search for Artisans',
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(32.0),
-                    borderSide: BorderSide.none,
-                  ),
-                  filled: true,
-                  fillColor: Colors.grey[200],
-                ),
-              ),
+              Container(
+  decoration: BoxDecoration(
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.25), // Shadow color
+        offset: const Offset(0, 4), // Shadow position
+        blurRadius: 4, // Blur radius
+      ),
+    ],
+    borderRadius: BorderRadius.circular(30.0), // Match the TextField's border radius
+  ),
+  child: TextField(
+    decoration: InputDecoration(
+      hintText: 'Search for Artisans',
+      hintStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+      suffixIcon: const Icon(Icons.search, color: Color(0xFFADADAD)),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30.0),
+        borderSide: BorderSide.none,
+      ),
+      filled: true,
+      fillColor: Colors.grey[200],
+    ),
+  ),
+),
+
               SizedBox(height: screenHeight * 0.02),
               const Center(
                 child: Text(
-                  'Most Rated Artisans',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  'Most Checked Artisans',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
               ),
               SizedBox(height: screenHeight * 0.02),
@@ -240,8 +254,7 @@ class HomeClientContent extends StatelessWidget {
               ),
               SizedBox(height: screenHeight * 0.05),
               Padding(
-                padding: const EdgeInsets.only(
-                    right: 16.0), // Adjust the value as needed
+                padding: const EdgeInsets.only(right: 16.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -249,7 +262,7 @@ class HomeClientContent extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF004D40),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
+                          borderRadius: BorderRadius.circular(5.0),
                         ),
                       ),
                       onPressed: () {
@@ -265,12 +278,16 @@ class HomeClientContent extends StatelessWidget {
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
                   ],
                 ),
-              )
+              ),
+              const SizedBox(
+                height: 80, // Explicitly adding more height to ensure the button is not covered
+              ),
             ],
           ),
         ),
@@ -308,7 +325,7 @@ class ArtisanCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 40, color: Colors.black),
+            Icon(icon, size: 30, color: Colors.black),
             SizedBox(height: MediaQuery.of(context).size.height * 0.01),
             Text(
               label,
