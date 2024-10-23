@@ -8,6 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:sms_autofill/sms_autofill.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 abstract class OTPVerificationEvent extends Equatable {
   const OTPVerificationEvent();
@@ -225,7 +226,8 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
               builder: (context, constraints) {
                 return SingleChildScrollView(
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                    constraints:
+                        BoxConstraints(minHeight: constraints.maxHeight),
                     child: IntrinsicHeight(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -264,7 +266,8 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
                             ],
                           ),
                           const SizedBox(height: 30),
-                          BlocConsumer<OTPVerificationBloc, OTPVerificationState>(
+                          BlocConsumer<OTPVerificationBloc,
+                              OTPVerificationState>(
                             listener: (context, state) {
                               if (state is OTPVerificationSuccess) {
                                 AnimatedSnackBar.rectangle(
@@ -318,14 +321,18 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
                                           ),
                                           recognizer: TapGestureRecognizer()
                                             ..onTap = () {
-                                              context.read<OTPVerificationBloc>()
-                                                  .add(ResendOTP(widget.phoneNumber));
+                                              context
+                                                  .read<OTPVerificationBloc>()
+                                                  .add(ResendOTP(
+                                                      widget.phoneNumber));
                                             },
                                         ),
                                       ],
                                     ),
                                   ),
-                                  const SizedBox(height: 50), // Space between text button and verify button
+                                  SizedBox(
+                                      height: 150
+                                          .h), // Space between text button and verify button
                                   SizedBox(
                                     width: double.infinity,
                                     child: ElevatedButton(
@@ -334,18 +341,22 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
                                             _otpController2.text +
                                             _otpController3.text +
                                             _otpController4.text;
-                                        context.read<OTPVerificationBloc>()
-                                            .add(VerifyOTP(widget.phoneNumber, otp));
+                                        context.read<OTPVerificationBloc>().add(
+                                            VerifyOTP(widget.phoneNumber, otp));
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF004D40),
+                                        backgroundColor:
+                                            const Color(0xFF004D40),
                                         foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(vertical: 20),
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 30.r),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(5),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
                                         ),
                                         textStyle: const TextStyle(
-                                            fontSize: 15, fontWeight: FontWeight.w600),
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w600),
                                       ),
                                       child: const Text('VERIFY'),
                                     ),

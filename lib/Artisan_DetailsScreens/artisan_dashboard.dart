@@ -11,7 +11,6 @@ import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_floating_bottom_bar/flutter_floating_bottom_bar.dart';
 
-// API Service to fetch user information
 class ApiService {
   final String baseUrl;
 
@@ -275,9 +274,9 @@ class ArtisanDashboardContent extends StatelessWidget {
     const SizedBox(height: 30);
 
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 30),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Text(
             'Welcome Back Artisan,',
@@ -432,7 +431,7 @@ class ArtisanDashboardContent extends StatelessWidget {
         switch (routeName) {
           case 'NewJobsScreen':
             CheckartisanNavigator.pushReplacement(
-                context, const ArtisanDashboard());
+                context, const JobListScreen());
             break;
           case 'JobListsScreen':
             CheckartisanNavigator.pushReplacement(

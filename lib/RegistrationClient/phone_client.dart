@@ -11,6 +11,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:check_artisan/RegistrationClient/login_client.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 abstract class RegistrationEvent extends Equatable {
   const RegistrationEvent();
@@ -187,14 +188,16 @@ class PhoneClientState extends State<PhoneClient> {
                   padding: const EdgeInsets.all(16.0),
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(24.0)),
                   ),
                   child: SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24.0),
                       child: BlocProvider(
                         create: (context) => RegistrationBloc(useApi: false),
-                        child: BlocConsumer<RegistrationBloc, RegistrationState>(
+                        child:
+                            BlocConsumer<RegistrationBloc, RegistrationState>(
                           listener: (context, state) {
                             if (state is RegistrationSuccess) {
                               CheckartisanNavigator.push(
@@ -202,9 +205,8 @@ class PhoneClientState extends State<PhoneClient> {
                                   OTPVerificationScreen(
                                       phoneNumber: _phoneController.text));
                             } else if (state is RegistrationFailure) {
-                              AnimatedSnackBar.rectangle(
-                                  'Error', state.error,
-                                  type: AnimatedSnackBarType.error)
+                              AnimatedSnackBar.rectangle('Error', state.error,
+                                      type: AnimatedSnackBarType.error)
                                   .show(context);
                             }
                           },
@@ -258,7 +260,8 @@ class PhoneClientState extends State<PhoneClient> {
                                   obscureText: _obscureConfirmPassword,
                                   onIconPressed: () {
                                     setState(() {
-                                      _obscureConfirmPassword = !_obscureConfirmPassword;
+                                      _obscureConfirmPassword =
+                                          !_obscureConfirmPassword;
                                     });
                                   },
                                   icon: _obscureConfirmPassword
@@ -279,24 +282,34 @@ class PhoneClientState extends State<PhoneClient> {
                                   ),
                                 ),
                                 const SizedBox(height: 15),
-                               Row(
-  children: [
-    Switch(
-      value: _isSwitched,
-      onChanged: (bool value) {
-        setState(() {
-          _isSwitched = value;
-        });
-      },
-      activeColor: const Color(0xFF004D40), // Active color (when the switch is on)
-      inactiveThumbColor: Colors.grey, // Thumb color when the switch is off
-      inactiveTrackColor: Colors.grey.shade300, // Track color when the switch is off
-    ),
-    const SizedBox(width: 5,),
-    const Text('I agree to the terms and conditions', style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w500),),
-  ],
-),
-
+                                Row(
+                                  children: [
+                                    Switch(
+                                      value: _isSwitched,
+                                      onChanged: (bool value) {
+                                        setState(() {
+                                          _isSwitched = value;
+                                        });
+                                      },
+                                      activeColor: const Color(
+                                          0xFF004D40), // Active color (when the switch is on)
+                                      inactiveThumbColor: Colors
+                                          .grey, // Thumb color when the switch is off
+                                      inactiveTrackColor: Colors.grey
+                                          .shade300, // Track color when the switch is off
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    const Text(
+                                      'I agree to the terms and conditions',
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
+                                ),
                                 const SizedBox(height: 25),
                                 if (state is RegistrationLoading)
                                   const CircularLoadingWidget()
@@ -305,31 +318,45 @@ class PhoneClientState extends State<PhoneClient> {
                                     width: double.infinity,
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        final firstName = _firstNameController.text;
-                                        final lastName = _lastNameController.text;
-                                        final phoneNumber = _phoneController.text;
-                                        final password = _passwordController.text;
-                                        final confirmPassword = _confirmPasswordController.text;
+                                        final firstName =
+                                            _firstNameController.text;
+                                        final lastName =
+                                            _lastNameController.text;
+                                        final phoneNumber =
+                                            _phoneController.text;
+                                        final password =
+                                            _passwordController.text;
+                                        final confirmPassword =
+                                            _confirmPasswordController.text;
 
-                                        if (!_validateInputs(context, firstName, lastName, phoneNumber, password, confirmPassword)) {
+                                        if (!_validateInputs(
+                                            context,
+                                            firstName,
+                                            lastName,
+                                            phoneNumber,
+                                            password,
+                                            confirmPassword)) {
                                           return;
                                         }
 
                                         context.read<RegistrationBloc>().add(
-                                          SubmitRegistration(
-                                            firstName: firstName,
-                                            lastName: lastName,
-                                            phoneNumber: phoneNumber,
-                                            password: password,
-                                          ),
-                                        );
+                                              SubmitRegistration(
+                                                firstName: firstName,
+                                                lastName: lastName,
+                                                phoneNumber: phoneNumber,
+                                                password: password,
+                                              ),
+                                            );
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF004D40),
+                                        backgroundColor:
+                                            const Color(0xFF004D40),
                                         foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(vertical: 16),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 16),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                         ),
                                         textStyle: const TextStyle(
                                           fontSize: 16,
@@ -347,15 +374,19 @@ class PhoneClientState extends State<PhoneClient> {
                                   children: [
                                     _buildSocialLoginButton(
                                       onPressed: () {
-                                        context.read<RegistrationBloc>().add(GoogleLogin());
+                                        context
+                                            .read<RegistrationBloc>()
+                                            .add(GoogleLogin());
                                       },
-                                      label: 'Google',
+                                      label: 'Google.',
                                       assetPath: 'assets/icons/google.png',
                                     ),
-                                    const SizedBox(width: 16),
+                                    SizedBox(width: 16.w),
                                     _buildSocialLoginButton(
                                       onPressed: () {
-                                        context.read<RegistrationBloc>().add(FacebookLogin());
+                                        context
+                                            .read<RegistrationBloc>()
+                                            .add(FacebookLogin());
                                       },
                                       label: 'Facebook',
                                       assetPath: 'assets/icons/facebook.png',
@@ -365,7 +396,8 @@ class PhoneClientState extends State<PhoneClient> {
                                 const SizedBox(height: 15),
                                 TextButton(
                                   onPressed: () {
-                                    CheckartisanNavigator.push(context, const LoginClient());
+                                    CheckartisanNavigator.push(
+                                        context, const LoginClient());
                                   },
                                   child: RichText(
                                     text: const TextSpan(
@@ -402,7 +434,8 @@ class PhoneClientState extends State<PhoneClient> {
     );
   }
 
-  bool _validateInputs(BuildContext context, String firstName, String lastName, String phoneNumber, String password, String confirmPassword) {
+  bool _validateInputs(BuildContext context, String firstName, String lastName,
+      String phoneNumber, String password, String confirmPassword) {
     if (!RegExp(r'^[a-zA-Z]+$').hasMatch(firstName)) {
       _showWarning(context, 'Please enter a valid first name');
       return false;
@@ -445,7 +478,9 @@ class PhoneClientState extends State<PhoneClient> {
   }
 
   void _showWarning(BuildContext context, String message) {
-    AnimatedSnackBar.rectangle('Warning', message, type: AnimatedSnackBarType.warning).show(context);
+    AnimatedSnackBar.rectangle('Warning', message,
+            type: AnimatedSnackBarType.warning)
+        .show(context);
   }
 
   Widget _buildSmallTextField({
@@ -462,7 +497,8 @@ class PhoneClientState extends State<PhoneClient> {
         obscureText: obscureText,
         decoration: InputDecoration(
           isDense: true,
-          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(15.0)),
           ),
@@ -486,19 +522,19 @@ class PhoneClientState extends State<PhoneClient> {
     required String assetPath,
   }) {
     return SizedBox(
-      width: 140,
-      height: 44,
+      width: 140.w,
+      height: 44.h,
       child: ElevatedButton.icon(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          padding: EdgeInsets.symmetric(horizontal: 20.r, vertical: 12.r),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(0)),
             side: BorderSide(color: Colors.grey),
           ),
-          textStyle: const TextStyle(
+          textStyle: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
           ),

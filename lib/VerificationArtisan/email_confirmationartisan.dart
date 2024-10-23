@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 abstract class EmailConfirmationArtisanEvent extends Equatable {
   const EmailConfirmationArtisanEvent();
@@ -141,53 +142,55 @@ class EmailConfirmationArtisan extends StatelessWidget {
           ..add(SendEmailConfirmation(email)),
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: EdgeInsets.symmetric(horizontal: 16.0.r),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Image(
+                Image(
                   image: AssetImage('assets/icons/confirmation.png'),
-                  width: 300,
-                  height: 300,
+                  width: 300.h,
+                  height: 300.h,
                 ),
-                const SizedBox(height: 8), // Reduced spacing to make elements closer
-                const Text(
+                SizedBox(
+                    height: 8.h), // Reduced spacing to make elements closer
+                Text(
                   'Confirm your email address',
                   style: TextStyle(
-                    fontSize: 24,
+                    fontSize: 24.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 4), // Reduced spacing between texts
-                const Text(
+                SizedBox(height: 4.h), // Reduced spacing between texts
+                Text(
                   'We sent a confirmation mail to:',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 2), // Minimal spacing for compact layout
+                SizedBox(height: 2.h), // Minimal spacing for compact layout
                 Text(
                   email,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Color(0xFF004D40),
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    color: const Color(0xFF004D40),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 2), // Reduced spacing for compactness
-                const Text(
+                SizedBox(height: 2.h), // Reduced spacing for compactness
+                Text(
                   'Check your email and click on the confirmation link to continue',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 16), // Slightly reduced spacing before the button
+                const SizedBox(
+                    height: 16), // Slightly reduced spacing before the button
                 BlocConsumer<EmailConfirmationBloc,
                     EmailConfirmationArtisanState>(
                   listener: (context, state) {
@@ -215,11 +218,11 @@ class EmailConfirmationArtisan extends StatelessWidget {
                             .read<EmailConfirmationBloc>()
                             .add(ResendEmailConfirmation(email));
                       },
-                      child: const Text(
+                      child: Text(
                         'Resend Email',
                         style: TextStyle(
-                          fontSize: 16,
-                          color: Color(0xFF004D40),
+                          fontSize: 16.sp,
+                          color: const Color(0xFF004D40),
                           fontWeight: FontWeight.bold,
                         ),
                       ),

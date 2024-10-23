@@ -47,10 +47,10 @@ class _SettingsScreenState extends State<SettingsScreen>
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(screenHeight * 0.15), // Responsive height
+        preferredSize:
+            Size.fromHeight(screenHeight * 0.15), // Responsive height
         child: Container(
-          padding: EdgeInsets.only(
-              top: screenHeight * 0.05, bottom: screenHeight * 0.02),
+          padding: const EdgeInsets.symmetric(horizontal: 30),
           color: Colors.white,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -70,7 +70,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.notifications, color: Color.fromARGB(255, 0, 0, 0)),
+                icon: const Icon(Icons.notifications,
+                    color: Color.fromARGB(255, 0, 0, 0)),
                 onPressed: () {
                   CheckartisanNavigator.pushReplacement(
                       context, const ArtisanScreen());
@@ -202,8 +203,15 @@ class JobCard extends StatelessWidget {
     );
   }
 
-  void _showJobDetailsDialog(BuildContext context, String title, String jobRef,
-      String postedDate, String location, String budget, String timing, String description) {
+  void _showJobDetailsDialog(
+      BuildContext context,
+      String title,
+      String jobRef,
+      String postedDate,
+      String location,
+      String budget,
+      String timing,
+      String description) {
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -333,7 +341,8 @@ class JobDetailsDialog extends StatelessWidget {
               thickness: 1.0,
             ),
             const SizedBox(height: 5),
-            const SizedBox(height: 5), // SizedBox to control the vertical spacing
+            const SizedBox(
+                height: 5), // SizedBox to control the vertical spacing
             Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -341,7 +350,8 @@ class JobDetailsDialog extends StatelessWidget {
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      const Icon(Icons.notifications_none, color: Color(0xFF004D40)),
+                      const Icon(Icons.notifications_none,
+                          color: Color(0xFF004D40)),
                       Positioned(
                         top: 0,
                         right: -5,

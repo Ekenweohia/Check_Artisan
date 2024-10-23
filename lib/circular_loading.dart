@@ -8,7 +8,7 @@ class CircularLoadingWidget extends StatefulWidget {
   const CircularLoadingWidget({
     Key? key,
     this.height = 50,
-    this.color = const Color(0xF2004D40), // Updated color with the correct alpha and RGB
+    this.color = const Color(0xF2004D40),
   }) : super(key: key);
 
   @override
@@ -55,7 +55,8 @@ class CircularLoadingWidgetState extends State<CircularLoadingWidget>
         child: Center(
           child: CircularProgressIndicator(
             backgroundColor: widget.color ?? Colors.white,
-            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xF2004D40)), // Corrected color with transparency
+            valueColor: const AlwaysStoppedAnimation<Color>(
+                Color(0xF2004D40)), // Corrected color with transparency
           ),
         ),
       ),

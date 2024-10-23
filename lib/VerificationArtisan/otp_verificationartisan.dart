@@ -1,14 +1,15 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
-import 'package:check_artisan/page_navigation.dart';
-import 'package:check_artisan/profile/complete_profile_artisan.dart';
+import 'package:check_artisan/circular_loading.dart';
+import 'package:check_artisan/profile/id_verification.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:sms_autofill/sms_autofill.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-// Event Classes
 abstract class OTPVerificationArtisanEvent extends Equatable {
   const OTPVerificationArtisanEvent();
 
@@ -44,7 +45,6 @@ class ResendOTP extends OTPVerificationArtisanEvent {
   List<Object> get props => [phoneNumber];
 }
 
-// State Classes
 abstract class OTPVerificationArtisanState extends Equatable {
   const OTPVerificationArtisanState();
 
@@ -52,16 +52,16 @@ abstract class OTPVerificationArtisanState extends Equatable {
   List<Object> get props => [];
 }
 
-class OTPVerificationInitial extends OTPVerificationArtisanState {}
+class OTPVerificationArtisanInitial extends OTPVerificationArtisanState {}
 
-class OTPVerificationLoading extends OTPVerificationArtisanState {}
+class OTPVerificationArtisanLoading extends OTPVerificationArtisanState {}
 
-class OTPVerificationSuccess extends OTPVerificationArtisanState {}
+class OTPVerificationArtisanSuccess extends OTPVerificationArtisanState {}
 
-class OTPVerificationFailure extends OTPVerificationArtisanState {
+class OTPVerificationArtisanFailure extends OTPVerificationArtisanState {
   final String error;
 
-  const OTPVerificationFailure(this.error);
+  const OTPVerificationArtisanFailure(this.error);
 
   @override
   List<Object> get props => [error];
@@ -69,12 +69,12 @@ class OTPVerificationFailure extends OTPVerificationArtisanState {
 
 class OTPResent extends OTPVerificationArtisanState {}
 
-// Bloc Class
-class OTPVerificationBloc
+class OTPVerificationArtisanBloc
     extends Bloc<OTPVerificationArtisanEvent, OTPVerificationArtisanState> {
   final bool useApi;
 
-  OTPVerificationBloc({this.useApi = false}) : super(OTPVerificationInitial()) {
+  OTPVerificationArtisanBloc({this.useApi = false})
+      : super(OTPVerificationArtisanInitial()) {
     on<RequestOTP>(_onRequestOTP);
     on<VerifyOTP>(_onVerifyOTP);
     on<ResendOTP>(_onResendOTP);
@@ -82,102 +82,95 @@ class OTPVerificationBloc
 
   Future<void> _onRequestOTP(
       RequestOTP event, Emitter<OTPVerificationArtisanState> emit) async {
-    emit(OTPVerificationLoading());
-
-    try {
-      if (useApi) {
-        final response = await http.post(
-          Uri.parse('https://your-api-url/request-otp'), // Your API endpoint
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(<String, String>{
-            'phoneNumber': event.phoneNumber,
-          }),
-        );
-
-        if (response.statusCode == 200) {
-          emit(OTPVerificationSuccess());
-        } else {
-          final error = jsonDecode(response.body)['error'] ?? 'Unknown Error';
-          emit(OTPVerificationFailure(error));
-        }
-      } else {
-        await Future.delayed(const Duration(seconds: 1));
-        emit(OTPVerificationSuccess());
-      }
-    } catch (e) {
-      emit(OTPVerificationFailure(e.toString()));
-    }
-  }
-
-  Future<void> _onVerifyOTP(
-      VerifyOTP event, Emitter<OTPVerificationArtisanState> emit) async {
-    emit(OTPVerificationLoading());
+    emit(OTPVerificationArtisanLoading());
 
     try {
       if (useApi) {
         final response = await http.post(
           Uri.parse(
-              'https://your-api-url/verify-otp'), // Your OTP verification API
+              'https://checkartisan.com/api/startup/phone/validate/${event.phoneNumber}'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
-          body: jsonEncode(<String, String>{
-            'phoneNumber': event.phoneNumber,
-            'otp': event.otp,
-          }),
-        );
-
-        if (response.statusCode == 200) {
-          emit(OTPVerificationSuccess());
-        } else {
-          final error = jsonDecode(response.body)['error'] ?? 'Unknown Error';
-          emit(OTPVerificationFailure(error));
-        }
-      } else {
-        await Future.delayed(const Duration(seconds: 1));
-        emit(OTPVerificationSuccess());
-      }
-    } catch (e) {
-      emit(OTPVerificationFailure(e.toString()));
-    }
-  }
-
-  Future<void> _onResendOTP(
-      ResendOTP event, Emitter<OTPVerificationArtisanState> emit) async {
-    emit(OTPVerificationLoading());
-
-    try {
-      if (useApi) {
-        final response = await http.post(
-          Uri.parse(
-              'https://checkartisan.com/api/startup/phone/validate/${event.phoneNumber}'), // API TO RESEND OTP
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(<String, String>{
-            'phoneNumber': event.phoneNumber,
-          }),
         );
 
         if (response.statusCode == 200) {
           emit(OTPResent());
         } else {
-          final error = jsonDecode(response.body)['error'] ?? 'Unknown Error';
-          emit(OTPVerificationFailure(error));
+          final error = jsonDecode(response.body)['error'] ?? 'Unknown error';
+          emit(OTPVerificationArtisanFailure(error));
         }
       } else {
         await Future.delayed(const Duration(seconds: 1));
         emit(OTPResent());
       }
     } catch (e) {
-      emit(OTPVerificationFailure(e.toString()));
+      emit(OTPVerificationArtisanFailure(e.toString()));
+    }
+  }
+
+  Future<void> _onVerifyOTP(
+      VerifyOTP event, Emitter<OTPVerificationArtisanState> emit) async {
+    emit(OTPVerificationArtisanLoading());
+
+    try {
+      if (useApi) {
+        final response = await http.post(
+          Uri.parse(
+              'https://checkartisan.com/api/startup/phone/validate/${event.phoneNumber}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(<String, String>{
+            'otp': event.otp,
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          emit(OTPVerificationArtisanSuccess());
+        } else {
+          final error = jsonDecode(response.body)['error'] ?? 'Unknown error';
+          emit(OTPVerificationArtisanFailure(error));
+        }
+      } else {
+        await Future.delayed(const Duration(seconds: 1));
+        emit(OTPVerificationArtisanSuccess());
+      }
+    } catch (e) {
+      emit(OTPVerificationArtisanFailure(e.toString()));
+    }
+  }
+
+  Future<void> _onResendOTP(
+      ResendOTP event, Emitter<OTPVerificationArtisanState> emit) async {
+    emit(OTPVerificationArtisanLoading());
+
+    try {
+      if (useApi) {
+        final response = await http.post(
+          Uri.parse(
+              'https://checkartisan.com/api/startup/phone/validate/${event.phoneNumber}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          emit(OTPResent());
+        } else {
+          final error = jsonDecode(response.body)['error'] ?? 'Unknown error';
+          emit(OTPVerificationArtisanFailure(error));
+        }
+      } else {
+        await Future.delayed(const Duration(seconds: 3));
+        emit(OTPResent());
+      }
+    } catch (e) {
+      emit(OTPVerificationArtisanFailure(e.toString()));
     }
   }
 }
 
-// UI Screen Class
 class OTPVerificationArtisanScreen extends StatefulWidget {
   final String phoneNumber;
 
@@ -199,15 +192,16 @@ class OTPVerificationArtisanScreenState
   @override
   void initState() {
     super.initState();
-    listenForCode();
-
-    // Dispatch the RequestOTP event when the screen is initialized
-    context.read<OTPVerificationBloc>().add(RequestOTP(widget.phoneNumber));
+    listenForCode(); // Start listening for OTP automatically
   }
 
   @override
   void dispose() {
-    cancel();
+    cancel(); // Stop listening for OTP
+    _otpController1.dispose();
+    _otpController2.dispose();
+    _otpController3.dispose();
+    _otpController4.dispose();
     super.dispose();
   }
 
@@ -226,8 +220,7 @@ class OTPVerificationArtisanScreenState
     return Scaffold(
       backgroundColor: Colors.white,
       body: BlocProvider(
-        create: (context) => OTPVerificationBloc(
-            useApi: false), // Change to true when API is ready
+        create: (context) => OTPVerificationArtisanBloc(useApi: false),
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -246,7 +239,7 @@ class OTPVerificationArtisanScreenState
                             width: constraints.maxWidth * 0.7,
                             height: constraints.maxWidth * 0.7,
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 1),
                           const Text(
                             'OTP Verification',
                             style: TextStyle(
@@ -275,46 +268,76 @@ class OTPVerificationArtisanScreenState
                             ],
                           ),
                           const SizedBox(height: 30),
-                          BlocConsumer<OTPVerificationBloc,
+                          BlocConsumer<OTPVerificationArtisanBloc,
                               OTPVerificationArtisanState>(
                             listener: (context, state) {
-                              if (state is OTPVerificationSuccess) {
-                                CheckartisanNavigator.push(
-                                    context, const CompleteProfile());
-                              } else if (state is OTPVerificationFailure) {
-                                AnimatedSnackBar.rectangle('Error',
-                                        'Sorry, an error occurred. Please check your internet connection.',
-                                        type: AnimatedSnackBarType.error)
-                                    .show(context);
+                              if (state is OTPVerificationArtisanSuccess) {
+                                AnimatedSnackBar.rectangle(
+                                  'Success',
+                                  'OTP Verified Successfully',
+                                  type: AnimatedSnackBarType.success,
+                                ).show(context);
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const IDVerification(),
+                                  ),
+                                );
+                              } else if (state
+                                  is OTPVerificationArtisanFailure) {
+                                AnimatedSnackBar.rectangle(
+                                  'Error',
+                                  'Verification Failed: ${state.error}',
+                                  type: AnimatedSnackBarType.error,
+                                ).show(context);
                               } else if (state is OTPResent) {
                                 AnimatedSnackBar.rectangle(
-                                        'Success', 'OTP Resent',
-                                        type: AnimatedSnackBarType.success)
-                                    .show(context);
+                                  'Success',
+                                  'OTP Resent Successfully',
+                                  type: AnimatedSnackBarType.success,
+                                ).show(context);
                               }
                             },
                             builder: (context, state) {
-                              if (state is OTPVerificationLoading) {
-                                return const CircularProgressIndicator();
+                              if (state is OTPVerificationArtisanLoading) {
+                                return const CircularLoadingWidget();
                               }
                               return Column(
                                 children: [
-                                  TextButton(
-                                    onPressed: () {
-                                      context
-                                          .read<OTPVerificationBloc>()
-                                          .add(ResendOTP(widget.phoneNumber));
-                                    },
-                                    child: const Text(
-                                      'Didn’t receive OTP? RESEND',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Color(0xFF004D40),
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                  RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        const TextSpan(
+                                          text: 'Didn’t receive OTP? ',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: 'RESEND',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Color(0xFF004D40),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              context
+                                                  .read<
+                                                      OTPVerificationArtisanBloc>()
+                                                  .add(ResendOTP(
+                                                      widget.phoneNumber));
+                                            },
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  const SizedBox(height: 50),
+                                  SizedBox(
+                                      height: 150
+                                          .h), // Space between text button and verify button
                                   SizedBox(
                                     width: double.infinity,
                                     child: ElevatedButton(
@@ -323,23 +346,24 @@ class OTPVerificationArtisanScreenState
                                             _otpController2.text +
                                             _otpController3.text +
                                             _otpController4.text;
-                                        context.read<OTPVerificationBloc>().add(
-                                            VerifyOTP(widget.phoneNumber, otp));
+                                        context
+                                            .read<OTPVerificationArtisanBloc>()
+                                            .add(VerifyOTP(
+                                                widget.phoneNumber, otp));
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor:
                                             const Color(0xFF004D40),
                                         foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 20),
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 15.r),
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(30),
+                                              BorderRadius.circular(5),
                                         ),
                                         textStyle: const TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w600),
                                       ),
                                       child: const Text('VERIFY'),
                                     ),
@@ -366,7 +390,7 @@ class OTPVerificationArtisanScreenState
       width: 50,
       height: 50,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(15),
         color: Colors.white,
         boxShadow: const [
           BoxShadow(

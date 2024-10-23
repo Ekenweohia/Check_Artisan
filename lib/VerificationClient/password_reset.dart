@@ -8,6 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 abstract class PasswordResetEvent extends Equatable {
   const PasswordResetEvent();
@@ -118,7 +119,7 @@ class PasswordResetScreenState extends State<PasswordResetScreen> {
       body: BlocProvider(
         create: (context) => PasswordResetBloc(useApi: true),
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.symmetric(horizontal: 30.0.r, vertical: 30.0.r),
           child: BlocConsumer<PasswordResetBloc, PasswordResetState>(
             listener: (context, state) {
               if (state is PasswordResetSuccess) {
@@ -146,27 +147,27 @@ class PasswordResetScreenState extends State<PasswordResetScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 50),
+                      SizedBox(height: 50.h),
                       Image.asset(
                         'assets/icons/password_reset.png',
-                        width: 200,
-                        height: 200,
+                        width: 200.w,
+                        height: 200.h,
                       ),
-                      const SizedBox(height: 20),
-                      const Text(
+                      SizedBox(height: 20.h),
+                      Text(
                         'Reset Password',
                         style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 24.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
                       ),
-                      const SizedBox(height: 10),
-                      const Text(
+                      SizedBox(height: 10.h),
+                      Text(
                         'Enter the email/phone number associated with your account and we\'ll send an email with instructions to reset your password',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 16.h,
                           color: Colors.black,
                         ),
                       ),
@@ -214,12 +215,12 @@ class PasswordResetScreenState extends State<PasswordResetScreen> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF004D40),
                               foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 20),
+                              padding: EdgeInsets.symmetric(vertical: 20.r),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(0),
                               ),
-                              textStyle: const TextStyle(
-                                fontSize: 16,
+                              textStyle: TextStyle(
+                                fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),

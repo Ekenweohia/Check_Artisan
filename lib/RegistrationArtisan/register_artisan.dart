@@ -1,6 +1,7 @@
 import 'package:check_artisan/RegistrationArtisan/email_artisan.dart';
 import 'package:check_artisan/RegistrationArtisan/phone_artisan.dart';
 import 'package:check_artisan/page_navigation.dart';
+
 import 'package:flutter/material.dart';
 
 class RegisterArtisan extends StatelessWidget {
@@ -43,7 +44,8 @@ class RegisterArtisan extends StatelessWidget {
                   ),
                   child: SingleChildScrollView(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center, // Center alignment for text and buttons
+                      crossAxisAlignment: CrossAxisAlignment
+                          .center, // Center alignment for text and buttons
                       children: [
                         const Text(
                           'Welcome to CheckArtisan',
@@ -73,13 +75,12 @@ class RegisterArtisan extends StatelessWidget {
                                 fontFamily: 'Montserrat-Light.ttf'),
                           ),
                         ),
-                        const SizedBox(height: 40), // Increased spacing to move buttons up
-                        // Centering the buttons and making them the same size
+                        const SizedBox(height: 80),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SizedBox(
-                              width: 250, // Fixed width to make both buttons the same size
+                              width: 250,
                               child: ElevatedButton(
                                 onPressed: () {
                                   CheckartisanNavigator.push(
@@ -89,7 +90,7 @@ class RegisterArtisan extends StatelessWidget {
                                   backgroundColor: const Color(0xFF004D40),
                                   foregroundColor: Colors.white,
                                   padding: const EdgeInsets.symmetric(
-                                      vertical: 16.0), // Consistent vertical padding
+                                      vertical: 16.0),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5.0),
                                   ),
@@ -103,7 +104,7 @@ class RegisterArtisan extends StatelessWidget {
                             ),
                             const SizedBox(height: 20),
                             SizedBox(
-                              width: 250, // Fixed width to make both buttons the same size
+                              width: 250,
                               child: ElevatedButton(
                                 onPressed: () {
                                   CheckartisanNavigator.push(
@@ -113,7 +114,7 @@ class RegisterArtisan extends StatelessWidget {
                                   backgroundColor: const Color(0xFF004D40),
                                   foregroundColor: Colors.white,
                                   padding: const EdgeInsets.symmetric(
-                                      vertical: 16.0), // Consistent vertical padding
+                                      vertical: 16.0),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5.0),
                                   ),

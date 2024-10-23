@@ -139,7 +139,8 @@ class LoginClient extends StatefulWidget {
 
 class LoginClientState extends State<LoginClient> {
   final TextEditingController _emailOrPhoneController = TextEditingController();
-  final TextEditingController _loginPasswordController = TextEditingController();
+  final TextEditingController _loginPasswordController =
+      TextEditingController();
   bool _obscurePassword = true;
 
   @override
@@ -160,21 +161,22 @@ class LoginClientState extends State<LoginClient> {
           ),
           Column(
             children: [
-              const SizedBox(height: 80),
+              const SizedBox(height: 200),
               Center(
                 child: Image.asset(
                   'assets/icons/logo checkartisan 1.png',
                   width: 200,
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 50),
               Expanded(
                 child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(16.0),
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(24.0)),
                   ),
                   child: SingleChildScrollView(
                     child: Padding(
@@ -184,11 +186,12 @@ class LoginClientState extends State<LoginClient> {
                         child: BlocConsumer<AuthBloc, AuthState>(
                           listener: (context, state) {
                             if (state is AuthSuccess) {
-                              CheckartisanNavigator.push(context, const HomeClient());
+                              CheckartisanNavigator.push(
+                                  context, const HomeClient());
                             } else if (state is AuthFailure) {
                               AnimatedSnackBar.rectangle(
-                                  'Error', 'Check Internet Connection',
-                                  type: AnimatedSnackBarType.error)
+                                      'Error', 'Check Internet Connection',
+                                      type: AnimatedSnackBarType.error)
                                   .show(context);
                             }
                           },
@@ -228,8 +231,10 @@ class LoginClientState extends State<LoginClient> {
                                     width: double.infinity,
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        final emailOrPhone = _emailOrPhoneController.text;
-                                        final password = _loginPasswordController.text;
+                                        final emailOrPhone =
+                                            _emailOrPhoneController.text;
+                                        final password =
+                                            _loginPasswordController.text;
 
                                         context.read<AuthBloc>().add(
                                               LoginSubmitted(
@@ -239,11 +244,14 @@ class LoginClientState extends State<LoginClient> {
                                             );
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF004D40),
+                                        backgroundColor:
+                                            const Color(0xFF004D40),
                                         foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(vertical: 16),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 16),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                         ),
                                         textStyle: const TextStyle(
                                           fontSize: 16,
@@ -260,12 +268,14 @@ class LoginClientState extends State<LoginClient> {
                                   alignment: Alignment.centerRight,
                                   child: TextButton(
                                     onPressed: () {
-                                      CheckartisanNavigator.push(context, const PasswordResetScreen());
+                                      CheckartisanNavigator.push(
+                                          context, const PasswordResetScreen());
                                     },
                                     child: const Text(
                                       'Forgot Password?',
                                       style: TextStyle(
-                                          color: Color(0xFF004D40), fontWeight: FontWeight.bold),
+                                          color: Color(0xFF004D40),
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ),
@@ -275,7 +285,9 @@ class LoginClientState extends State<LoginClient> {
                                   children: [
                                     _buildSocialLoginButton(
                                       onPressed: () {
-                                        context.read<AuthBloc>().add(GoogleLogin());
+                                        context
+                                            .read<AuthBloc>()
+                                            .add(GoogleLogin());
                                       },
                                       label: 'Google',
                                       assetPath: 'assets/icons/google.png',
@@ -283,7 +295,9 @@ class LoginClientState extends State<LoginClient> {
                                     const SizedBox(width: 16),
                                     _buildSocialLoginButton(
                                       onPressed: () {
-                                        context.read<AuthBloc>().add(FacebookLogin());
+                                        context
+                                            .read<AuthBloc>()
+                                            .add(FacebookLogin());
                                       },
                                       label: 'Facebook',
                                       assetPath: 'assets/icons/facebook.png',
@@ -293,7 +307,8 @@ class LoginClientState extends State<LoginClient> {
                                 const SizedBox(height: 20),
                                 GestureDetector(
                                   onTap: () {
-                                    CheckartisanNavigator.push(context, const RegisterClient());
+                                    CheckartisanNavigator.push(
+                                        context, const RegisterClient());
                                   },
                                   child: RichText(
                                     text: const TextSpan(
@@ -340,7 +355,8 @@ class LoginClientState extends State<LoginClient> {
         controller: controller,
         decoration: InputDecoration(
           isDense: true,
-          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(15.0)),
           ),
@@ -365,7 +381,8 @@ class LoginClientState extends State<LoginClient> {
         obscureText: obscureText,
         decoration: InputDecoration(
           isDense: true,
-          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(15.0)),
           ),

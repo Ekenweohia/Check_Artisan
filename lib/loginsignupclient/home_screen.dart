@@ -2,6 +2,7 @@ import 'package:check_artisan/loginsignupclient/splash_1.dart';
 import 'package:check_artisan/loginsignupclient/splashartisan1.dart';
 import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart'; // Import ScreenUtil
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -11,6 +12,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
+          // Background Image with Opacity
           Opacity(
             opacity: 0.8, // Set image opacity to 80%
             child: Container(
@@ -22,23 +24,27 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
+          // Transparent Overlay
           Container(
             color: const Color(0xF2004D40),
           ),
+          // Main Content
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Spacer(flex: 1),
+                // Responsive Logo
                 Image.asset(
                   'assets/icons/logo checkartisan 1.png',
-                  width: 400,
+                  width: 400.w, // Responsive width
                 ),
                 const Spacer(),
+                // SIGN UP AS A CLIENT Button
                 Container(
-                  width: 209, // Set fixed width of 209px
-                  height: 37, // Set fixed height of 37px
-                  margin: const EdgeInsets.only(bottom: 17), // Gap of 10px between buttons
+                  width: 209.w, // Responsive width
+                  height: 37.h, // Responsive height
+                  margin: EdgeInsets.only(bottom: 17.h), // Responsive margin
                   child: ElevatedButton(
                     onPressed: () {
                       CheckartisanNavigator.push(context, const Splash1());
@@ -46,28 +52,27 @@ class HomeScreen extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: const Color(0xF2004D40),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 30), // Padding inside the button
+                      padding: EdgeInsets.symmetric(
+                          vertical: 10.h,
+                          horizontal: 30.w), // Responsive padding
                       shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(5.0), // Border radius 5px top-left
-                          topRight: Radius.circular(5.0), 
-                          bottomLeft: Radius.circular(5.0), 
-                          bottomRight: Radius.circular(5.0),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(5.0), // Border radius
                         ),
                       ),
-                      textStyle: const TextStyle(
-                        fontSize: 14,
+                      textStyle: TextStyle(
+                        fontSize: 12.sp, // Responsive font size
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     child: const Text('SIGN UP AS A CLIENT'),
                   ),
                 ),
+                // SIGN UP AS AN ARTISAN Button
                 Container(
-                  width: 209, // Set fixed width of 209px
-                  height: 37, // Set fixed height of 37px
-                  margin: const EdgeInsets.only(bottom: 10), // Gap of 10px between buttons
+                  width: 209.w, // Responsive width
+                  height: 37.h, // Responsive height
+                  margin: EdgeInsets.only(bottom: 10.h), // Responsive margin
                   child: ElevatedButton(
                     onPressed: () {
                       CheckartisanNavigator.push(
@@ -76,18 +81,16 @@ class HomeScreen extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: const Color(0xF2004D40),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 30), // Padding inside the button
+                      padding: EdgeInsets.symmetric(
+                          vertical: 10.h,
+                          horizontal: 30.w), // Responsive padding
                       shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(5.0), // Border radius 5px top-left
-                          topRight: Radius.circular(5.0), 
-                          bottomLeft: Radius.circular(5.0), 
-                          bottomRight: Radius.circular(5.0),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(5.0), // Border radius
                         ),
                       ),
-                      textStyle: const TextStyle(
-                        fontSize: 13,
+                      textStyle: TextStyle(
+                        fontSize: 12.sp, // Responsive font size
                         fontWeight: FontWeight.w600,
                       ),
                     ),
