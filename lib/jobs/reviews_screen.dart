@@ -137,7 +137,7 @@ class ReviewsScreen extends StatelessWidget {
         body: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 30),
               child: TextField(
                 decoration: InputDecoration(
                   hintText: 'Search',

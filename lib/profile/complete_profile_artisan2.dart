@@ -22,7 +22,7 @@ class CompleteProfile2State extends State<CompleteProfile2> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 30),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,23 +38,44 @@ class CompleteProfile2State extends State<CompleteProfile2> {
               ),
               const SizedBox(height: 20),
               const Text(
-                'Give us a brief description of your business',
+                "",
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.black,
                 ),
               ),
               const SizedBox(height: 10),
-              TextField(
-                controller: _businessDescriptionController,
-                maxLines: 4,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
+
+              // Business description TextField with rounded edges
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 4,
+                      offset: Offset(0, 2), // subtle shadow
+                    ),
+                  ],
+                ),
+                child: TextField(
+                  controller: _businessDescriptionController,
+                  maxLines: 4,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                    ),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    hintText: 'Enter a brief description of your business',
+                    filled: true,
+                    fillColor: Colors.white,
                   ),
                 ),
               ),
               const SizedBox(height: 20),
+
               const Text(
                 'How do you prefer us contacting you?',
                 style: TextStyle(
@@ -63,25 +84,60 @@ class CompleteProfile2State extends State<CompleteProfile2> {
                 ),
               ),
               const SizedBox(height: 10),
-              SwitchListTile(
-                title: const Text('Text Alert (SMS)'),
-                value: _textAlert,
-                onChanged: (bool value) {
-                  setState(() {
-                    _textAlert = value;
-                  });
-                },
+
+              // Custom Row for Switch with the toggle on the left for SMS
+              Row(
+                children: [
+                  Switch(
+                    value: _textAlert,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _textAlert = value;
+                      });
+                    },
+                    activeColor: Colors.teal,
+                    inactiveTrackColor:
+                        Colors.grey[300], // Visible track when off
+                    inactiveThumbColor: Colors.grey, // Visible thumb when off
+                  ),
+                  const SizedBox(width: 10),
+                  const Text(
+                    'Text Alert (SMS)',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
               ),
-              SwitchListTile(
-                title: const Text('Email Alert'),
-                value: _emailAlert,
-                onChanged: (bool value) {
-                  setState(() {
-                    _emailAlert = value;
-                  });
-                },
+
+              // Custom Row for Email Alert
+              Row(
+                children: [
+                  Switch(
+                    value: _emailAlert,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _emailAlert = value;
+                      });
+                    },
+                    activeColor: Colors.teal,
+                    inactiveTrackColor:
+                        Colors.grey[300], // Visible track when off
+                    inactiveThumbColor: Colors.grey, // Visible thumb when off
+                  ),
+                  const SizedBox(width: 10),
+                  const Text(
+                    'Email Alert',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 20),
+
               const Text(
                 'Love to get tips on how to get the right job?',
                 style: TextStyle(
@@ -89,19 +145,40 @@ class CompleteProfile2State extends State<CompleteProfile2> {
                   color: Colors.black,
                 ),
               ),
-              SwitchListTile(
-                title: const Text('Subscribe to our newsletter'),
-                value: _newsletterSubscription,
-                onChanged: (bool value) {
-                  setState(() {
-                    _newsletterSubscription = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 30),
+
+              // Custom Row for Newsletter Subscription
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Switch(
+                    value: _newsletterSubscription,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _newsletterSubscription = value;
+                      });
+                    },
+                    activeColor: Colors.teal,
+                    inactiveTrackColor:
+                        Colors.grey[300], // Visible track when off
+                    inactiveThumbColor: Colors.grey, // Visible thumb when off
+                  ),
+                  const SizedBox(width: 10),
+                  const Text(
+                    'Subscribe to our newsletter',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 30),
+
+              // Adjusted Buttons: aligned to the right
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end, // Align to right
+                children: [
+                  // Previous Button
                   ElevatedButton(
                     onPressed: () {
                       CheckartisanNavigator.push(
@@ -111,10 +188,10 @@ class CompleteProfile2State extends State<CompleteProfile2> {
                       backgroundColor: Colors.white,
                       foregroundColor: const Color(0xFF004D40),
                       padding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 30),
+                          vertical: 14, horizontal: 24),
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(30.0), // Rounded corners
+                        borderRadius: BorderRadius.circular(
+                            5.0), // Subtle rounded corners
                         side: const BorderSide(color: Color(0xFF004D40)),
                       ),
                       textStyle: const TextStyle(
@@ -124,6 +201,9 @@ class CompleteProfile2State extends State<CompleteProfile2> {
                     ),
                     child: const Text('Previous'),
                   ),
+                  const SizedBox(width: 10), // Spacing between buttons
+
+                  // Continue Button
                   ElevatedButton(
                     onPressed: () {
                       CheckartisanNavigator.push(
@@ -133,10 +213,9 @@ class CompleteProfile2State extends State<CompleteProfile2> {
                       backgroundColor: const Color(0xFF004D40),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 30),
+                          vertical: 14, horizontal: 24),
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(30.0), // Rounded corners
+                        borderRadius: BorderRadius.circular(5.0),
                       ),
                       textStyle: const TextStyle(
                         fontSize: 16,

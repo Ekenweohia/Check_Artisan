@@ -75,7 +75,8 @@ class ArtisanListBloc extends Bloc<ArtisanListEvent, ArtisanListState> {
     if (currentState is ArtisanListLoaded && currentState.hasReachedMax) return;
 
     emit(ArtisanListLoading(
-        artisans: currentState is ArtisanListLoaded ? currentState.artisans : []));
+        artisans:
+            currentState is ArtisanListLoaded ? currentState.artisans : []));
 
     try {
       // Cache logic (optional)
@@ -223,10 +224,15 @@ class _ArtisanListScreenState extends State<ArtisanListScreen> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
       context.read<ArtisanListBloc>().add(LoadArtisanList(
           tradeType: widget.artisanType,
-          page: (context.read<ArtisanListBloc>().state as ArtisanListLoaded).artisans.length ~/ 10 + 1));
+          page: (context.read<ArtisanListBloc>().state as ArtisanListLoaded)
+                      .artisans
+                      .length ~/
+                  10 +
+              1));
     }
   }
 
@@ -239,8 +245,8 @@ class _ArtisanListScreenState extends State<ArtisanListScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          ArtisanListBloc()..add(LoadArtisanList(tradeType: widget.artisanType)),
+      create: (context) => ArtisanListBloc()
+        ..add(LoadArtisanList(tradeType: widget.artisanType)),
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -270,7 +276,8 @@ class _ArtisanListScreenState extends State<ArtisanListScreen> {
 
                   final artisan = state.artisans[index];
                   return Padding(
-                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width * 0.04),
+                    padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).size.width * 0.04),
                     child: ArtisanCard(artisan: artisan),
                   );
                 },
@@ -305,7 +312,7 @@ class ArtisanCard extends StatelessWidget {
       ),
       elevation: 4,
       child: Padding(
-        padding: EdgeInsets.all(screenSize.width * 0.04),
+        padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Column(
           children: [
             Row(
@@ -325,7 +332,6 @@ class ArtisanCard extends StatelessWidget {
                           fontSize: screenSize.width * 0.04,
                           fontWeight: FontWeight.bold,
                         ),
-                       
                       ),
                       Text(
                         '${artisan.stateName}, ${artisan.cityName}',
@@ -341,45 +347,48 @@ class ArtisanCard extends StatelessWidget {
             ),
             const SizedBox(height: 15),
             Row(
-  mainAxisAlignment: MainAxisAlignment.center, // Center the buttons
-  children: [
-    ElevatedButton(
-      onPressed: () {
-        CheckartisanNavigator.push(context, const QuoteRequestsScreen());
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF004D40),
-        side: const BorderSide(color: Color(0xffC4C4C4)),
-        shape: RoundedRectangleBorder( // Adding border radius
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-      ),
-      child: Text(
-        'GET QUOTE',
-        style: TextStyle(fontSize: screenSize.width * 0.035),
-      ),
-    ),
-    const SizedBox(width: 10), // Reduce space between the buttons
-    ElevatedButton(
-      onPressed: () {
-        CheckartisanNavigator.push(context, const ArtisanProfileScreen());
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF004D40),
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder( // Adding border radius
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-      ),
-      child: Text(
-        'VIEW PROFILE',
-        style: TextStyle(fontSize: screenSize.width * 0.035),
-      ),
-    ),
-  ],
-)
-
+              mainAxisAlignment: MainAxisAlignment.center, // Center the buttons
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    CheckartisanNavigator.push(
+                        context, const QuoteRequestsScreen());
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: const Color(0xFF004D40),
+                    side: const BorderSide(color: Color(0xffC4C4C4)),
+                    shape: RoundedRectangleBorder(
+                      // Adding border radius
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: Text(
+                    'GET QUOTE',
+                    style: TextStyle(fontSize: screenSize.width * 0.035),
+                  ),
+                ),
+                const SizedBox(width: 10), // Reduce space between the buttons
+                ElevatedButton(
+                  onPressed: () {
+                    CheckartisanNavigator.push(
+                        context, const ArtisanProfileScreen());
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF004D40),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      // Adding border radius
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: Text(
+                    'VIEW PROFILE',
+                    style: TextStyle(fontSize: screenSize.width * 0.035),
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       ),

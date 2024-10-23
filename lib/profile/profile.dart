@@ -89,7 +89,7 @@ class ProfileScreen extends StatelessWidget {
                     context, const ChangePasswordScreen());
               },
             ),
-              SizedBox(height: screenSize.height * 0.03),
+            SizedBox(height: screenSize.height * 0.03),
             ProfileOption(
               text: 'Change Phone Number',
               iconPath: 'assets/Buttons/password.png',
@@ -166,7 +166,8 @@ class ProfileOption extends StatelessWidget {
                         fontFamily: 'Montserrat',
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        height: 17.07 / 14, // Setting the line height multiplier
+                        height:
+                            17.07 / 14, // Setting the line height multiplier
                         letterSpacing: -0.3,
                       ),
                       textAlign: TextAlign.start,

@@ -149,7 +149,8 @@ class PhoneArtisanState extends State<PhoneArtisan> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _isSwitched = false;
@@ -186,14 +187,16 @@ class PhoneArtisanState extends State<PhoneArtisan> {
                   padding: const EdgeInsets.all(16.0),
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(24.0)),
                   ),
                   child: SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24.0),
                       child: BlocProvider(
                         create: (context) => RegistrationBloc(useApi: false),
-                        child: BlocConsumer<RegistrationBloc, RegistrationState>(
+                        child:
+                            BlocConsumer<RegistrationBloc, RegistrationState>(
                           listener: (context, state) {
                             if (state is RegistrationSuccess) {
                               CheckartisanNavigator.push(
@@ -201,9 +204,10 @@ class PhoneArtisanState extends State<PhoneArtisan> {
                                   OTPVerificationArtisanScreen(
                                       phoneNumber: _phoneController.text));
                             } else if (state is RegistrationFailure) {
-                              AnimatedSnackBar.rectangle(
-                                  'Error', 'Please Check Internet Connection',
-                                  type: AnimatedSnackBarType.error).show(context);
+                              AnimatedSnackBar.rectangle('Error',
+                                      'Please Check Internet Connection',
+                                      type: AnimatedSnackBarType.error)
+                                  .show(context);
                             }
                           },
                           builder: (context, state) {
@@ -251,7 +255,8 @@ class PhoneArtisanState extends State<PhoneArtisan> {
                                   obscureText: _obscureConfirmPassword,
                                   toggleObscureText: () {
                                     setState(() {
-                                      _obscureConfirmPassword = !_obscureConfirmPassword;
+                                      _obscureConfirmPassword =
+                                          !_obscureConfirmPassword;
                                     });
                                   },
                                 ),
@@ -261,27 +266,38 @@ class PhoneArtisanState extends State<PhoneArtisan> {
                                   style: TextStyle(
                                     color: Color(0xFF004D40),
                                     fontWeight: FontWeight.bold,
+                                    fontSize: 13,
                                   ),
                                 ),
                                 const SizedBox(height: 8),
                                 Row(
-  children: [
-    Switch(
-      value: _isSwitched,
-      onChanged: (bool value) {
-        setState(() {
-          _isSwitched = value;
-        });
-      },
-      activeColor: const Color(0xFF004D40), // Active color (when the switch is on)
-      inactiveThumbColor: Colors.grey, // Thumb color when the switch is off
-      inactiveTrackColor: Colors.grey.shade300, // Track color when the switch is off
-    ),
-    const SizedBox(width: 5,),
-    const Text('I agree to the terms and conditions', style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w500),),
-  ],
-),
-
+                                  children: [
+                                    Switch(
+                                      value: _isSwitched,
+                                      onChanged: (bool value) {
+                                        setState(() {
+                                          _isSwitched = value;
+                                        });
+                                      },
+                                      activeColor: const Color(
+                                          0xFF004D40), // Active color (when the switch is on)
+                                      inactiveThumbColor: Colors
+                                          .grey, // Thumb color when the switch is off
+                                      inactiveTrackColor: Colors.grey
+                                          .shade300, // Track color when the switch is off
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    const Text(
+                                      'I agree to the terms and conditions',
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
+                                ),
                                 const SizedBox(height: 16),
                                 if (state is RegistrationLoading)
                                   const CircularLoadingWidget()
@@ -290,18 +306,24 @@ class PhoneArtisanState extends State<PhoneArtisan> {
                                     width: double.infinity,
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        final firstName = _firstNameController.text;
-                                        final lastName = _lastNameController.text;
-                                        final phoneNumber = _phoneController.text;
-                                        final password = _passwordController.text;
-                                        final confirmPassword = _confirmPasswordController.text;
+                                        final firstName =
+                                            _firstNameController.text;
+                                        final lastName =
+                                            _lastNameController.text;
+                                        final phoneNumber =
+                                            _phoneController.text;
+                                        final password =
+                                            _passwordController.text;
+                                        final confirmPassword =
+                                            _confirmPasswordController.text;
 
                                         if (password != confirmPassword) {
                                           AnimatedSnackBar.rectangle(
                                             "Warning",
                                             "Passwords do not match",
                                             type: AnimatedSnackBarType.warning,
-                                            mobileSnackBarPosition: MobileSnackBarPosition.bottom,
+                                            mobileSnackBarPosition:
+                                                MobileSnackBarPosition.bottom,
                                           ).show(context);
                                           return;
                                         }
@@ -316,11 +338,14 @@ class PhoneArtisanState extends State<PhoneArtisan> {
                                             );
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF004D40),
+                                        backgroundColor:
+                                            const Color(0xFF004D40),
                                         foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(vertical: 16),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 16),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                         ),
                                         textStyle: const TextStyle(
                                           fontSize: 16,
@@ -338,7 +363,9 @@ class PhoneArtisanState extends State<PhoneArtisan> {
                                   children: [
                                     _buildSocialLoginButton(
                                       onPressed: () {
-                                        context.read<RegistrationBloc>().add(GoogleLogin());
+                                        context
+                                            .read<RegistrationBloc>()
+                                            .add(GoogleLogin());
                                       },
                                       label: 'Google',
                                       assetPath: 'assets/icons/google.png',
@@ -346,7 +373,9 @@ class PhoneArtisanState extends State<PhoneArtisan> {
                                     const SizedBox(width: 16),
                                     _buildSocialLoginButton(
                                       onPressed: () {
-                                        context.read<RegistrationBloc>().add(FacebookLogin());
+                                        context
+                                            .read<RegistrationBloc>()
+                                            .add(FacebookLogin());
                                       },
                                       label: 'Facebook',
                                       assetPath: 'assets/icons/facebook.png',
@@ -356,7 +385,8 @@ class PhoneArtisanState extends State<PhoneArtisan> {
                                 const SizedBox(height: 15),
                                 TextButton(
                                   onPressed: () {
-                                    CheckartisanNavigator.push(context, const LoginArtisan());
+                                    CheckartisanNavigator.push(
+                                        context, const LoginArtisan());
                                   },
                                   child: RichText(
                                     text: const TextSpan(
@@ -398,12 +428,13 @@ class PhoneArtisanState extends State<PhoneArtisan> {
     required String labelText,
   }) {
     return SizedBox(
-      height: 45, 
+      height: 45,
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-          isDense: true, 
-          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+          isDense: true,
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(12.0)),
           ),
@@ -423,13 +454,14 @@ class PhoneArtisanState extends State<PhoneArtisan> {
     required VoidCallback toggleObscureText,
   }) {
     return SizedBox(
-      height: 45, 
+      height: 45,
       child: TextField(
         controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(
           isDense: true,
-          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10.0)),
           ),

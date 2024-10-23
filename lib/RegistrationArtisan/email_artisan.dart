@@ -199,7 +199,8 @@ class EmailArtisanState extends State<EmailArtisan> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
@@ -237,7 +238,8 @@ class EmailArtisanState extends State<EmailArtisan> {
                   padding: const EdgeInsets.all(16.0),
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(24.0)),
                   ),
                   child: SingleChildScrollView(
                     child: Padding(
@@ -248,10 +250,12 @@ class EmailArtisanState extends State<EmailArtisan> {
                           listener: (context, state) {
                             if (state is AuthSuccess) {
                               CheckartisanNavigator.push(
-                                  context, EmailConfirmationArtisan(email: _emailController.text));
+                                  context,
+                                  EmailConfirmationArtisan(
+                                      email: _emailController.text));
                             } else if (state is AuthFailure) {
-                              AnimatedSnackBar.rectangle(
-                                  'Error', state.error, type: AnimatedSnackBarType.error)
+                              AnimatedSnackBar.rectangle('Error', state.error,
+                                      type: AnimatedSnackBarType.error)
                                   .show(context);
                             }
                           },
@@ -294,7 +298,9 @@ class EmailArtisanState extends State<EmailArtisan> {
                                       _obscurePassword = !_obscurePassword;
                                     });
                                   },
-                                  icon: _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                                  icon: _obscurePassword
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
                                 ),
                                 const SizedBox(height: 20),
                                 _buildPasswordField(
@@ -303,10 +309,13 @@ class EmailArtisanState extends State<EmailArtisan> {
                                   obscureText: _obscureConfirmPassword,
                                   onIconPressed: () {
                                     setState(() {
-                                      _obscureConfirmPassword = !_obscureConfirmPassword;
+                                      _obscureConfirmPassword =
+                                          !_obscureConfirmPassword;
                                     });
                                   },
-                                  icon: _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
+                                  icon: _obscureConfirmPassword
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
                                 ),
                                 const SizedBox(height: 20),
                                 _buildSmallTextField(
@@ -322,29 +331,40 @@ class EmailArtisanState extends State<EmailArtisan> {
                                       textStyle: const TextStyle(
                                         color: Color(0xFF004D40),
                                         fontWeight: FontWeight.bold,
+                                        fontSize: 13,
                                       ),
                                     ),
                                   ),
                                 ),
                                 const SizedBox(height: 15),
                                 Row(
-  children: [
-    Switch(
-      value: _isSwitched,
-      onChanged: (bool value) {
-        setState(() {
-          _isSwitched = value;
-        });
-      },
-      activeColor: const Color(0xFF004D40), // Active color (when the switch is on)
-      inactiveThumbColor: Colors.grey, // Thumb color when the switch is off
-      inactiveTrackColor: Colors.grey.shade300, // Track color when the switch is off
-    ),
-    const SizedBox(width: 5,),
-    const Text('I agree to the terms and conditions', style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w500),),
-  ],
-),
-
+                                  children: [
+                                    Switch(
+                                      value: _isSwitched,
+                                      onChanged: (bool value) {
+                                        setState(() {
+                                          _isSwitched = value;
+                                        });
+                                      },
+                                      activeColor: const Color(
+                                          0xFF004D40), // Active color (when the switch is on)
+                                      inactiveThumbColor: Colors
+                                          .grey, // Thumb color when the switch is off
+                                      inactiveTrackColor: Colors.grey
+                                          .shade300, // Track color when the switch is off
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    const Text(
+                                      'I agree to the terms and conditions',
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
+                                ),
                                 const SizedBox(height: 16),
                                 if (state is AuthLoading)
                                   const CircularLoadingWidget()
@@ -354,11 +374,15 @@ class EmailArtisanState extends State<EmailArtisan> {
                                     child: ElevatedButton(
                                       onPressed: () {
                                         if (_validateInputs(context)) {
-                                          final firstName = _firstNameController.text;
-                                          final lastName = _lastNameController.text;
+                                          final firstName =
+                                              _firstNameController.text;
+                                          final lastName =
+                                              _lastNameController.text;
                                           final email = _emailController.text;
-                                          final password = _passwordController.text;
-                                          final phoneNumber = _phoneNumberController.text;
+                                          final password =
+                                              _passwordController.text;
+                                          final phoneNumber =
+                                              _phoneNumberController.text;
 
                                           context.read<AuthBloc>().add(
                                                 RegisterSubmitted(
@@ -372,11 +396,14 @@ class EmailArtisanState extends State<EmailArtisan> {
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF004D40),
+                                        backgroundColor:
+                                            const Color(0xFF004D40),
                                         foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(vertical: 16),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 16),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                         ),
                                         textStyle: const TextStyle(
                                           fontSize: 16,
@@ -394,7 +421,9 @@ class EmailArtisanState extends State<EmailArtisan> {
                                   children: [
                                     _buildSocialLoginButton(
                                       onPressed: () {
-                                        context.read<AuthBloc>().add(GoogleLogin());
+                                        context
+                                            .read<AuthBloc>()
+                                            .add(GoogleLogin());
                                       },
                                       label: 'Google',
                                       assetPath: 'assets/icons/google.png',
@@ -402,7 +431,9 @@ class EmailArtisanState extends State<EmailArtisan> {
                                     const SizedBox(width: 16),
                                     _buildSocialLoginButton(
                                       onPressed: () {
-                                        context.read<AuthBloc>().add(FacebookLogin());
+                                        context
+                                            .read<AuthBloc>()
+                                            .add(FacebookLogin());
                                       },
                                       label: 'Facebook',
                                       assetPath: 'assets/icons/facebook.png',
@@ -412,7 +443,8 @@ class EmailArtisanState extends State<EmailArtisan> {
                                 const SizedBox(height: 15),
                                 TextButton(
                                   onPressed: () {
-                                    CheckartisanNavigator.push(context, const LoginArtisan());
+                                    CheckartisanNavigator.push(
+                                        context, const LoginArtisan());
                                   },
                                   child: RichText(
                                     text: const TextSpan(
@@ -501,7 +533,9 @@ class EmailArtisanState extends State<EmailArtisan> {
   }
 
   void _showWarning(BuildContext context, String message) {
-    AnimatedSnackBar.rectangle('Warning', message, type: AnimatedSnackBarType.warning).show(context);
+    AnimatedSnackBar.rectangle('Warning', message,
+            type: AnimatedSnackBarType.warning)
+        .show(context);
   }
 
   Widget _buildSmallTextField({
@@ -509,12 +543,13 @@ class EmailArtisanState extends State<EmailArtisan> {
     required String labelText,
   }) {
     return SizedBox(
-      height: 40, 
+      height: 40,
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-          isDense: true, 
-          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+          isDense: true,
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(15.0)),
           ),
@@ -534,13 +569,14 @@ class EmailArtisanState extends State<EmailArtisan> {
     required IconData icon,
   }) {
     return SizedBox(
-      height: 40, 
+      height: 40,
       child: TextField(
         controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(
           isDense: true,
-          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(15.0)),
           ),

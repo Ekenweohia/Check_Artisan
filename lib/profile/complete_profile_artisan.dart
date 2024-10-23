@@ -1,6 +1,7 @@
 import 'package:check_artisan/page_navigation.dart';
-import 'package:check_artisan/profile/complete_profile_artisan2.dart';
+import 'package:check_artisan/profile/complete_profile_artisan2.dart'; // Assuming this is the next page
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -83,12 +84,100 @@ class CompleteProfileState extends State<CompleteProfile> {
     });
   }
 
+  Widget _buildLabeledTextField({
+    required TextEditingController controller,
+    required String labelText,
+    required String title,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: GoogleFonts.montserrat(
+              fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius:
+                  BorderRadius.circular(5.0), // Circular border for TextFields
+            ),
+            filled: true,
+            fillColor: Colors.white,
+          ),
+          style: GoogleFonts.montserrat(fontSize: 14),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDropdownUnderline({
+    required String labelText,
+    required List<String> items,
+    required String? selectedValue,
+    required ValueChanged<String?> onChanged,
+  }) {
+    return DropdownButtonFormField<String>(
+      value: selectedValue,
+      items: items
+          .map((item) => DropdownMenuItem<String>(
+                value: item,
+                child: Text(item),
+              ))
+          .toList(),
+      onChanged: onChanged,
+      decoration: InputDecoration(
+        labelText: labelText,
+        filled: true,
+        fillColor: Colors.white,
+        enabledBorder: UnderlineInputBorder(
+          borderSide:
+              BorderSide(color: Colors.grey, width: 1.0), // Underline style
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdownBox({
+    required String labelText,
+    required List<String> items,
+    required String? selectedValue,
+    required ValueChanged<String?> onChanged,
+  }) {
+    return DropdownButtonFormField<String>(
+      value: selectedValue,
+      items: items
+          .map((item) => DropdownMenuItem<String>(
+                value: item,
+                child: Text(item),
+              ))
+          .toList(),
+      onChanged: onChanged,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(
+          borderRadius:
+              BorderRadius.circular(10.0), // Circular border for dropdown box
+        ),
+        labelText: labelText,
+        filled: true,
+        fillColor: Colors.white,
+      ),
+    );
+  }
+
+  void _onContinuePressed() {
+    CheckartisanNavigator.push(context, const CompleteProfile2());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 30),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,40 +192,36 @@ class CompleteProfileState extends State<CompleteProfile> {
                 ),
               ),
               const SizedBox(height: 20),
-              TextField(
+
+              // Business Name Field with Title above
+              _buildLabeledTextField(
                 controller: _businessNameController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                  ),
-                  labelText: 'Business name',
-                ),
+                labelText: 'Enter business name',
+                title: 'Business name',
               ),
               const SizedBox(height: 16),
-              TextField(
+
+              // Location Field with Title above
+              _buildLabeledTextField(
                 controller: _locationController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                  ),
-                  labelText: 'Location',
-                ),
+                labelText: 'Enter location',
+                title: 'Location',
               ),
               const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                  ),
-                  labelText: 'Artisan trade type',
-                ),
-                value: _selectedTradeType,
-                items: _tradeTypes
-                    .map((type) => DropdownMenuItem<String>(
-                          value: type,
-                          child: Text(type),
-                        ))
-                    .toList(),
+
+              // Artisan Trade Type Dropdown with Underline
+              Text(
+                'Artisan trade type',
+                style: GoogleFonts.montserrat(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black),
+              ),
+              const SizedBox(height: 8),
+              _buildDropdownUnderline(
+                labelText: 'Select artisan trade type',
+                items: _tradeTypes,
+                selectedValue: _selectedTradeType,
                 onChanged: (value) {
                   setState(() {
                     _selectedTradeType = value;
@@ -144,14 +229,16 @@ class CompleteProfileState extends State<CompleteProfile> {
                 },
               ),
               const SizedBox(height: 16),
-              const Text(
+
+              // Artisan Skills with Checkboxes
+              Text(
                 'Artisan skill',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                ),
+                style: GoogleFonts.montserrat(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black),
               ),
+              const SizedBox(height: 8),
               ..._skills.map((skill) => CheckboxListTile(
                     title: Text(skill),
                     value: _selectedSkills.contains(skill),
@@ -164,22 +251,23 @@ class CompleteProfileState extends State<CompleteProfile> {
                         }
                       });
                     },
+                    controlAffinity: ListTileControlAffinity.leading,
                   )),
               const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                  ),
-                  labelText: 'Country',
-                ),
-                value: _selectedCountry,
-                items: _countries
-                    .map((country) => DropdownMenuItem<String>(
-                          value: country,
-                          child: Text(country),
-                        ))
-                    .toList(),
+
+              // Country Dropdown with Underline
+              Text(
+                'Country',
+                style: GoogleFonts.montserrat(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black),
+              ),
+              const SizedBox(height: 8),
+              _buildDropdownUnderline(
+                labelText: 'Country',
+                items: _countries,
+                selectedValue: _selectedCountry,
                 onChanged: (value) {
                   setState(() {
                     _selectedCountry = value;
@@ -187,20 +275,20 @@ class CompleteProfileState extends State<CompleteProfile> {
                 },
               ),
               const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                  ),
-                  labelText: 'State',
-                ),
-                value: _selectedState,
-                items: _states
-                    .map((state) => DropdownMenuItem<String>(
-                          value: state,
-                          child: Text(state),
-                        ))
-                    .toList(),
+
+              // State Dropdown with Underline
+              Text(
+                'State',
+                style: GoogleFonts.montserrat(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black),
+              ),
+              const SizedBox(height: 8),
+              _buildDropdownUnderline(
+                labelText: 'State',
+                items: _states,
+                selectedValue: _selectedState,
                 onChanged: (value) {
                   setState(() {
                     _selectedState = value;
@@ -208,20 +296,20 @@ class CompleteProfileState extends State<CompleteProfile> {
                 },
               ),
               const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                  ),
-                  labelText: 'City',
-                ),
-                value: _selectedCity,
-                items: _cities
-                    .map((city) => DropdownMenuItem<String>(
-                          value: city,
-                          child: Text(city),
-                        ))
-                    .toList(),
+
+              // City Dropdown with Underline
+              Text(
+                'Cities',
+                style: GoogleFonts.montserrat(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black),
+              ),
+              const SizedBox(height: 8),
+              _buildDropdownUnderline(
+                labelText: 'Cities',
+                items: _cities,
+                selectedValue: _selectedCity,
                 onChanged: (value) {
                   setState(() {
                     _selectedCity = value;
@@ -229,20 +317,20 @@ class CompleteProfileState extends State<CompleteProfile> {
                 },
               ),
               const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                  ),
-                  labelText: 'What distance are you willing to travel?',
-                ),
-                value: _selectedDistance,
-                items: _distances
-                    .map((distance) => DropdownMenuItem<String>(
-                          value: distance,
-                          child: Text(distance),
-                        ))
-                    .toList(),
+
+              // Distance Dropdown with Circular Box
+              Text(
+                'What distance are you willing to travel?',
+                style: GoogleFonts.montserrat(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black),
+              ),
+              const SizedBox(height: 8),
+              _buildDropdownBox(
+                labelText: 'Select distance',
+                items: _distances,
+                selectedValue: _selectedDistance,
                 onChanged: (value) {
                   setState(() {
                     _selectedDistance = value;
@@ -250,26 +338,27 @@ class CompleteProfileState extends State<CompleteProfile> {
                 },
               ),
               const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    CheckartisanNavigator.push(
-                        context, const CompleteProfile2());
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF004D40),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
+
+              // Continue Button with Navigation
+              Align(
+                alignment: Alignment.centerRight,
+                child: SizedBox(
+                  width: 130,
+                  height: 45,
+                  child: ElevatedButton(
+                    onPressed: _onContinuePressed,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF004D40), // Button color
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            5.0), // Small border radius for the button
+                      ),
                     ),
-                    textStyle: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                    child: const Text(
+                      'Continue',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
-                  child: const Text('Continue'),
                 ),
               ),
             ],

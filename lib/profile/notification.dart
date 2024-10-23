@@ -176,7 +176,7 @@ class ArtisanCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30.0),
       child: Card(
         elevation: 2,
         child: Padding(

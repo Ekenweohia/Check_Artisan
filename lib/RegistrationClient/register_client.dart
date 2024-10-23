@@ -2,6 +2,7 @@ import 'package:check_artisan/RegistrationClient/email_client.dart';
 import 'package:check_artisan/RegistrationClient/phone_client.dart';
 import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RegisterClient extends StatelessWidget {
   const RegisterClient({Key? key}) : super(key: key);
@@ -26,14 +27,14 @@ class RegisterClient extends StatelessWidget {
           ),
           Column(
             children: [
-              const SizedBox(height: 80),
+              SizedBox(height: 80.h),
               Center(
                 child: Image.asset(
                   'assets/icons/logo checkartisan 1.png',
                   width: screenSize.width * 0.5,
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
               Expanded(
                 child: Container(
                   width: double.infinity,
@@ -79,13 +80,15 @@ class RegisterClient extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 15), // Increased spacing to move buttons up
+                        const SizedBox(
+                            height: 90), // Increased spacing to move buttons up
                         // Centering the buttons and making them the same size
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SizedBox(
-                              width: 250, // Fixed width to make both buttons the same size
+                              width:
+                                  250, // Fixed width to make both buttons the same size
                               child: ElevatedButton(
                                 onPressed: () {
                                   CheckartisanNavigator.push(
@@ -95,7 +98,8 @@ class RegisterClient extends StatelessWidget {
                                   backgroundColor: const Color(0xFF004D40),
                                   foregroundColor: Colors.white,
                                   padding: const EdgeInsets.symmetric(
-                                    vertical: 16.0, // Consistent vertical padding
+                                    vertical:
+                                        16.0, // Consistent vertical padding
                                   ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5.0),
@@ -110,7 +114,8 @@ class RegisterClient extends StatelessWidget {
                             ),
                             const SizedBox(height: 20),
                             SizedBox(
-                              width: 250, // Fixed width to make both buttons the same size
+                              width:
+                                  250, // Fixed width to make both buttons the same size
                               child: ElevatedButton(
                                 onPressed: () {
                                   CheckartisanNavigator.push(
@@ -120,7 +125,8 @@ class RegisterClient extends StatelessWidget {
                                   backgroundColor: const Color(0xFF004D40),
                                   foregroundColor: Colors.white,
                                   padding: const EdgeInsets.symmetric(
-                                    vertical: 16.0, // Consistent vertical padding
+                                    vertical:
+                                        16.0, // Consistent vertical padding
                                   ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5.0),

@@ -30,7 +30,7 @@ class ReviewScreenClientState extends State<ReviewScreenClient> {
         title: const Text('Review'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

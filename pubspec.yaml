@@ -28,6 +28,7 @@ dependencies:
   cached_network_image: ^3.4.0
   flutter_floating_bottom_bar: ^1.2.1
   google_fonts: ^6.2.1
+  flutter_screenutil: ^5.9.3
   
 
 dev_dependencies:
