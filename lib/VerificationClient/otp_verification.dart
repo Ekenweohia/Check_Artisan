@@ -349,7 +349,7 @@ class OTPVerificationScreenState extends State<OTPVerificationScreen>
                                             const Color(0xFF004D40),
                                         foregroundColor: Colors.white,
                                         padding: EdgeInsets.symmetric(
-                                            vertical: 30.r),
+                                            horizontal: 40.r),
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(5),

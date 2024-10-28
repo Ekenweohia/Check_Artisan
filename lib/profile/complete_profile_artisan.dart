@@ -133,7 +133,7 @@ class CompleteProfileState extends State<CompleteProfile> {
         labelText: labelText,
         filled: true,
         fillColor: Colors.white,
-        enabledBorder: UnderlineInputBorder(
+        enabledBorder: const UnderlineInputBorder(
           borderSide:
               BorderSide(color: Colors.grey, width: 1.0), // Underline style
         ),

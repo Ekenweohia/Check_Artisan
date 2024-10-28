@@ -134,72 +134,99 @@ class ReviewsScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search',
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+        body: Padding(
+          // Add Padding here
+          padding: const EdgeInsets.symmetric(
+              horizontal: 30), // Adjust the padding value as needed
+          child: Column(
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30), // Added padding
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF000000).withOpacity(0.25),
+                        blurRadius: 4.0,
+                        offset:
+                            const Offset(0, 4), // changes position of shadow
+                      ),
+                    ],
+                    border:
+                        Border.all(color: const Color(0xFFD6D6D6), width: 1),
+                  ),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Search',
+                      prefixIcon: const Icon(Icons.search),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 15),
+                    ),
+                    onChanged: (value) {
+                      // Handle search logic here
+                    },
                   ),
                 ),
-                onChanged: (value) {},
               ),
-            ),
-            Expanded(
-              child: BlocBuilder<ReviewBloc, ReviewState>(
-                builder: (context, state) {
-                  if (state is ReviewLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is ReviewLoaded) {
-                    return ListView.separated(
-                      itemCount: state.reviews.length,
-                      separatorBuilder: (context, index) => const Divider(),
-                      itemBuilder: (context, index) {
-                        final review = state.reviews[index];
-                        return ListTile(
-                          title: Row(
-                            children: [
-                              const Icon(Icons.thumb_up,
-                                  color: Color(0xFF004D40)),
-                              const SizedBox(width: 8),
-                              Text(
-                                review.title,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(review.content),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  const Icon(Icons.star,
-                                      color: Colors.amber, size: 13),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                      'Reviewed by ${review.reviewer} on ${review.reviewDate.toIso8601String()}'),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  } else if (state is ReviewError) {
-                    return const Center(child: Text('Failed to fetch reviews'));
-                  }
-                  return Container();
-                },
+              SizedBox(
+                height: 30,
               ),
-            ),
-          ],
+              Expanded(
+                child: BlocBuilder<ReviewBloc, ReviewState>(
+                  builder: (context, state) {
+                    if (state is ReviewLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is ReviewLoaded) {
+                      return ListView.separated(
+                        itemCount: state.reviews.length,
+                        separatorBuilder: (context, index) => const Divider(),
+                        itemBuilder: (context, index) {
+                          final review = state.reviews[index];
+                          return ListTile(
+                            title: Row(
+                              children: [
+                                const Icon(Icons.thumb_up,
+                                    color: Color(0xFF004D40)),
+                                const SizedBox(width: 8),
+                                Text(
+                                  review.title,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(review.content),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.star,
+                                        color: Colors.amber, size: 13),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                        'Reviewed by ${review.reviewer} on ${review.reviewDate.toIso8601String()}'),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    } else if (state is ReviewError) {
+                      return const Center(
+                          child: Text('Failed to fetch reviews'));
+                    }
+                    return Container();
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

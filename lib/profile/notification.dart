@@ -4,6 +4,7 @@ import 'package:check_artisan/page_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ApiService {
   final String baseUrl = "";
@@ -184,10 +185,10 @@ class ArtisanCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Cheemdee',
                 style: TextStyle(
-                  fontSize: 18.0,
+                  fontSize: 18.0.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -206,9 +207,9 @@ class ArtisanCard extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF004D40),
                     ),
-                    child: const Text(
+                    child: Text(
                       'VIEW PROFILE',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white, fontSize: 12.sp),
                     ),
                   ),
                   const SizedBox(width: 8.0),
@@ -217,9 +218,9 @@ class ArtisanCard extends StatelessWidget {
                       CheckartisanNavigator.push(
                           context, const ReviewScreenClient());
                     },
-                    child: const Text(
+                    child: Text(
                       'ADD RATING',
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(color: Colors.black, fontSize: 12.sp),
                     ),
                   ),
                 ],

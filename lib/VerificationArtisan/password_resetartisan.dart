@@ -113,7 +113,7 @@ class PasswordResetAppScreenState extends State<PasswordResetAppScreen> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Image.asset(
                 'assets/icons/password_reset.png',
