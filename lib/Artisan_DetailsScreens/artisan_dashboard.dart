@@ -438,8 +438,7 @@ class ArtisanDashboardContent extends StatelessWidget {
                 context, const JobListScreen());
             break;
           case 'ReviewsScreen':
-            CheckartisanNavigator.pushReplacement(
-                context, const ReviewsScreen());
+            CheckartisanNavigator.pushReplacement(context, ReviewsScreen());
             break;
           case 'QuotesScreen':
             CheckartisanNavigator.pushReplacement(

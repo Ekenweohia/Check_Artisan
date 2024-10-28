@@ -4,6 +4,7 @@ import 'package:check_artisan/Home_Client/homeclient.dart';
 import 'package:check_artisan/profile/notification.dart';
 import 'package:check_artisan/profile/profile.dart' as profile;
 import 'package:check_artisan/utils.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -50,7 +51,7 @@ class _SettingsScreenState extends State<SettingsScreen>
         preferredSize:
             Size.fromHeight(screenHeight * 0.15), // Responsive height
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           color: Colors.white,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,7 +83,7 @@ class _SettingsScreenState extends State<SettingsScreen>
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         children: const [
           JobCard(
             title: 'Food',
@@ -379,7 +380,7 @@ class JobDetailsDialog extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(width: 1),
+                  SizedBox(width: 7.w),
                   const Text(
                     '0 Artisans Want to Quote',
                     style: TextStyle(

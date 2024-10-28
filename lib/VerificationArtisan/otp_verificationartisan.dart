@@ -1,6 +1,6 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:check_artisan/circular_loading.dart';
-import 'package:check_artisan/profile/id_verification.dart';
+import 'package:check_artisan/profile/complete_profile_artisan.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -281,7 +281,7 @@ class OTPVerificationArtisanScreenState
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        const IDVerification(),
+                                        const CompleteProfile(),
                                   ),
                                 );
                               } else if (state

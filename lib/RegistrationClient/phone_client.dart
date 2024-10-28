@@ -1,3 +1,4 @@
+import 'package:check_artisan/RegistrationClient/login_client.dart';
 import 'package:check_artisan/VerificationClient/otp_verification.dart';
 import 'package:check_artisan/circular_loading.dart';
 import 'package:check_artisan/page_navigation.dart';
@@ -10,8 +11,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:check_artisan/RegistrationClient/login_client.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 abstract class RegistrationEvent extends Equatable {
   const RegistrationEvent();
@@ -99,7 +98,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
           emit(RegistrationFailure(error));
         }
       } else {
-        await Future.delayed(const Duration(seconds: 3));
+        await Future.delayed(const Duration(seconds: 1));
         emit(RegistrationSuccess());
       }
     } catch (e) {
@@ -115,10 +114,10 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       if (account != null) {
         emit(RegistrationSuccess());
       } else {
-        emit(const RegistrationFailure('Google sign-in was cancelled.'));
+        emit(const RegistrationFailure('Google sign-in failed'));
       }
     } catch (e) {
-      emit(RegistrationFailure('Google sign-in failed: $e'));
+      emit(RegistrationFailure(e.toString()));
     }
   }
 
@@ -130,10 +129,10 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       if (result.status == LoginStatus.success) {
         emit(RegistrationSuccess());
       } else {
-        emit(const RegistrationFailure('Facebook sign-in failed.'));
+        emit(const RegistrationFailure('Facebook sign-in failed'));
       }
     } catch (e) {
-      emit(RegistrationFailure('Facebook sign-in failed: $e'));
+      emit(RegistrationFailure(e.toString()));
     }
   }
 }
@@ -205,7 +204,8 @@ class PhoneClientState extends State<PhoneClient> {
                                   OTPVerificationScreen(
                                       phoneNumber: _phoneController.text));
                             } else if (state is RegistrationFailure) {
-                              AnimatedSnackBar.rectangle('Error', state.error,
+                              AnimatedSnackBar.rectangle('Error',
+                                      'Please Check Internet Connection',
                                       type: AnimatedSnackBarType.error)
                                   .show(context);
                             }
@@ -214,17 +214,15 @@ class PhoneClientState extends State<PhoneClient> {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(
+                                const Text(
                                   'Got a Phone Number? Let’s Get Started',
-                                  style: GoogleFonts.montserrat(
-                                    textStyle: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
                                   ),
                                 ),
-                                const SizedBox(height: 30),
+                                const SizedBox(height: 20),
                                 _buildSmallTextField(
                                   controller: _firstNameController,
                                   labelText: 'First Name',
@@ -240,48 +238,38 @@ class PhoneClientState extends State<PhoneClient> {
                                   labelText: 'Phone Number',
                                 ),
                                 const SizedBox(height: 20),
-                                _buildSmallTextField(
+                                _buildPasswordTextField(
                                   controller: _passwordController,
                                   labelText: 'Password',
                                   obscureText: _obscurePassword,
-                                  onIconPressed: () {
+                                  toggleObscureText: () {
                                     setState(() {
                                       _obscurePassword = !_obscurePassword;
                                     });
                                   },
-                                  icon: _obscurePassword
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
                                 ),
                                 const SizedBox(height: 20),
-                                _buildSmallTextField(
+                                _buildPasswordTextField(
                                   controller: _confirmPasswordController,
                                   labelText: 'Confirm Password',
                                   obscureText: _obscureConfirmPassword,
-                                  onIconPressed: () {
+                                  toggleObscureText: () {
                                     setState(() {
                                       _obscureConfirmPassword =
                                           !_obscureConfirmPassword;
                                     });
                                   },
-                                  icon: _obscureConfirmPassword
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
                                 ),
                                 const SizedBox(height: 20),
-                                FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Text(
-                                    'CLICK HERE TO READ TERMS AND CONDITIONS',
-                                    style: GoogleFonts.montserrat(
-                                      textStyle: const TextStyle(
-                                        color: Color(0xFF004D40),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                const Text(
+                                  'CLICK HERE TO READ TERMS AND CONDITIONS',
+                                  style: TextStyle(
+                                    color: Color(0xFF004D40),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
                                   ),
                                 ),
-                                const SizedBox(height: 15),
+                                const SizedBox(height: 8),
                                 Row(
                                   children: [
                                     Switch(
@@ -310,7 +298,7 @@ class PhoneClientState extends State<PhoneClient> {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 25),
+                                const SizedBox(height: 16),
                                 if (state is RegistrationLoading)
                                   const CircularLoadingWidget()
                                 else
@@ -329,13 +317,14 @@ class PhoneClientState extends State<PhoneClient> {
                                         final confirmPassword =
                                             _confirmPasswordController.text;
 
-                                        if (!_validateInputs(
-                                            context,
-                                            firstName,
-                                            lastName,
-                                            phoneNumber,
-                                            password,
-                                            confirmPassword)) {
+                                        if (password != confirmPassword) {
+                                          AnimatedSnackBar.rectangle(
+                                            "Warning",
+                                            "Passwords do not match",
+                                            type: AnimatedSnackBarType.warning,
+                                            mobileSnackBarPosition:
+                                                MobileSnackBarPosition.bottom,
+                                          ).show(context);
                                           return;
                                         }
 
@@ -368,7 +357,7 @@ class PhoneClientState extends State<PhoneClient> {
                                       child: const Text('SIGN UP'),
                                     ),
                                   ),
-                                const SizedBox(height: 60),
+                                const SizedBox(height: 50),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -378,10 +367,10 @@ class PhoneClientState extends State<PhoneClient> {
                                             .read<RegistrationBloc>()
                                             .add(GoogleLogin());
                                       },
-                                      label: 'Google.',
+                                      label: 'Google',
                                       assetPath: 'assets/icons/google.png',
                                     ),
-                                    SizedBox(width: 16.w),
+                                    const SizedBox(width: 16),
                                     _buildSocialLoginButton(
                                       onPressed: () {
                                         context
@@ -434,64 +423,38 @@ class PhoneClientState extends State<PhoneClient> {
     );
   }
 
-  bool _validateInputs(BuildContext context, String firstName, String lastName,
-      String phoneNumber, String password, String confirmPassword) {
-    if (!RegExp(r'^[a-zA-Z]+$').hasMatch(firstName)) {
-      _showWarning(context, 'Please enter a valid first name');
-      return false;
-    }
-
-    if (!RegExp(r'^[a-zA-Z]+$').hasMatch(lastName)) {
-      _showWarning(context, 'Please enter a valid last name');
-      return false;
-    }
-
-    if (!RegExp(r'^\+?[0-9]{9,15}$').hasMatch(phoneNumber)) {
-      _showWarning(context, 'Please enter a valid phone number');
-      return false;
-    }
-
-    if (password.length < 8 ||
-        !RegExp(r'[A-Z]').hasMatch(password) ||
-        !RegExp(r'[a-z]').hasMatch(password) ||
-        !RegExp(r'[0-9]').hasMatch(password) ||
-        !RegExp(r'[!@#\$&*~]').hasMatch(password)) {
-      _showWarning(
-          context,
-          'Password must be at least 8 characters long, '
-          'include an uppercase letter, a lowercase letter, a number, '
-          'and a special character');
-      return false;
-    }
-
-    if (password != confirmPassword) {
-      _showWarning(context, 'Passwords do not match');
-      return false;
-    }
-
-    if (!_isSwitched) {
-      _showWarning(context, 'You must agree to the terms and conditions');
-      return false;
-    }
-
-    return true;
-  }
-
-  void _showWarning(BuildContext context, String message) {
-    AnimatedSnackBar.rectangle('Warning', message,
-            type: AnimatedSnackBarType.warning)
-        .show(context);
-  }
-
   Widget _buildSmallTextField({
     required TextEditingController controller,
     required String labelText,
-    bool obscureText = false,
-    VoidCallback? onIconPressed,
-    IconData? icon,
   }) {
     return SizedBox(
-      height: 40,
+      height: 45,
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          isDense: true,
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12.0)),
+          ),
+          labelText: labelText,
+          filled: true,
+          fillColor: Colors.white,
+        ),
+        style: GoogleFonts.montserrat(fontSize: 14),
+      ),
+    );
+  }
+
+  Widget _buildPasswordTextField({
+    required TextEditingController controller,
+    required String labelText,
+    required bool obscureText,
+    required VoidCallback toggleObscureText,
+  }) {
+    return SizedBox(
+      height: 45,
       child: TextField(
         controller: controller,
         obscureText: obscureText,
@@ -500,18 +463,17 @@ class PhoneClientState extends State<PhoneClient> {
           contentPadding:
               const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15.0)),
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
           ),
           labelText: labelText,
           filled: true,
           fillColor: Colors.white,
-          suffixIcon: icon != null
-              ? IconButton(
-                  icon: Icon(icon),
-                  onPressed: onIconPressed,
-                )
-              : null,
+          suffixIcon: IconButton(
+            icon: Icon(obscureText ? Icons.visibility : Icons.visibility_off),
+            onPressed: toggleObscureText,
+          ),
         ),
+        style: GoogleFonts.montserrat(fontSize: 14),
       ),
     );
   }
@@ -522,19 +484,19 @@ class PhoneClientState extends State<PhoneClient> {
     required String assetPath,
   }) {
     return SizedBox(
-      width: 140.w,
-      height: 44.h,
+      width: 140,
+      height: 44,
       child: ElevatedButton.icon(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
-          padding: EdgeInsets.symmetric(horizontal: 20.r, vertical: 12.r),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(0)),
             side: BorderSide(color: Colors.grey),
           ),
-          textStyle: TextStyle(
+          textStyle: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
           ),
@@ -544,10 +506,7 @@ class PhoneClientState extends State<PhoneClient> {
           height: 24,
           width: 24,
         ),
-        label: Text(
-          label,
-          style: GoogleFonts.montserrat(fontSize: 12),
-        ),
+        label: Text(label, style: const TextStyle(fontSize: 12)),
       ),
     );
   }

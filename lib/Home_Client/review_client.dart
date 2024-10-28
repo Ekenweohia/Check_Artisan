@@ -27,16 +27,29 @@ class ReviewScreenClientState extends State<ReviewScreenClient> {
             );
           },
         ),
-        title: const Text('Review'),
+        title: Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: 30.0), // Adjust the padding as needed
+          child: const Text('Review'),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(
+              height: 20,
+            ),
             const Text(
               'How would you rate this tradeperson?',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
+            Divider(
+              thickness: 5,
+              color: Colors.black,
+              indent: 50,
+              endIndent: 50,
             ),
             const SizedBox(height: 8.0),
             const Text(
@@ -61,7 +74,16 @@ class ReviewScreenClientState extends State<ReviewScreenClient> {
                 );
               }),
             ),
+            Divider(
+              thickness: 5,
+              color: Colors.black,
+              indent: 50,
+              endIndent: 50,
+            ),
             const Divider(height: 32.0),
+            SizedBox(
+              width: 10,
+            ),
             const Text(
               'Vote of Confidence',
               style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
@@ -136,29 +158,33 @@ class ReviewScreenClientState extends State<ReviewScreenClient> {
                 ),
               ),
             ),
-            const SizedBox(height: 16.0),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  CheckartisanNavigator.pushReplacement(
-                      context, const HomeClient());
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2C6B58),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 24.0, vertical: 12.0),
-                  textStyle: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
+            const SizedBox(height: 30.0),
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF004D40),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                    ),
+                    onPressed: () {
+                      CheckartisanNavigator.pushReplacement(
+                          context, const HomeClient());
+                    },
+                    child: const Text(
+                      'Post Your Rating',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                ),
-                child: const Text(
-                  'POST YOUR RATING',
-                  style: TextStyle(color: Colors.white),
-                ),
+                ],
               ),
             ),
           ],

@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 abstract class ArtisanListEvent extends Equatable {
   const ArtisanListEvent();
@@ -210,10 +211,10 @@ class ArtisanListScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ArtisanListScreenState createState() => _ArtisanListScreenState();
+  ArtisanListScreenState createState() => ArtisanListScreenState();
 }
 
-class _ArtisanListScreenState extends State<ArtisanListScreen> {
+class ArtisanListScreenState extends State<ArtisanListScreen> {
   late ScrollController _scrollController;
 
   @override
@@ -312,16 +313,21 @@ class ArtisanCard extends StatelessWidget {
       ),
       elevation: 4,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30),
+        padding: const EdgeInsets.symmetric(
+            horizontal: 20.0, vertical: 16.0), // Updated padding
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 CircleAvatar(
-                    radius: screenSize.width * 0.08,
-                    backgroundImage: NetworkImage(
-                        'https://checkartisan.com/images/${artisan.avatar}')),
-                SizedBox(width: screenSize.width * 0.04),
+                  radius: screenSize.width * 0.08,
+                  backgroundImage: NetworkImage(
+                      'https://checkartisan.com/images/${artisan.avatar}'),
+                ),
+                SizedBox(
+                    width: screenSize.width *
+                        0.06), // Added more space between avatar and text
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -333,10 +339,11 @@ class ArtisanCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      SizedBox(height: 4.0), // Extra space between texts
                       Text(
                         '${artisan.stateName}, ${artisan.cityName}',
                         style: TextStyle(
-                          fontSize: screenSize.width * 0.035,
+                          fontSize: 12.sp,
                           color: Colors.grey,
                         ),
                       ),
@@ -345,9 +352,9 @@ class ArtisanCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 20), // More space before buttons
             Row(
-              mainAxisAlignment: MainAxisAlignment.center, // Center the buttons
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
                   onPressed: () {
@@ -359,7 +366,6 @@ class ArtisanCard extends StatelessWidget {
                     foregroundColor: const Color(0xFF004D40),
                     side: const BorderSide(color: Color(0xffC4C4C4)),
                     shape: RoundedRectangleBorder(
-                      // Adding border radius
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
@@ -368,7 +374,7 @@ class ArtisanCard extends StatelessWidget {
                     style: TextStyle(fontSize: screenSize.width * 0.035),
                   ),
                 ),
-                const SizedBox(width: 10), // Reduce space between the buttons
+                const SizedBox(width: 12), // More space between buttons
                 ElevatedButton(
                   onPressed: () {
                     CheckartisanNavigator.push(
@@ -378,13 +384,12 @@ class ArtisanCard extends StatelessWidget {
                     backgroundColor: const Color(0xFF004D40),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      // Adding border radius
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
                   child: Text(
                     'VIEW PROFILE',
-                    style: TextStyle(fontSize: screenSize.width * 0.035),
+                    style: TextStyle(fontSize: 10.sp),
                   ),
                 ),
               ],

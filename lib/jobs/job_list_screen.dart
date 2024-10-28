@@ -138,82 +138,100 @@ class JobListScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: Column(
-          children: [
-            const SizedBox(height: 10),
-            const Center(
-              child: Text(
-                'Job List',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'Montserrat-SemiBold.ttf'),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search',
-                  prefixIcon:
-                      const Icon(Icons.search, color: Color(0xFF004D40)),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
+        body: Padding(
+          padding:
+              const EdgeInsets.symmetric(horizontal: 16.0), // Add padding here
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              const Center(
+                child: Text(
+                  'Job List',
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Montserrat-SemiBold.ttf'),
+                  textAlign: TextAlign.center,
                 ),
-                onChanged: (value) {},
               ),
-            ),
-            Expanded(
-              child: BlocBuilder<JobBloc, JobState>(
-                builder: (context, state) {
-                  if (state is JobLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is JobLoaded) {
-                    return ListView.separated(
-                      itemCount: state.jobs.length,
-                      separatorBuilder: (context, index) => const Divider(),
-                      itemBuilder: (context, index) {
-                        final job = state.jobs[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Job Title: ${job.title}',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 4),
-                              Text('Location: ${job.location}'),
-                              const SizedBox(height: 4),
-                              Text(
-                                'Status: ${job.status}',
-                                style: TextStyle(
-                                  color: job.status == 'Job Completed'
-                                      ? const Color(0xFF004D40)
-                                      : Colors.red,
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF000000).withOpacity(0.25),
+                      blurRadius: 4.0,
+                      offset: const Offset(0, 4), // changes position of shadow
+                    ),
+                  ],
+                  border: Border.all(color: const Color(0xFFD6D6D6), width: 1),
+                ),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search',
+                    prefixIcon: const Icon(Icons.search),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 15),
+                  ),
+                  onChanged: (value) {
+                    // Handle search logic here
+                  },
+                ),
+              ),
+              Expanded(
+                child: BlocBuilder<JobBloc, JobState>(
+                  builder: (context, state) {
+                    if (state is JobLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is JobLoaded) {
+                      return ListView.separated(
+                        itemCount: state.jobs.length,
+                        separatorBuilder: (context, index) => const Divider(),
+                        itemBuilder: (context, index) {
+                          final job = state.jobs[index];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: 20,
                                 ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                  'Posted Date: ${job.postedDate.toIso8601String()}'),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  } else if (state is JobError) {
-                    return const Center(child: Text('Failed to fetch jobs'));
-                  }
-                  return Container();
-                },
+                                Text(
+                                  'Job Title: ${job.title}',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 4),
+                                Text('Location: ${job.location}'),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Status: ${job.status}',
+                                  style: TextStyle(
+                                    color: job.status == 'Job Completed'
+                                        ? const Color(0xFF004D40)
+                                        : Colors.red,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                    'Posted Date: ${job.postedDate.toIso8601String()}'),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    } else if (state is JobError) {
+                      return const Center(child: Text('Failed to fetch jobs'));
+                    }
+                    return Container();
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

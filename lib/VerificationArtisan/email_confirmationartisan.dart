@@ -147,7 +147,7 @@ class EmailConfirmationArtisan extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image(
-                  image: AssetImage('assets/icons/confirmation.png'),
+                  image: const AssetImage('assets/icons/confirmation.png'),
                   width: 300.h,
                   height: 300.h,
                 ),

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -15,10 +14,10 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
-  final bool _obscureOldPassword = false;
-  bool _obscureNewPassword = false;
-  bool _obscureConfirmPassword = false;
-  bool useApi = false;
+
+  bool _obscureOldPassword = true;
+  bool _obscureNewPassword = true;
+  bool _obscureConfirmPassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +35,21 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
         foregroundColor: Colors.black,
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40.0), // Adjusted padding for better alignment
+        padding: const EdgeInsets.symmetric(
+            horizontal: 40.0), // Adjusted padding for better alignment
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: 32),
-            _buildSmallTextField(
+            _buildPasswordTextField(
               controller: _oldPasswordController,
               labelText: 'Old Password',
+              obscureText: _obscureOldPassword,
+              toggleObscureText: () {
+                setState(() {
+                  _obscureOldPassword = !_obscureOldPassword;
+                });
+              },
             ),
             const SizedBox(height: 16),
             _buildPasswordTextField(
@@ -106,28 +112,6 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
     );
   }
 
-  Widget _buildSmallTextField({
-    required TextEditingController controller,
-    required String labelText,
-  }) {
-    return SizedBox(
-      height: 45,
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          isDense: true,
-          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-          border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15.0)),
-          ),
-          labelText: labelText,
-          filled: true,
-          fillColor: Colors.white,
-        ),
-      ),
-    );
-  }
-
   Widget _buildPasswordTextField({
     required TextEditingController controller,
     required String labelText,
@@ -141,7 +125,8 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
         obscureText: obscureText,
         decoration: InputDecoration(
           isDense: true,
-          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(15.0)),
           ),
@@ -157,19 +142,63 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
     );
   }
 
- Widget _buildChip(String label) {
-  return ClipRRect(
-    borderRadius: BorderRadius.circular(20.0), // Adjust the border radius as needed
-    child: Chip(
-      label: Text(label, style: const TextStyle(color: Colors.black)),
-      backgroundColor: Colors.grey[300],
-      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0), // Adjust padding inside the chip
-    ),
-  );
-}
+  Widget _buildChip(String label) {
+    return ClipRRect(
+      borderRadius:
+          BorderRadius.circular(20.0), // Adjust the border radius as needed
+      child: Chip(
+        label: Text(label, style: const TextStyle(color: Colors.black)),
+        backgroundColor: Colors.grey[300],
+        padding: const EdgeInsets.symmetric(
+            horizontal: 0, vertical: 0), // Adjust padding inside the chip
+      ),
+    );
+  }
 
+  Future<void> _changePassword() async {
+    final String oldPassword = _oldPasswordController.text;
+    final String newPassword = _newPasswordController.text;
+    final String confirmPassword = _confirmPasswordController.text;
 
-  void _changePassword() async {
-    // Add your logic for changing password here
+    if (newPassword != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('New password and confirm password do not match')),
+      );
+      return;
+    }
+
+    // Assuming your API endpoint for changing the password is below
+    const String apiUrl = 'https://example.com/api/change-password';
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, String>{
+          'oldPassword': oldPassword,
+          'newPassword': newPassword,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // Handle success
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Password changed successfully')),
+        );
+      } else {
+        // Handle error
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to change password')),
+        );
+      }
+    } catch (e) {
+      // Handle network or other errors
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
   }
 }

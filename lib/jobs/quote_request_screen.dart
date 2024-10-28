@@ -142,17 +142,36 @@ class QuoteRequestsScreen extends StatelessWidget {
         body: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search',
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 30), // Added padding
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF000000).withOpacity(0.25),
+                      blurRadius: 4.0,
+                      offset: const Offset(0, 4), // changes position of shadow
+                    ),
+                  ],
+                  border: Border.all(color: const Color(0xFFD6D6D6), width: 1),
                 ),
-                onChanged: (value) {},
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search',
+                    prefixIcon: const Icon(Icons.search),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 15),
+                  ),
+                  onChanged: (value) {
+                    // Handle search logic here
+                  },
+                ),
               ),
+            ),
+            SizedBox(
+              height: 20,
             ),
             Expanded(
               child: BlocBuilder<QuoteBloc, QuoteState>(
